@@ -31,7 +31,8 @@ func NewClient(kubeconfigPath string) (*Client, error) {
 }
 
 func (c *Client) ListIngressInfo(ctx context.Context) ([]entities.IngressInfo, error) {
-	ings, err := c.clientset.NetworkingV1().Ingresses("").List(ctx, metav1.ListOptions{})
+	// TODO: support networking.k8s.io/v1
+	ings, err := c.clientset.NetworkingV1beta1().Ingresses("").List(ctx, metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}

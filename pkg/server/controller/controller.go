@@ -1,14 +1,23 @@
 package controller
 
-import "github.com/labstack/echo/v4"
+import (
+	"github.com/labstack/echo/v4"
 
-type Controller struct{}
+	"github.com/ShotaKitazawa/kube-portal/pkg/entities"
+)
 
-func New() *Controller {
-	return &Controller{}
+type Controller struct {
+	k8sClient entities.KubernetesPort
+}
+
+func New(k8sClient entities.KubernetesPort) *Controller {
+	return &Controller{k8sClient}
 }
 
 func (c Controller) ListIngressInfo(ctx echo.Context) error {
-	// TODO
-	return nil
+	list, err := c.k8sClient.ListIngressInfo(ctx.Request().Context())
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(200, list)
 }

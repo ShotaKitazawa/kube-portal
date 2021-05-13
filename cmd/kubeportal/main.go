@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"github.com/ShotaKitazawa/kube-portal/pkg/cmd/kubeportal"
