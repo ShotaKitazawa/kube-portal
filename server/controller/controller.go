@@ -3,7 +3,7 @@ package controller
 import (
 	"github.com/labstack/echo/v4"
 
-	"github.com/ShotaKitazawa/kube-portal/pkg/entities"
+	"github.com/ShotaKitazawa/kube-portal/server/entities"
 )
 
 type Controller struct {

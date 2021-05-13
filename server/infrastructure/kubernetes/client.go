@@ -8,7 +8,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 
-	"github.com/ShotaKitazawa/kube-portal/pkg/entities"
+	"github.com/ShotaKitazawa/kube-portal/server/entities"
 )
 
 type Client struct {

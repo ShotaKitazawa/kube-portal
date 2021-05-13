@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/ShotaKitazawa/kube-portal/pkg/cmd/kubeportal"
-	"github.com/ShotaKitazawa/kube-portal/pkg/server"
+	"github.com/ShotaKitazawa/kube-portal/cmd/kubeportal"
+	"github.com/ShotaKitazawa/kube-portal/server"
 )
 
 func main() {

@@ -10,7 +10,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/fake"
 
-	"github.com/ShotaKitazawa/kube-portal/pkg/entities"
+	"github.com/ShotaKitazawa/kube-portal/server/entities"
 )
 
 func TestClient_ListIngressInfo(t *testing.T) {

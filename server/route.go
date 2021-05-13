@@ -8,9 +8,9 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 
-	"github.com/ShotaKitazawa/kube-portal/pkg/cmd/kubeportal"
-	"github.com/ShotaKitazawa/kube-portal/pkg/kubernetes"
-	"github.com/ShotaKitazawa/kube-portal/pkg/server/controller"
+	"github.com/ShotaKitazawa/kube-portal/cmd/kubeportal"
+	"github.com/ShotaKitazawa/kube-portal/server/controller"
+	"github.com/ShotaKitazawa/kube-portal/server/infrastructure/kubernetes"
 )
 
 func Run(opts *kubeportal.Opts) error {
