@@ -1,13 +1,12 @@
+import React, { useEffect, useState } from 'react'
 import {
-  Avatar,
   CircularProgress,
   Card,
   CardContent,
 } from '@material-ui/core';
-import LaunchIcon from '@material-ui/icons/Launch';
 
 import IngressInfo from '../../drivers/ingress-info/ingress-info'
-import { LinksPort } from '../../entities/ingress-info'
+import { LinksPort, LinkInfo } from '../../entities/ingress-info'
 
 
 export const Links: React.FC = ({
@@ -15,8 +14,10 @@ export const Links: React.FC = ({
 }) => {
 
   // get links from API
-  const links: LinksPort = new IngressInfo()
-  const linksList = links.List()
+  var linksList = []
+  if (typeof window !== 'undefined') {
+    linksList = new IngressInfo(window.location.origin).List()
+  }
 
   return (
     <section id="links" className="mt-6">
