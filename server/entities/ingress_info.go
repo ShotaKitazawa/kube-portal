@@ -7,6 +7,7 @@ type KubernetesPort interface {
 }
 
 type IngressInfo struct {
+	Name      string
 	Fqdn      string
 	Proto     string
 	IconUrl   string

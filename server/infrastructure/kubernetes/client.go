@@ -46,14 +46,18 @@ func (c *Client) ListIngressInfo(ctx context.Context) ([]entities.IngressInfo, e
 			continue
 		}
 
-		// correct values
+		// get & validate values
+		name, ok := ing.Annotations["kube-portal.kanatakita.com/name"]
+		if !ok {
+			name = ing.Name
+		}
 		fqdn := ing.Spec.Rules[0].Host
 		iconUrl, ok := ing.Annotations["kube-portal.kanatakita.com/icon-url"]
 		if !ok {
 			iconUrl = entities.DefaultIconUrl
 		}
 		proto, ok := ing.Annotations["kube-portal.kanatakita.com/proto"]
-		if !ok { // TODO: validation
+		if !ok || !(strings.ToLower(proto) == "http" || strings.ToLower(proto) == "https") {
 			proto = "https"
 		}
 		var isPrivate bool
@@ -61,7 +65,10 @@ func (c *Client) ListIngressInfo(ctx context.Context) ([]entities.IngressInfo, e
 		if ok && strings.ToLower(isPrivateStr) == "true" {
 			isPrivate = true
 		}
+
+		// set values to result
 		result = append(result, entities.IngressInfo{
+			Name:      name,
 			Fqdn:      fqdn,
 			Proto:     proto,
 			IconUrl:   iconUrl,

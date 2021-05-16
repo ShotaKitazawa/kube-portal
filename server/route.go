@@ -27,7 +27,7 @@ func Run(opts *kubeportal.Opts) error {
 	e.Use(middleware.Logger())
 
 	// Route
-	// TODO client/assets 以下の静的コンテンツをサーブする設定
+	e.Static("/", "./client/out")
 	api := e.Group("/api")
 	api.GET("/list", c.ListIngressInfo)
 
