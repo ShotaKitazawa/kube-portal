@@ -1,0 +1,23 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-portal
+  labels:
+    app: kube-portal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kube-portal
+  template:
+    metadata:
+      labels:
+        app: kube-portal
+    spec:
+      serviceAccountName: kube-portal
+      containers:
+        - name: kube-portal
+          image: kanatakita/kube-portal:latest
+          ports:
+            - containerPort: 8080
