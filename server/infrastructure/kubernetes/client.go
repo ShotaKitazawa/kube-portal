@@ -40,33 +40,39 @@ func (c *Client) ListIngressInfo(ctx context.Context) ([]entities.IngressInfo, e
 	var result []entities.IngressInfo
 	for _, ing := range ings.Items {
 
-		// check ignore flag
+		/* check ignore flag */
 		ignoreStr := ing.Annotations["kube-portal.kanatakita.com/ignore"]
 		if strings.ToLower(ignoreStr) == "true" {
 			continue
 		}
 
-		// get & validate values
+		/* get & validate values */
+		// name
+		// - using metadata.name if annotation is empty
 		name, ok := ing.Annotations["kube-portal.kanatakita.com/name"]
 		if !ok {
 			name = ing.Name
 		}
+		// fqdn
+		// - TODO: ref ing.Spec.Rules[1:].Host
 		fqdn := ing.Spec.Rules[0].Host
-		iconUrl, ok := ing.Annotations["kube-portal.kanatakita.com/icon-url"]
-		if !ok {
-			iconUrl = entities.DefaultIconUrl
-		}
+		// proto
+		// - allow only "http" or "https"
 		proto, ok := ing.Annotations["kube-portal.kanatakita.com/proto"]
 		if !ok || !(strings.ToLower(proto) == "http" || strings.ToLower(proto) == "https") {
 			proto = "https"
 		}
+		// icon_url
+		// - allow empty
+		iconUrl := ing.Annotations["kube-portal.kanatakita.com/icon-url"]
+		// is_private
 		var isPrivate bool
 		isPrivateStr, ok := ing.Annotations["kube-portal.kanatakita.com/is-private"]
 		if ok && strings.ToLower(isPrivateStr) == "true" {
 			isPrivate = true
 		}
 
-		// set values to result
+		/* set values to result */
 		result = append(result, entities.IngressInfo{
 			Name:      name,
 			Fqdn:      fqdn,
