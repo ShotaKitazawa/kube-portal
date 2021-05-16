@@ -6,6 +6,7 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 
 	"github.com/ShotaKitazawa/kube-portal/server/entities"
@@ -16,10 +17,7 @@ type Client struct {
 }
 
 func NewClient(kubeconfigPath string) (*Client, error) {
-	if kubeconfigPath == "" {
-		kubeconfigPath = clientcmd.RecommendedHomeFile
-	}
-	kubeConfig, err := clientcmd.BuildConfigFromFlags("", kubeconfigPath)
+	kubeConfig, err := buildConfig(kubeconfigPath)
 	if err != nil {
 		return nil, err
 	}
@@ -28,6 +26,29 @@ func NewClient(kubeconfigPath string) (*Client, error) {
 		return nil, err
 	}
 	return &Client{client}, nil
+}
+
+func buildConfig(kubeconfig string) (cfg *rest.Config, err error) {
+	var errBuildConfig, errInClusterConfig error
+	if kubeconfig != "" {
+		cfg, errBuildConfig = clientcmd.BuildConfigFromFlags("", kubeconfig)
+		if errBuildConfig == nil {
+			return cfg, nil
+		}
+	} else {
+		cfg, err = clientcmd.BuildConfigFromFlags("", clientcmd.RecommendedHomeFile)
+		if err == nil {
+			return cfg, nil
+		}
+	}
+	cfg, errInClusterConfig = rest.InClusterConfig()
+	if errInClusterConfig != nil {
+		if errBuildConfig != nil {
+			return nil, errBuildConfig
+		}
+		return nil, errInClusterConfig
+	}
+	return cfg, nil
 }
 
 func (c *Client) ListIngressInfo(ctx context.Context) ([]entities.IngressInfo, error) {
