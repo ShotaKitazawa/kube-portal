@@ -1,8 +1,9 @@
-import '../styles/globals.css'
+import 'normalize.css'
+import "tailwindcss/tailwind.css"
 
 function MyApp({ Component, pageProps }) {
   return (
-    <Component { ...pageProps } />
+    <Component {...pageProps} />
   )
 }
 

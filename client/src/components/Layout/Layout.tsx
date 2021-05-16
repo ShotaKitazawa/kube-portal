@@ -14,7 +14,7 @@ export const Layout: React.FC = ({
         <link rel="shortcut icon" href="/favicon.ico" />
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
+        <script src="https://code.iconify.design/1/1.0.7/iconify.min.js"></script>
       </Head>
       <div className="relative z-20">
         <Header />

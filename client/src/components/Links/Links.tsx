@@ -1,15 +1,14 @@
 import {
-  List,
-  ListItem,
-  ListItemText,
-  ListItemAvatar,
   Avatar,
   CircularProgress,
+  Card,
+  CardContent,
 } from '@material-ui/core';
 import LaunchIcon from '@material-ui/icons/Launch';
 
 import IngressInfo from '../../drivers/ingress-info/ingress-info'
 import { LinksPort } from '../../entities/ingress-info'
+
 
 export const Links: React.FC = ({
   children,
@@ -18,37 +17,36 @@ export const Links: React.FC = ({
   // get links from API
   const links: LinksPort = new IngressInfo()
   const linksList = links.List()
-  const item = (name: string, icon_url: string) => (
-    <ListItem>
-      <ListItemAvatar>
-        <Avatar>
-          {
-            icon_url != "" ?
-              <img src={icon_url} />
-              :
-              <LaunchIcon />
-          }
-        </Avatar>
-      </ListItemAvatar>
-    </ListItem>
-  )
 
   return (
-    <>
-      {
-        linksList != null ?
-          linksList.map(({ name, url, icon_url, is_private }) => (
-            <>
-              {
+    <section id="links" className="mt-6">
+      <div className="mx-auto flex flex-wrap justify-center w-1/2">
+        {
+          linksList != null ?
+            linksList.map(({ name, url, icon_url }) => (
+              <div className="mx-5 my-5 w-5/6 md:w-4/6 lg:w-3/6 xl:w-2/6 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110">
                 <a href={url} className="hover:no-underline">
-                  {item(name, icon_url)}
+                  <Card className="flex hover:bg-indigo-200">
+                    <div className="flex-none w-16 h-16">
+                      {icon_url != "" ?
+                        <img src={icon_url} />
+                        :
+                        <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/external-link-alt.svg" />
+                      }
+                    </div>
+                    <div className="flex-grow w-16">
+                      <CardContent >
+                        <p className="text-center text-xl font-bold">{name}</p>
+                      </CardContent>
+                    </div>
+                  </Card>
                 </a>
-              }
-            </>
-          ))
-          :
-          <CircularProgress />
-      }
-    </>
+              </div>
+            ))
+            :
+            <CircularProgress />
+        }
+      </div>
+    </section>
   )
 }

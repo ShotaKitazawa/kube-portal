@@ -6,5 +6,4 @@ export type LinkInfo = {
   name: string
   url: string
   icon_url: string
-  is_private: boolean
 }
