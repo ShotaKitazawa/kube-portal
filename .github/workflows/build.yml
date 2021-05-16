@@ -30,7 +30,7 @@ jobs:
         id: get-imagename
         run: |
           IMAGE_NAME=$(echo "${{ github.ref }}" | sed -e 's|.*/\(.*\)|\1|')
-          [[ -n ${{ github.head_ref }} ]] && IMAGE_NAME=${{ github.head_ref }}
+          [[ -n "${{ github.head_ref }}" ]] && IMAGE_NAME=${{ github.head_ref }}
 
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && IS_TAG="true"
 
