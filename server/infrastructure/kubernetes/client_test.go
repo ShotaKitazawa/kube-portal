@@ -46,9 +46,10 @@ func TestClient_ListIngressInfo(t *testing.T) {
 			args: args{context.Background()},
 			want: []entities.IngressInfo{
 				{
+					Name:      "test01",
 					Fqdn:      "01.example.com",
 					Proto:     "https",
-					IconUrl:   entities.DefaultIconUrl,
+					IconUrl:   "",
 					IsPrivate: false,
 				},
 			},
