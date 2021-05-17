@@ -5,8 +5,8 @@
 
 ### What is this?
 
-kube-portal works as portal-site of links published by Kubernetes Ingress.
-You can also "custom the link's icon" and "set up private links" by setting annotations to Ingress object.
+kube-portal works as portal-site for links published by Kubernetes Ingress.
+You can also "customize the link's icon" and "set up private links" by setting annotations to Ingress object.
 
 ### Quick Start
 
