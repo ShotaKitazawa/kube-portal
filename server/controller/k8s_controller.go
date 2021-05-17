@@ -7,16 +7,16 @@ import (
 	"github.com/ShotaKitazawa/kube-portal/server/view"
 )
 
-type Controller struct {
+type K8sController struct {
 	k8sClient entities.KubernetesPort
 	view      view.ViewPort
 }
 
-func New(k8sClient entities.KubernetesPort) *Controller {
-	return &Controller{k8sClient, &view.JsonView{}}
+func NewK8sController(k8sClient entities.KubernetesPort) *K8sController {
+	return &K8sController{k8sClient, &view.JsonView{}}
 }
 
-func (c Controller) ListIngressInfo(ctx echo.Context) error {
+func (c K8sController) ListIngressInfo(ctx echo.Context) error {
 	// logic
 	list, err := c.k8sClient.ListIngressInfo(ctx.Request().Context())
 	if err != nil {

@@ -6,7 +6,7 @@ import {
 } from '@material-ui/core';
 
 import IngressInfo from '../../drivers/ingress-info/ingress-info'
-import { LinksPort, LinkInfo } from '../../entities/ingress-info'
+import { LinkInfo } from '../../entities/ingress-info'
 
 
 export const Links: React.FC = ({
@@ -14,7 +14,7 @@ export const Links: React.FC = ({
 }) => {
 
   // get links from API
-  var linksList = []
+  var linksList: LinkInfo[] = null
   if (typeof window !== 'undefined') {
     linksList = new IngressInfo(window.location.origin).List()
   }
