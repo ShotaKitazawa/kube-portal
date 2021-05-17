@@ -24,7 +24,7 @@ func Run(opts *kubeportal.Opts) error {
 	if err != nil {
 		panic(err)
 	}
-	k8sController := controller.NewK8sController(k8sClient)
+	k8sController := controller.NewK8sController(k8sClient, opts.JwtSecret)
 	u, err := url.Parse(fmt.Sprintf("%s/auth/callback", opts.BaseUrl))
 	if err != nil {
 		panic(err)
@@ -41,7 +41,7 @@ func Run(opts *kubeportal.Opts) error {
 	// Route
 	e.Static("/", "./client/out")
 	api := e.Group("/api")
-	api.GET("/list", k8sController.ListIngressInfo)
+	api.GET("/list", k8sController.ListIngressInfo, k8sController.JwtAuthMiddleware)
 	//auth := e.Group("/auth")
 	e.GET("/auth/callback", oauthController.Callback)
 	e.GET("/auth/logout", oauthController.Logout)

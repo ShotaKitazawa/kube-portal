@@ -45,8 +45,9 @@ export const Header: React.FC = ({
                 </IconButton>
               </div>
             ) : (
-              // TODO: Login Link
-              <Button color="inherit">Login</Button>
+              <a href="/auth/login">
+                <Button color="inherit">Login</Button>
+              </a>
             )
             }
           </div>

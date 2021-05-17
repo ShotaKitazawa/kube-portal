@@ -13,3 +13,17 @@ type IngressInfo struct {
 	IconUrl   string
 	IsPrivate bool
 }
+
+func ExcludePrivateLinkIfNotLogIn(list []IngressInfo, isLogin bool) []IngressInfo {
+	var result []IngressInfo
+	if !isLogin {
+		for _, val := range list {
+			if !val.IsPrivate {
+				result = append(result, val)
+			}
+		}
+	} else {
+		result = list
+	}
+	return result
+}

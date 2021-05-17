@@ -1,29 +1,37 @@
-import useSWR from 'swr'
+import axios from 'axios';
 
-import { LinksPort, LinkInfo } from '../../entities/ingress-info'
+export type LinkInfo = {
+  name: string
+  url: string
+  icon_url: string
+}
 
-class IngressInfo implements LinksPort {
+
+class IngressInfo {
   private url: string
+  private jwt: string
 
   constructor(origin: string) {
     this.url = origin + "/api/list"
   }
 
-  List(): LinkInfo[] {
-    const fetcher = async (url: string): Promise<LinkInfo[] | null> => {
-      const response = await fetch(url)
-      return await response.json()
+  WithJWT(jwt: string): IngressInfo {
+    this.jwt = jwt
+    return this
+  }
+
+  async List(): Promise<LinkInfo[]> {
+    var res
+    try {
+      res = await axios.get<LinkInfo[]>(this.url, {
+        headers: {
+          Cookie: this.jwt != "" ? "jwt=" + this.jwt + ";" : ""
+        }
+      })
+    } catch {
+      res = { data: null }
     }
-    console.log(this.url)
-
-    //return null
-    const { data } = useSWR(this.url, fetcher)
-
-    if (data === undefined) {
-      return null
-    }
-
-    return data
+    return res.data
   }
 }
 

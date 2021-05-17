@@ -1,23 +1,49 @@
-import React, { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react';
+import { InferGetStaticPropsType, NextPage } from 'next';
 import {
   CircularProgress,
   Card,
   CardContent,
 } from '@material-ui/core';
+import { parseCookies } from 'nookies'
 
-import IngressInfo from '../../drivers/ingress-info/ingress-info'
-import { LinkInfo } from '../../entities/ingress-info'
+import IngressInfo, { LinkInfo } from '../../drivers/ingress-info/ingress-info'
 
 
-export const Links: React.FC = ({
-  children,
-}) => {
+type Props = InferGetStaticPropsType<typeof getStaticProps>;
+
+export const getStaticProps = async () => {
+  return {
+    props: {
+    }
+  }
+}
+
+export const Links: NextPage<Props> = (props) => {
+  // get JWT in cookie
+  const cookies = parseCookies()
 
   // get links from API
-  var linksList: LinkInfo[] = null
-  if (typeof window !== 'undefined') {
-    linksList = new IngressInfo(window.location.origin).List()
+  const [linksList, setLinksList] = useState<LinkInfo[]>(null)
+  const list = async () => {
+    if (typeof window !== 'undefined') {
+      var i
+      if (cookies.jwt !== 'undefined') {
+        i = await new IngressInfo(window.location.origin)
+          .WithJWT(cookies.jwt)
+          .List()
+      } else {
+        i = await new IngressInfo(window.location.origin)
+          .List()
+      }
+      setLinksList(i)
+    }
   }
+  useEffect(() => {
+    setInterval(() => {
+      list()
+    }, 3000)
+  }, [])
 
   return (
     <section id="links" className="mt-6">

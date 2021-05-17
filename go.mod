@@ -3,6 +3,7 @@ module github.com/ShotaKitazawa/kube-portal
 go 1.16
 
 require (
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/form3tech-oss/jwt-go v3.2.2+incompatible
 	github.com/gorilla/sessions v1.1.3 // indirect
 	github.com/jessevdk/go-flags v1.5.0
