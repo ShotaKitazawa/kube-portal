@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"strings"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -14,6 +13,7 @@ import (
 	"github.com/ShotaKitazawa/kube-portal/server/controller"
 	"github.com/ShotaKitazawa/kube-portal/server/infrastructure/github"
 	"github.com/ShotaKitazawa/kube-portal/server/infrastructure/kubernetes"
+	"github.com/ShotaKitazawa/kube-portal/server/utils"
 )
 
 func Run(opts *kubeportal.Opts) error {
@@ -32,7 +32,7 @@ func Run(opts *kubeportal.Opts) error {
 	if err != nil {
 		panic(err)
 	}
-	oauthController, err := controller.NewOAuthController(l, githubClient, opts.GitHubOAuthKey, opts.GitHubOAuthSecret, u.String(), opts.JwtSecret, strings.Split(opts.GitHubAllowUsers, ","))
+	oauthController, err := controller.NewOAuthController(l, githubClient, opts.GitHubOAuthKey, opts.GitHubOAuthSecret, u.String(), opts.JwtSecret, utils.Split(opts.GitHubAllowUsers, ",")...)
 	if err != nil {
 		panic(err)
 	}

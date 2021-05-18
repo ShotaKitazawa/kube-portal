@@ -15,21 +15,18 @@ var (
 )
 
 type Opts struct {
-	Version bool
-
-	GitHubOAuthKey    string `long:"github-key" description:"GitHub OAuth Client ID"`
-	GitHubOAuthSecret string `long:"github-secret" description:"GitHub OAuth Client Secret"`
-	BaseUrl           string `long:"base-url" description:"this app's externally facing base URL. Required when configuring OAuth"`
-	JwtSecret         string `long:"jwt-secret" description:"jwt secret using to check whether user is logging in"`
-	GitHubAllowUsers  string `short:"u" long:"github-allow-user" description:"GitHub Username that you allowed to get private links"`
-
-	// optional
-	KubeConfigPath string `long:"kubeconfig" description:"filepath of KubeConfig"`
-	BindAddr       string `long:"bind-addr" default:"0.0.0.0:8080"`
+	Version           bool
+	GitHubOAuthKey    string
+	GitHubOAuthSecret string
+	BaseUrl           string
+	JwtSecret         string
+	GitHubAllowUsers  string
+	KubeConfigPath    string
+	BindAddr          string
 }
 
 func Parse() (*Opts, error) {
-	var opts *Opts
+	var opts Opts
 	flag.BoolVar(&opts.Version, "version", false, "show version")
 	flag.StringVar(&opts.GitHubOAuthKey, "github-client-id", "", "GitHub OAuth Client ID (optional, required if enable Login feature)")
 	flag.StringVar(&opts.GitHubOAuthSecret, "github-client-secret", "", "GitHub OAuth Client Secret (optional, required if enable Login feature)")
@@ -50,5 +47,5 @@ func Parse() (*Opts, error) {
 		os.Exit(0)
 	}
 
-	return opts, nil
+	return &opts, nil
 }
