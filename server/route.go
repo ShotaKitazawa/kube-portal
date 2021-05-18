@@ -45,10 +45,10 @@ func Run(opts *kubeportal.Opts) error {
 	e.Static("/", "./client/out")
 	api := e.Group("/api")
 	api.GET("/list", k8sController.ListIngressInfo, k8sController.JwtAuthMiddleware)
-	//auth := e.Group("/auth")
-	e.GET("/auth/callback", oauthController.Callback)
-	e.GET("/auth/logout", oauthController.Logout)
-	e.GET("/auth/login", oauthController.Login)
+	auth := e.Group("/auth")
+	auth.GET("/callback", oauthController.Callback)
+	auth.GET("/logout", oauthController.Logout)
+	auth.GET("/login", oauthController.Login)
 
 	// Listen
 	return http.ListenAndServe(opts.BindAddr, e)
