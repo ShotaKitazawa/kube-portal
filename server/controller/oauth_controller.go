@@ -46,7 +46,6 @@ func NewOAuthController(l *logrus.Logger, githubClient entities.GitHubPort, gith
 	// get GitHub UserIDs
 	var allowIDs []string
 	for _, username := range allowGitHubUserName {
-		fmt.Println(username)
 		id, err := githubClient.GetUserIDByUserName(context.Background(), username)
 		if err != nil {
 			return nil, err
