@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"time"
@@ -12,6 +13,8 @@ import (
 	"github.com/markbates/goth/providers/github"
 	"github.com/sirupsen/logrus"
 
+	"github.com/ShotaKitazawa/kube-portal/server/entities"
+	"github.com/ShotaKitazawa/kube-portal/server/utils"
 	"github.com/ShotaKitazawa/kube-portal/server/view"
 )
 
@@ -34,13 +37,23 @@ type OAuthController struct {
 	allowGitHubUserIDs []string
 }
 
-func NewOAuthController(l *logrus.Logger, githubKey, githubSecret, callbackUrl string, jwtSecret string, allowGitHubUserName ...string) (*OAuthController, error) {
+func NewOAuthController(l *logrus.Logger, githubClient entities.GitHubPort, githubKey, githubSecret, callbackUrl string, jwtSecret string, allowGitHubUserName ...string) (*OAuthController, error) {
+	// set OAuth Provider
 	goth.UseProviders(
 		github.New(githubKey, githubSecret, callbackUrl),
 	)
-	// TODO: get GitHub UserIDs
 
-	return &OAuthController{l, &view.JsonView{}, jwtSecret, []string{}}, nil
+	// get GitHub UserIDs
+	var allowIDs []string
+	for _, username := range allowGitHubUserName {
+		id, err := githubClient.GetUserIDByUserName(context.Background(), username)
+		if err != nil {
+			return nil, err
+		}
+		allowIDs = append(allowIDs, id)
+	}
+
+	return &OAuthController{l, &view.JsonView{}, jwtSecret, allowIDs}, nil
 }
 
 type MyCustomClaims struct {
@@ -57,7 +70,7 @@ func (c OAuthController) Callback(ctx echo.Context) error {
 	}
 
 	// TODO: authz
-	if user.UserID == "19530785" {
+	if utils.ContainsStr(c.allowGitHubUserIDs, user.UserID) {
 		now := time.Now()
 		expiresAt := now.Add(jwtAndCookieExpiredTime)
 

@@ -15,19 +15,10 @@ class IngressInfo {
     this.url = origin + "/api/list"
   }
 
-  WithJWT(jwt: string): IngressInfo {
-    this.jwt = jwt
-    return this
-  }
-
   async List(): Promise<LinkInfo[]> {
-    var res
+    let res
     try {
-      res = await axios.get<LinkInfo[]>(this.url, {
-        headers: {
-          Cookie: this.jwt != "" ? "jwt=" + this.jwt + ";" : ""
-        }
-      })
+      res = await axios.get<LinkInfo[]>(this.url, { withCredentials: true })
     } catch {
       res = { data: null }
     }

@@ -13,23 +13,27 @@ import (
 
 	"github.com/ShotaKitazawa/kube-portal/cmd/kubeportal"
 	"github.com/ShotaKitazawa/kube-portal/server/controller"
+	"github.com/ShotaKitazawa/kube-portal/server/infrastructure/github"
 	"github.com/ShotaKitazawa/kube-portal/server/infrastructure/kubernetes"
 )
 
 func Run(opts *kubeportal.Opts) error {
-	// New
+	// New Instances
 	e := echo.New()
 	l := logrus.New()
+	// New Clients
 	k8sClient, err := kubernetes.NewClient(opts.KubeConfigPath)
 	if err != nil {
 		panic(err)
 	}
-	k8sController := controller.NewK8sController(k8sClient, opts.JwtSecret)
+	githubClient := github.NewGitHubClient(l)
+	// New Controllers
+	k8sController := controller.NewK8sController(l, k8sClient, opts.JwtSecret)
 	u, err := url.Parse(fmt.Sprintf("%s/auth/callback", opts.BaseUrl))
 	if err != nil {
 		panic(err)
 	}
-	oauthController, err := controller.NewOAuthController(l, opts.GitHubOAuthKey, opts.GitHubOAuthSecret, u.String(), opts.JwtSecret, opts.GitHubAllowUsers...)
+	oauthController, err := controller.NewOAuthController(l, githubClient, opts.GitHubOAuthKey, opts.GitHubOAuthSecret, u.String(), opts.JwtSecret, opts.GitHubAllowUsers...)
 	if err != nil {
 		panic(err)
 	}

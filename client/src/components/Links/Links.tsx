@@ -13,41 +13,26 @@ import IngressInfo, { LinkInfo } from '../../drivers/ingress-info/ingress-info'
 type Props = InferGetStaticPropsType<typeof getStaticProps>;
 
 export const getStaticProps = async () => {
-  return {
-    props: {
-    }
-  }
+  return { props: {} }
 }
 
 export const Links: NextPage<Props> = (props) => {
-  // get JWT in cookie
-  const cookies = parseCookies()
-
   // get links from API
   const [linksList, setLinksList] = useState<LinkInfo[]>(null)
   const list = async () => {
     if (typeof window !== 'undefined') {
-      var i
-      if (cookies.jwt !== 'undefined') {
-        i = await new IngressInfo(window.location.origin)
-          .WithJWT(cookies.jwt)
-          .List()
-      } else {
-        i = await new IngressInfo(window.location.origin)
-          .List()
-      }
-      setLinksList(i)
+      setLinksList(await new IngressInfo(window.location.origin).List())
     }
   }
   useEffect(() => {
     setInterval(() => {
       list()
-    }, 3000)
+    }, 2000)
   }, [])
 
   return (
     <section id="links" className="mt-6">
-      <div className="mx-auto flex flex-wrap justify-center w-1/2">
+      <div className="mx-auto flex flex-wrap justify-center">
         {
           linksList != null ?
             linksList.map(({ name, url, icon_url }) => (
