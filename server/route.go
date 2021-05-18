@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"strconv"
 	"strings"
 
 	"github.com/labstack/echo/v4"
@@ -33,7 +32,7 @@ func Run(opts *kubeportal.Opts) error {
 	if err != nil {
 		panic(err)
 	}
-	oauthController, err := controller.NewOAuthController(l, githubClient, opts.GitHubOAuthKey, opts.GitHubOAuthSecret, u.String(), opts.JwtSecret, opts.GitHubAllowUsers...)
+	oauthController, err := controller.NewOAuthController(l, githubClient, opts.GitHubOAuthKey, opts.GitHubOAuthSecret, u.String(), opts.JwtSecret, strings.Split(opts.GitHubAllowUsers, ","))
 	if err != nil {
 		panic(err)
 	}
@@ -52,5 +51,5 @@ func Run(opts *kubeportal.Opts) error {
 	e.GET("/auth/login", oauthController.Login)
 
 	// Listen
-	return http.ListenAndServe(strings.Join([]string{opts.BindAddr, strconv.Itoa(opts.BindPort)}, ":"), e)
+	return http.ListenAndServe(opts.BindAddr, e)
 }

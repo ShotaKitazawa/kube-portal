@@ -8,7 +8,6 @@ require (
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/gorilla/sessions v1.1.3 // indirect
-	github.com/jessevdk/go-flags v1.5.0
 	github.com/labstack/echo/v4 v4.3.0
 	github.com/markbates/goth v1.67.1
 	github.com/sirupsen/logrus v1.8.1
