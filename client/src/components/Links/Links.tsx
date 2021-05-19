@@ -1,27 +1,38 @@
-import React, { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react';
+import { InferGetStaticPropsType, NextPage } from 'next';
 import {
   CircularProgress,
   Card,
   CardContent,
 } from '@material-ui/core';
+import { parseCookies } from 'nookies'
 
-import IngressInfo from '../../drivers/ingress-info/ingress-info'
-import { LinksPort, LinkInfo } from '../../entities/ingress-info'
+import IngressInfo, { LinkInfo } from '../../drivers/ingress-info/ingress-info'
 
 
-export const Links: React.FC = ({
-  children,
-}) => {
+type Props = InferGetStaticPropsType<typeof getStaticProps>;
 
+export const getStaticProps = async () => {
+  return { props: {} }
+}
+
+export const Links: NextPage<Props> = (props) => {
   // get links from API
-  var linksList = []
-  if (typeof window !== 'undefined') {
-    linksList = new IngressInfo(window.location.origin).List()
+  const [linksList, setLinksList] = useState<LinkInfo[]>(null)
+  const list = async () => {
+    if (typeof window !== 'undefined') {
+      setLinksList(await new IngressInfo(window.location.origin).List())
+    }
   }
+  useEffect(() => {
+    setInterval(() => {
+      list()
+    }, 2000)
+  }, [])
 
   return (
     <section id="links" className="mt-6">
-      <div className="mx-auto flex flex-wrap justify-center w-1/2">
+      <div className="mx-auto flex flex-wrap justify-center">
         {
           linksList != null ?
             linksList.map(({ name, url, icon_url }) => (

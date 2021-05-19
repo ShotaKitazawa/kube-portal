@@ -1,26 +1,41 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
-	"strconv"
-	"strings"
+	"net/url"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/sirupsen/logrus"
 
 	"github.com/ShotaKitazawa/kube-portal/cmd/kubeportal"
 	"github.com/ShotaKitazawa/kube-portal/server/controller"
+	"github.com/ShotaKitazawa/kube-portal/server/infrastructure/github"
 	"github.com/ShotaKitazawa/kube-portal/server/infrastructure/kubernetes"
+	"github.com/ShotaKitazawa/kube-portal/server/utils"
 )
 
 func Run(opts *kubeportal.Opts) error {
-	// New
+	// New Instances
 	e := echo.New()
-	k8sClient, err := kubernetes.NewClient("") // TODO
+	l := logrus.New()
+	// New Clients
+	k8sClient, err := kubernetes.NewClient(opts.KubeConfigPath)
 	if err != nil {
 		panic(err)
 	}
-	c := controller.New(k8sClient)
+	githubClient := github.NewGitHubClient(l)
+	// New Controllers
+	k8sController := controller.NewK8sController(l, k8sClient, opts.JwtSecret)
+	u, err := url.Parse(fmt.Sprintf("%s/auth/callback", opts.BaseUrl))
+	if err != nil {
+		panic(err)
+	}
+	oauthController, err := controller.NewOAuthController(l, githubClient, opts.GitHubOAuthKey, opts.GitHubOAuthSecret, u.String(), opts.JwtSecret, utils.Split(opts.GitHubAllowUsers, ",")...)
+	if err != nil {
+		panic(err)
+	}
 
 	// Middleware
 	e.Use(middleware.Recover())
@@ -29,8 +44,12 @@ func Run(opts *kubeportal.Opts) error {
 	// Route
 	e.Static("/", "./client/out")
 	api := e.Group("/api")
-	api.GET("/list", c.ListIngressInfo)
+	api.GET("/list", k8sController.ListIngressInfo, k8sController.JwtAuthMiddleware)
+	auth := e.Group("/auth")
+	auth.GET("/callback", oauthController.Callback)
+	auth.GET("/logout", oauthController.Logout)
+	auth.GET("/login", oauthController.Login)
 
 	// Listen
-	return http.ListenAndServe(strings.Join([]string{opts.BindAddr, strconv.Itoa(opts.BindPort)}, ":"), e)
+	return http.ListenAndServe(opts.BindAddr, e)
 }
