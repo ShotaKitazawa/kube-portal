@@ -24,9 +24,10 @@ export const Links: NextPage<Props> = (props) => {
     }
   }
   useEffect(() => {
+    list()
     setInterval(() => {
       list()
-    }, 2000)
+    }, 10000)
   }, [])
 
   return (
