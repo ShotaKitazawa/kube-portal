@@ -25,7 +25,7 @@ kubectl -n kube-portal port-forward svc/kube-portal 8080:8080
 
 Then, display like the below page when access to http://localhost:8080.
 
-![image](https://raw.githubusercontent.com/ShotaKitazawa/kube-portal/image/image.png)
+![page-top](https://raw.githubusercontent.com/ShotaKitazawa/kube-portal/image/page-top.png)
 
 ### More informations
 
