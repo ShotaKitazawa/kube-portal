@@ -19,7 +19,7 @@ export const Links: NextPage<Props> = (props) => {
   // get links from API
   const [linksList, setLinksList] = useState<LinkInfo[]>(null)
   const list = async () => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== undefined) {
       setLinksList(await new IngressInfo(window.location.origin).List())
     }
   }
