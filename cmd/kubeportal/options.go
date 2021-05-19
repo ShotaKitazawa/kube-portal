@@ -20,6 +20,7 @@ type Opts struct {
 	GitHubOAuthSecret string
 	BaseUrl           string
 	JwtSecret         string
+	ExpiredHour       int
 	GitHubAllowUsers  string
 	KubeConfigPath    string
 	BindAddr          string
@@ -32,6 +33,7 @@ func Parse() (*Opts, error) {
 	flag.StringVar(&opts.GitHubOAuthSecret, "github-client-secret", "", "GitHub OAuth Client Secret (optional, required if enable Login feature)")
 	flag.StringVar(&opts.BaseUrl, "base-url", "", "app's externally facing base URL (optional, required if enable Login feature)")
 	flag.StringVar(&opts.JwtSecret, "jwt-secret", randstr.String(16), "jwt secret using to check whether user is logging in (optional)")
+	flag.IntVar(&opts.ExpiredHour, "expired-hour", 12, "jwt expired time (hour)")
 	flag.StringVar(&opts.GitHubAllowUsers, "github-allow-users", "", "specified GitHub Usernames by comma-separated that you allowed to get private links")
 	flag.StringVar(&opts.KubeConfigPath, "kubeconfig", "", "filepath of KubeConfig")
 	flag.StringVar(&opts.BindAddr, "bind-addr", "0.0.0.0:8080", "bind address")

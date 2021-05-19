@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -32,7 +33,12 @@ func Run(opts *kubeportal.Opts) error {
 	if err != nil {
 		panic(err)
 	}
-	oauthController, err := controller.NewOAuthController(l, githubClient, opts.GitHubOAuthKey, opts.GitHubOAuthSecret, u.String(), opts.JwtSecret, utils.Split(opts.GitHubAllowUsers, ",")...)
+	oauthController, err := controller.NewOAuthController(
+		l, githubClient,
+		opts.GitHubOAuthKey, opts.GitHubOAuthSecret, u.String(),
+		opts.JwtSecret, time.Duration(opts.ExpiredHour)*time.Hour,
+		utils.Split(opts.GitHubAllowUsers, ",")...,
+	)
 	if err != nil {
 		panic(err)
 	}

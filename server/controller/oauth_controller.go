@@ -19,8 +19,7 @@ import (
 )
 
 var (
-	jwtIssuer               = "kube-portal"
-	jwtAndCookieExpiredTime = time.Hour
+	jwtIssuer = "kube-portal"
 )
 
 func init() {
@@ -34,10 +33,11 @@ type OAuthController struct {
 	view   view.ViewPort
 
 	jwtSecret          string
+	expiredTime        time.Duration
 	allowGitHubUserIDs []string
 }
 
-func NewOAuthController(l *logrus.Logger, githubClient entities.GitHubPort, githubKey, githubSecret, callbackUrl string, jwtSecret string, allowGitHubUserName ...string) (*OAuthController, error) {
+func NewOAuthController(l *logrus.Logger, githubClient entities.GitHubPort, githubKey, githubSecret, callbackUrl string, jwtSecret string, expiredTime time.Duration, allowGitHubUserName ...string) (*OAuthController, error) {
 	// set OAuth Provider
 	goth.UseProviders(
 		github.New(githubKey, githubSecret, callbackUrl),
@@ -53,7 +53,7 @@ func NewOAuthController(l *logrus.Logger, githubClient entities.GitHubPort, gith
 		allowIDs = append(allowIDs, id)
 	}
 
-	return &OAuthController{l, &view.JsonView{}, jwtSecret, allowIDs}, nil
+	return &OAuthController{l, &view.JsonView{}, jwtSecret, expiredTime, allowIDs}, nil
 }
 
 type MyCustomClaims struct {
@@ -72,7 +72,7 @@ func (c OAuthController) Callback(ctx echo.Context) error {
 	// TODO: authz
 	if utils.ContainsStr(c.allowGitHubUserIDs, user.UserID) {
 		now := time.Now()
-		expiresAt := now.Add(jwtAndCookieExpiredTime)
+		expiresAt := now.Add(c.expiredTime)
 
 		token := jwt.NewWithClaims(jwt.SigningMethodHS256, MyCustomClaims{
 			user.Name,
