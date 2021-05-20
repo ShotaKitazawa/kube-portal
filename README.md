@@ -6,7 +6,7 @@
 ### What is this?
 
 kube-portal works as portal-site for links published by Kubernetes Ingress.
-You can also "customize the link's icon" and "set up private links" by setting annotations to Ingress object.
+You can also ["customize the link's icon"](./docs/ingress-annotations.md) and ["set up private links"](./docs/private-links.md) by setting annotations to Ingress object.
 
 ### Quick Start
 
@@ -29,9 +29,5 @@ Then, display like the below page when access to http://localhost:8080.
 
 ### More informations
 
-TODO
-
-<!--
-[Documents](/docs)
--->
+* [/docs](/docs)
 
