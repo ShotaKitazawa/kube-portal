@@ -5,11 +5,11 @@ If specifying `kube-portal.kanatakita.com/is-private` annotation, The link assoc
 ### Expose kube-portal for OAuth callback
 
 You must expose kube-portal for OAuth callback.
-In the following steps, assume that you are exposed you app at `https://portal.example.com`
+In the following steps, assume that you are exposed you app at `https://portal.example.com`.
 
 ### Get GitHub OAuth ID & Secret
 
-You access to https://github.com/settings/applications/new and create OAuth application
+You access to https://github.com/settings/applications/new and create OAuth application.
 
 ![create-oauth-app](https://raw.githubusercontent.com/ShotaKitazawa/kube-portal/image/create-oauth-app.png)
 
@@ -42,9 +42,9 @@ spec:
         - name: kube-portal
           env:
             - name: BASE_URL
-              value: https://portal.kanatakita.com
+              value: https://portal.example.com
             - name: GITHUB_ALLOW_USERS
-              value: ShotaKitazawa
+              value: <your GitHub Username>
             - name: GITHUB_CLIENT_ID
               value: <input GitHub OAuth Client ID>
             - name: GITHUB_CLIENT_SECRET
@@ -62,6 +62,23 @@ kustomize build . | kubectl apply -f-
 * apply below Ingress manifest
 
 ```yaml
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: portal
+  annotations:
+    kube-portal.kanatakita.com/name: "Portal Site"
+    kube-portal.kanatakita.com/icon-url: "https://raw.githubusercontent.com/ShotaKitazawa/kube-portal/image/kube-portal.png"
+spec:
+  rules:
+  - host: portal.kanatakita.com
+    http:
+      paths:
+      - backend:
+          serviceName: kube-portal
+          servicePort: 8080
+---
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
@@ -84,6 +101,6 @@ spec:
 
 ![demo-with-arrow](https://raw.githubusercontent.com/ShotaKitazawa/kube-portal/image/demo-with-arrow.png)
 
-* login by GitHub OAuth
+* authorized by GitHub OAuth, displayed as below
 
 ![demo-loggedin](https://raw.githubusercontent.com/ShotaKitazawa/kube-portal/image/demo-loggedin.png)
