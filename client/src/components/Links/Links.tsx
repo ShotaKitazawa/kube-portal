@@ -5,9 +5,8 @@ import {
   Card,
   CardContent,
 } from '@material-ui/core';
-import { parseCookies } from 'nookies'
 
-import IngressInfo, { LinkInfo } from '../../drivers/ingress-info/ingress-info'
+import IngressInfo, { LinkInfo } from '../../drivers/ingress-info'
 
 
 type Props = InferGetStaticPropsType<typeof getStaticProps>;
