@@ -32,7 +32,7 @@ func Parse() (*Opts, error) {
 	flag.StringVar(&opts.GitHubOAuthKey, "github-client-id", "", "GitHub OAuth Client ID (optional, required if enable Login feature)")
 	flag.StringVar(&opts.GitHubOAuthSecret, "github-client-secret", "", "GitHub OAuth Client Secret (optional, required if enable Login feature)")
 	flag.StringVar(&opts.BaseUrl, "base-url", "", "app's externally facing base URL (optional, required if enable Login feature)")
-	flag.StringVar(&opts.JwtSecret, "jwt-secret", randstr.String(16), "jwt secret using to check whether user is logging in (optional)")
+	flag.StringVar(&opts.JwtSecret, "jwt-secret", "", "jwt secret using to check whether user is logging in (optional)")
 	flag.IntVar(&opts.ExpiredHour, "expired-hour", 12, "jwt expired time (hour)")
 	flag.StringVar(&opts.GitHubAllowUsers, "github-allow-users", "", "specified GitHub Usernames by comma-separated that you allowed to get private links")
 	flag.StringVar(&opts.KubeConfigPath, "kubeconfig", "", "filepath of KubeConfig")
@@ -47,6 +47,9 @@ func Parse() (*Opts, error) {
 	if opts.Version {
 		fmt.Printf("%s %s\n", AppName, AppVersion)
 		os.Exit(0)
+	}
+	if opts.JwtSecret == "" {
+		opts.JwtSecret = randstr.String(32)
 	}
 
 	return &opts, nil
