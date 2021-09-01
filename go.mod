@@ -14,5 +14,5 @@ require (
 	github.com/thanhpk/randstr v1.0.4
 	k8s.io/api v0.22.1
 	k8s.io/apimachinery v0.22.1
-	k8s.io/client-go v0.22.0
+	k8s.io/client-go v0.22.1
 )
