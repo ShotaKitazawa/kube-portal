@@ -10,7 +10,7 @@
   "dependencies": {
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
-    "autoprefixer": "^10.3.6",
+    "autoprefixer": "^10.3.7",
     "axios": "^0.22.0",
     "next": "11.1.2",
     "nookies": "^2.5.2",
