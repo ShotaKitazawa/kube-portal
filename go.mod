@@ -9,7 +9,7 @@ require (
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/gorilla/sessions v1.1.3 // indirect
 	github.com/labstack/echo/v4 v4.6.3
-	github.com/markbates/goth v1.68.0
+	github.com/markbates/goth v1.69.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/thanhpk/randstr v1.0.4
 	k8s.io/api v0.22.4
