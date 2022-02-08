@@ -13,7 +13,7 @@ RUN GOOS=linux go build -ldflags "-X github.com/ShotaKitazawa/kube-portal/cmd/ku
 
 
 ### Build Next.js ###
-FROM node:15.9.0-alpine3.11 AS build-frontend
+FROM node:17.4.0 AS build-frontend
 WORKDIR /workdir
 COPY client/ ./
 RUN yarn install
