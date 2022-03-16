@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	networkingv1beta1 "k8s.io/api/networking/v1beta1"
+	networkingv1 "k8s.io/api/networking/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/fake"
@@ -31,14 +31,14 @@ func TestClient_ListIngressInfo(t *testing.T) {
 			name: "testcase 01",
 			fields: fields{
 				fake.NewSimpleClientset(
-					&networkingv1beta1.Ingress{
+					&networkingv1.Ingress{
 						ObjectMeta: metav1.ObjectMeta{
 							Name:        "test01",
 							Namespace:   "default",
 							Annotations: map[string]string{},
 						},
-						Spec: networkingv1beta1.IngressSpec{
-							Rules: []networkingv1beta1.IngressRule{{Host: "01.example.com"}},
+						Spec: networkingv1.IngressSpec{
+							Rules: []networkingv1.IngressRule{{Host: "01.example.com"}},
 						},
 					},
 				),
