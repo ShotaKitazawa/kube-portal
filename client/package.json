@@ -12,7 +12,7 @@
     "@material-ui/icons": "^4.11.2",
     "autoprefixer": "^10.4.4",
     "axios": "^0.26.1",
-    "next": "12.1.1",
+    "next": "12.1.4",
     "nookies": "^2.5.2",
     "normalize.css": "^8.0.1",
     "postcss": "^8.4.12",
