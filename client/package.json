@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@material-ui/core": "^4.12.3",
-    "@material-ui/icons": "^4.11.2",
+    "@material-ui/icons": "^4.11.3",
     "autoprefixer": "^10.4.4",
     "axios": "^0.26.1",
     "next": "12.1.4",
