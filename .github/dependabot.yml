@@ -7,10 +7,10 @@ updates:
   labels:
     - "dependencies"
     - "automerge"
-- package-ecosystem: 'npm'
-  directory: '/client'
-  schedule:
-    interval: 'daily'
-  labels:
-    - "dependencies"
-    - "automerge"
+#- package-ecosystem: 'npm'
+#  directory: '/client'
+#  schedule:
+#    interval: 'daily'
+#  labels:
+#    - "dependencies"
+#    - "automerge"
