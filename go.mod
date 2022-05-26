@@ -12,7 +12,7 @@ require (
 	github.com/thanhpk/randstr v1.0.4
 	k8s.io/api v0.24.1
 	k8s.io/apimachinery v0.24.1
-	k8s.io/client-go v0.24.0
+	k8s.io/client-go v0.24.1
 )
 
 require (
