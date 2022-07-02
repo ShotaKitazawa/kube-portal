@@ -9,13 +9,7 @@ import (
 	"github.com/thanhpk/randstr"
 )
 
-var (
-	AppName    string
-	AppVersion string
-)
-
 type Opts struct {
-	Version           bool
 	GitHubOAuthKey    string
 	GitHubOAuthSecret string
 	BaseUrl           string
@@ -26,9 +20,12 @@ type Opts struct {
 	BindAddr          string
 }
 
-func Parse() (*Opts, error) {
+func Parse(version, commit string) (*Opts, error) {
+	var showVersion bool
+	flag.BoolVar(&showVersion, "version", false,
+		"show version")
+
 	var opts Opts
-	flag.BoolVar(&opts.Version, "version", false, "show version")
 	flag.StringVar(&opts.GitHubOAuthKey, "github-client-id", "", "GitHub OAuth Client ID (optional, required if enable Login feature)")
 	flag.StringVar(&opts.GitHubOAuthSecret, "github-client-secret", "", "GitHub OAuth Client Secret (optional, required if enable Login feature)")
 	flag.StringVar(&opts.BaseUrl, "base-url", "", "app's externally facing base URL (optional, required if enable Login feature)")
@@ -44,10 +41,11 @@ func Parse() (*Opts, error) {
 	})
 	flag.Parse()
 
-	if opts.Version {
-		fmt.Printf("%s %s\n", AppName, AppVersion)
-		os.Exit(0)
+	if showVersion {
+		fmt.Printf("Version: %s (Commit: %s)\n", version, commit)
+		return nil, fmt.Errorf("")
 	}
+
 	if opts.JwtSecret == "" {
 		opts.JwtSecret = randstr.String(32)
 	}

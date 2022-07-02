@@ -2,14 +2,14 @@
 FROM golang:1.17 AS build-backend
 WORKDIR /workdir
 ENV GO111MODULE="on"
-ARG APP_NAME
 ARG APP_VERSION
+ARG APP_COMMIT
 ## download packages
 COPY go.mod go.sum ./
 RUN go mod download
 ## build
 COPY . ./
-RUN GOOS=linux go build -ldflags "-X github.com/ShotaKitazawa/kube-portal/cmd/kubeportal.AppName=${APP_NAME} -X github.com/ShotaKitazawa/kube-portal/cmd/kubeportal.AppVersion=${APP_VERSION}" -o app main.go
+RUN GOOS=linux go build -ldflags "-X main.appVersion=${APP_VERSION} -X main.appCommit=${APP_COMMIT}" -o app main.go
 
 
 ### Build Next.js ###
