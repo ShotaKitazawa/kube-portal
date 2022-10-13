@@ -6,7 +6,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/form3tech-oss/jwt-go v3.2.5+incompatible
 	github.com/google/go-github v17.0.0+incompatible
-	github.com/labstack/echo/v4 v4.7.2
+	github.com/labstack/echo/v4 v4.9.1
 	github.com/markbates/goth v1.73.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/thanhpk/randstr v1.0.4
@@ -38,7 +38,7 @@ require (
 	github.com/imdario/mergo v0.3.5 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/labstack/gommon v0.3.1 // indirect
+	github.com/labstack/gommon v0.4.0 // indirect
 	github.com/mailru/easyjson v0.7.6 // indirect
 	github.com/mattn/go-colorable v0.1.11 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
