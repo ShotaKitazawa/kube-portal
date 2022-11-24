@@ -7,7 +7,7 @@ require (
 	github.com/form3tech-oss/jwt-go v3.2.5+incompatible
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/labstack/echo/v4 v4.7.2
-	github.com/markbates/goth v1.73.0
+	github.com/markbates/goth v1.75.2
 	github.com/sirupsen/logrus v1.8.1
 	github.com/thanhpk/randstr v1.0.4
 	k8s.io/api v0.25.2
