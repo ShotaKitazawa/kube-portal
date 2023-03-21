@@ -10,7 +10,7 @@ require (
 	github.com/markbates/goth v1.73.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/thanhpk/randstr v1.0.4
-	k8s.io/api v0.26.2
+	k8s.io/api v0.26.3
 	k8s.io/apimachinery v0.26.3
 	k8s.io/client-go v0.24.2
 )
