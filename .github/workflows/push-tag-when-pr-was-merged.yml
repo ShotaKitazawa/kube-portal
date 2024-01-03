@@ -12,7 +12,7 @@ jobs:
         id: release-label
         if: ${{ github.event.pull_request.merged == true }}
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         if: ${{ steps.release-label.outputs.level != null }}
         with:
           # to trigger release.yml Action
