@@ -1,32 +1,26 @@
-import React, { useState, useEffect } from 'react';
+/* eslint @next/next/no-img-element: 0 */
+
+import React, { useState, useEffect } from 'react'
 import { parseCookies } from 'nookies'
-import {
-  IconButton,
-  Button,
-  Menu,
-  MenuItem,
-} from '@material-ui/core';
+import { IconButton, Button, Menu, MenuItem } from '@mui/material'
 
 import Jwt from '../../drivers/jwt'
-
 
 type User = {
   user: string
   avatarUrl: string
 }
 
-export const Login: React.FC = ({
-  children,
-}) => {
+export const Login: React.FC = ({ children }) => {
   const [user, setUser] = useState<User>(null)
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+  const open = Boolean(anchorEl)
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+    setAnchorEl(event.currentTarget)
+  }
   const handleClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
 
   useEffect(() => {
     const cookies = parseCookies()
@@ -82,8 +76,7 @@ export const Login: React.FC = ({
         <a href="/auth/login">
           <Button color="inherit">Login</Button>
         </a>
-      )
-      }
+      )}
     </div>
   )
 }
