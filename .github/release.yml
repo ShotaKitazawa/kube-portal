@@ -1,0 +1,8 @@
+changelog:
+  categories:
+    - title: ♻ Update dependencies
+      labels:
+        - "dependencies"
+    - title: 💫 Other Changes
+      labels:
+        - "*"
