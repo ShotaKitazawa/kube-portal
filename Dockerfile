@@ -1,5 +1,5 @@
 ### Build Golang ###
-FROM golang:1.17 AS build-backend
+FROM golang:1.21 AS build-backend
 WORKDIR /workdir
 ENV GO111MODULE="on"
 ARG APP_VERSION
@@ -8,8 +8,8 @@ ARG APP_COMMIT
 COPY go.mod go.sum ./
 RUN go mod download
 ## build
-COPY cmd/ ./
-COPY server/ ./
+COPY cmd cmd
+COPY server server
 RUN GOOS=linux go build -ldflags "-X main.appVersion=${APP_VERSION} -X main.appCommit=${APP_COMMIT}" -o app cmd/kubeportal/main.go
 
 
