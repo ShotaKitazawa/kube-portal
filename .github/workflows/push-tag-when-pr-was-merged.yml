@@ -12,6 +12,12 @@ jobs:
         id: release-label
         if: ${{ github.event.pull_request.merged == true }}
 
+      - uses: actions/checkout@v2
+        if: ${{ steps.release-label.outputs.level != null }}
+        with:
+          # to trigger release.yml Action
+          token: ${{ secrets.TOKEN }}
+
       - uses: actions-ecosystem/action-get-latest-tag@v1
         id: get-latest-tag
         if: ${{ steps.release-label.outputs.level != null }}
@@ -22,12 +28,6 @@ jobs:
         with:
           current_version: ${{ steps.get-latest-tag.outputs.tag }}
           level: ${{ steps.release-label.outputs.level }}
-
-      - uses: actions/checkout@v2
-        if: ${{ steps.release-label.outputs.level != null }}
-        with:
-          # to trigger release.yml Action
-          token: ${{ secrets.TOKEN }}
 
       - uses: actions-ecosystem/action-push-tag@v1
         if: ${{ steps.release-label.outputs.level != null }}
