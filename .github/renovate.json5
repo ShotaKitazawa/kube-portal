@@ -3,7 +3,7 @@
   "extends": [
     "config:base",
   ],
-  "labels": ["dependencies"],
+  "labels": ["dependencies", "automerge"],
   "packageRules": [
     {
       "matchManagers": ["gomod"],
