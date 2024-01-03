@@ -1,0 +1,33 @@
+#
+# It's a docker-compose file for building development environment.
+#
+
+version: "3.8"
+services:
+
+  server:
+    build:
+      context: .
+      dockerfile: ./development/server.dockerfile
+    ports:
+      - 3001:3001
+    volumes:
+      - "./server:/server"
+      # specify your Kubeconfig filepath
+      - "$HOME/.kube/config:/mnt/kubeconfig"
+
+  frontend:
+    image: node:18.19-alpine
+    volumes:
+      - "./client:/client"
+    working_dir: /client
+    entrypoint: sh
+    command:
+      - -c
+      - |
+        yarn install
+        yarn dev
+    environment:
+      NEXT_PUBLIC_API_URL: http://${NEXT_PUBLIC_BACKEND_URL}:3001
+    ports:
+      - 3000:3000
