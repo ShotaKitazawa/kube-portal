@@ -2,7 +2,6 @@ package kubernetes
 
 import (
 	"context"
-	"reflect"
 	"testing"
 
 	networkingv1 "k8s.io/api/networking/v1"
@@ -11,6 +10,7 @@ import (
 	"k8s.io/client-go/kubernetes/fake"
 
 	"github.com/ShotaKitazawa/kube-portal/server/models"
+	"github.com/google/go-cmp/cmp"
 )
 
 func TestClient_ListIngressInfo(t *testing.T) {
@@ -24,7 +24,7 @@ func TestClient_ListIngressInfo(t *testing.T) {
 		name    string
 		fields  fields
 		args    args
-		want    []models.IngressInfo
+		want    models.IngressInfoList
 		wantErr bool
 	}{
 		{
@@ -44,7 +44,7 @@ func TestClient_ListIngressInfo(t *testing.T) {
 				),
 			},
 			args: args{context.Background()},
-			want: []models.IngressInfo{
+			want: models.IngressInfoList{
 				{
 					Name:      "test01",
 					Fqdn:      "01.example.com",
@@ -68,8 +68,8 @@ func TestClient_ListIngressInfo(t *testing.T) {
 				t.Errorf("Client.ListIngressInfo() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Client.ListIngressInfo() = %v, want %v", got, tt.want)
+			if diff := cmp.Diff(got, tt.want); diff != "" {
+				t.Errorf("the result of Client.ListIngressInfo() is unexpected: %s", diff)
 			}
 		})
 	}

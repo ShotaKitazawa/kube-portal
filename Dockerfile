@@ -8,7 +8,8 @@ ARG APP_COMMIT
 COPY go.mod go.sum ./
 RUN go mod download
 ## build
-COPY . ./
+COPY cmd/ ./
+COPY server/ ./
 RUN GOOS=linux go build -ldflags "-X main.appVersion=${APP_VERSION} -X main.appCommit=${APP_COMMIT}" -o app cmd/kubeportal/main.go
 
 
