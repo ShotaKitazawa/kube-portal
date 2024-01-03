@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from 'axios'
 
 export type LinkInfo = {
   name: string
@@ -6,13 +6,18 @@ export type LinkInfo = {
   icon_url: string
 }
 
-
 class IngressInfo {
   private url: string
   private jwt: string
 
-  constructor(origin: string) {
-    this.url = origin + "/api/list"
+  constructor() {
+    if (process.env.NEXT_PUBLIC_BACKEND_URL !== undefined) {
+      origin = process.env.NEXT_PUBLIC_BACKEND_URL
+    } else if (typeof window !== undefined) {
+      origin = window.location.origin
+    }
+
+    this.url = origin + '/api/list'
   }
 
   async List(): Promise<LinkInfo[]> {

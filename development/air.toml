@@ -2,14 +2,14 @@
 
 # Working directory
 # . or absolute path, please note that the directories following must be under root.
-root = "/server"
+root = "/app"
 tmp_dir = "tmp"
 
 [build]
 # Just plain old shell command. You could use `make` as well.
-cmd = "go build -o server cmd/kubeportal"
+cmd = "go build -o app cmd/kubeportal/main.go"
 # Binary file yields from `cmd`.
-bin = "server"
+bin = "app"
 # Watch these filename extensions.
 include_ext = ["go"]
 # Ignore these filename extensions or directories.

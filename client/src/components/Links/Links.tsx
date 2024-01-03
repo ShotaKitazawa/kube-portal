@@ -12,14 +12,12 @@ export const getStaticProps = async () => {
   return { props: {} }
 }
 
-const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL ?? window.location.origin
-
 export const Links: React.FC<Props> = (props) => {
   // get links from API
   const [linksList, setLinksList] = useState<LinkInfo[]>(null)
   const list = async () => {
     if (typeof window !== undefined) {
-      setLinksList(await new IngressInfo(backendUrl).List())
+      setLinksList(await new IngressInfo().List())
     }
   }
   useEffect(() => {
