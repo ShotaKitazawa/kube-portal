@@ -10,7 +10,7 @@ RUN go mod download
 ## build
 COPY cmd cmd
 COPY server server
-RUN GOOS=linux go build -ldflags "-X main.appVersion=${APP_VERSION} -X main.appCommit=${APP_COMMIT}" -o app cmd/kubeportal/main.go
+RUN GOOS=linux go build -ldflags "-X main.appVersion=${APP_VERSION} -X main.appCommit=${APP_COMMIT}" -o app cmd/kube-portal/main.go
 
 
 ### Build Next.js ###

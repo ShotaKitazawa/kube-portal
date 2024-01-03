@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/ShotaKitazawa/kube-portal/cmd/kubeportal/flag"
+	"github.com/ShotaKitazawa/kube-portal/cmd/kube-portal/flag"
 	"github.com/ShotaKitazawa/kube-portal/server"
 )
 
