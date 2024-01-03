@@ -6,7 +6,7 @@ on:
       - "v*.*.*"
 
 jobs:
-  tagged:
+  release:
     runs-on: ubuntu-latest
     steps:
       - name: Release
