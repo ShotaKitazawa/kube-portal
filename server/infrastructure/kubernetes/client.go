@@ -2,6 +2,7 @@ package kubernetes
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -31,25 +32,17 @@ func NewClient(kubeconfigPath string) (*Client, error) {
 	return &Client{client}, nil
 }
 
-func buildConfig(kubeconfig string) (cfg *rest.Config, err error) {
-	var errBuildConfig, errInClusterConfig error
+func buildConfig(kubeconfig string) (*rest.Config, error) {
 	if kubeconfig != "" {
-		cfg, errBuildConfig = clientcmd.BuildConfigFromFlags("", kubeconfig)
-		if errBuildConfig == nil {
-			return cfg, nil
-		}
-	} else {
-		cfg, err = clientcmd.BuildConfigFromFlags("", clientcmd.RecommendedHomeFile)
-		if err == nil {
-			return cfg, nil
-		}
+		return clientcmd.BuildConfigFromFlags("", kubeconfig)
 	}
-	cfg, errInClusterConfig = rest.InClusterConfig()
-	if errInClusterConfig != nil {
-		if errBuildConfig != nil {
-			return nil, errBuildConfig
+	// else
+	cfg, err := rest.InClusterConfig()
+	if err != nil {
+		cfg, err = clientcmd.BuildConfigFromFlags("", clientcmd.RecommendedHomeFile)
+		if err != nil {
+			return nil, fmt.Errorf("failed to initialize rest.Config. failed both InClusterConfig() and BuildConfigFromFlags() with RecommendedHomeFile")
 		}
-		return nil, errInClusterConfig
 	}
 	return cfg, nil
 }

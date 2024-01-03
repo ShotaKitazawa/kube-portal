@@ -17,7 +17,7 @@ export const Links: React.FC<Props> = (props) => {
   const [linksList, setLinksList] = useState<LinkInfo[]>(null)
   const list = async () => {
     if (typeof window !== undefined) {
-      setLinksList(await new IngressInfo(window.location.origin).List())
+      setLinksList(await new IngressInfo().List())
     }
   }
   useEffect(() => {
