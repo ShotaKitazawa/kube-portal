@@ -8,7 +8,7 @@ require (
 	github.com/google/go-cmp v0.6.0
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/labstack/echo/v4 v4.11.4
-	github.com/markbates/goth v1.73.0
+	github.com/markbates/goth v1.78.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/thanhpk/randstr v1.0.6
 	k8s.io/api v0.29.0
