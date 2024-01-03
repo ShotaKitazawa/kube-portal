@@ -10,7 +10,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/fake"
 
-	"github.com/ShotaKitazawa/kube-portal/server/entities"
+	"github.com/ShotaKitazawa/kube-portal/server/models"
 )
 
 func TestClient_ListIngressInfo(t *testing.T) {
@@ -24,7 +24,7 @@ func TestClient_ListIngressInfo(t *testing.T) {
 		name    string
 		fields  fields
 		args    args
-		want    []entities.IngressInfo
+		want    []models.IngressInfo
 		wantErr bool
 	}{
 		{
@@ -44,7 +44,7 @@ func TestClient_ListIngressInfo(t *testing.T) {
 				),
 			},
 			args: args{context.Background()},
-			want: []entities.IngressInfo{
+			want: []models.IngressInfo{
 				{
 					Name:      "test01",
 					Fqdn:      "01.example.com",

@@ -9,12 +9,15 @@ import (
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 
-	"github.com/ShotaKitazawa/kube-portal/server/entities"
+	"github.com/ShotaKitazawa/kube-portal/server/models"
+	"github.com/ShotaKitazawa/kube-portal/server/models/ports"
 )
 
 type Client struct {
 	clientset kubernetes.Interface
 }
+
+var _ ports.Kubernetes = (*Client)(nil)
 
 func NewClient(kubeconfigPath string) (*Client, error) {
 	kubeConfig, err := buildConfig(kubeconfigPath)
@@ -51,13 +54,13 @@ func buildConfig(kubeconfig string) (cfg *rest.Config, err error) {
 	return cfg, nil
 }
 
-func (c *Client) ListIngressInfo(ctx context.Context) ([]entities.IngressInfo, error) {
+func (c *Client) ListIngressInfo(ctx context.Context) (models.IngressInfoList, error) {
 	ings, err := c.clientset.NetworkingV1().Ingresses("").List(ctx, metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
 
-	var result []entities.IngressInfo
+	var result []models.IngressInfo
 	for _, ing := range ings.Items {
 
 		/* check ignore flag */
@@ -93,7 +96,7 @@ func (c *Client) ListIngressInfo(ctx context.Context) ([]entities.IngressInfo, e
 		}
 
 		/* set values to result */
-		result = append(result, entities.IngressInfo{
+		result = append(result, models.IngressInfo{
 			Name:      name,
 			Fqdn:      fqdn,
 			Proto:     proto,

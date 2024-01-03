@@ -1,7 +1,7 @@
-package entities
+package ports
 
 import "context"
 
-type GitHubPort interface {
+type GitHub interface {
 	GetUserIDByUserName(ctx context.Context, name string) (string, error)
 }

@@ -10,14 +10,14 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/sirupsen/logrus"
 
-	"github.com/ShotaKitazawa/kube-portal/cmd/kubeportal"
+	"github.com/ShotaKitazawa/kube-portal/cmd/kubeportal/flag"
 	"github.com/ShotaKitazawa/kube-portal/server/controller"
 	"github.com/ShotaKitazawa/kube-portal/server/infrastructure/github"
 	"github.com/ShotaKitazawa/kube-portal/server/infrastructure/kubernetes"
 	"github.com/ShotaKitazawa/kube-portal/server/utils"
 )
 
-func Run(opts *kubeportal.Opts) error {
+func Run(opts *flag.Opts) error {
 	// New Instances
 	e := echo.New()
 	l := logrus.New()

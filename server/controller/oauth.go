@@ -13,9 +13,8 @@ import (
 	"github.com/markbates/goth/providers/github"
 	"github.com/sirupsen/logrus"
 
-	"github.com/ShotaKitazawa/kube-portal/server/entities"
+	"github.com/ShotaKitazawa/kube-portal/server/models/ports"
 	"github.com/ShotaKitazawa/kube-portal/server/utils"
-	"github.com/ShotaKitazawa/kube-portal/server/view"
 )
 
 var (
@@ -30,14 +29,13 @@ func init() {
 
 type OAuthController struct {
 	logger *logrus.Logger
-	view   view.ViewPort
 
 	jwtSecret          string
 	expiredTime        time.Duration
 	allowGitHubUserIDs []string
 }
 
-func NewOAuthController(l *logrus.Logger, githubClient entities.GitHubPort, githubKey, githubSecret, callbackUrl string, jwtSecret string, expiredTime time.Duration, allowGitHubUserName ...string) (*OAuthController, error) {
+func NewOAuthController(l *logrus.Logger, githubClient ports.GitHub, githubKey, githubSecret, callbackUrl string, jwtSecret string, expiredTime time.Duration, allowGitHubUserName ...string) (*OAuthController, error) {
 	// set OAuth Provider
 	goth.UseProviders(
 		github.New(githubKey, githubSecret, callbackUrl),
@@ -53,7 +51,7 @@ func NewOAuthController(l *logrus.Logger, githubClient entities.GitHubPort, gith
 		allowIDs = append(allowIDs, id)
 	}
 
-	return &OAuthController{l, &view.JsonView{}, jwtSecret, expiredTime, allowIDs}, nil
+	return &OAuthController{l, jwtSecret, expiredTime, allowIDs}, nil
 }
 
 type MyCustomClaims struct {
@@ -69,31 +67,33 @@ func (c OAuthController) Callback(ctx echo.Context) error {
 		return err
 	}
 
-	// TODO: authz
-	if utils.ContainsStr(c.allowGitHubUserIDs, user.UserID) {
-		now := time.Now()
-		expiresAt := now.Add(c.expiredTime)
-
-		token := jwt.NewWithClaims(jwt.SigningMethodHS256, MyCustomClaims{
-			user.Name,
-			user.AvatarURL,
-			jwt.StandardClaims{
-				IssuedAt:  now.Unix(),
-				ExpiresAt: expiresAt.Unix(),
-				Issuer:    jwtIssuer,
-			},
-		})
-		signedToken, err := token.SignedString([]byte(c.jwtSecret))
-		if err != nil {
-			return err
-		}
-		ctx.SetCookie(&http.Cookie{
-			Name:    "jwt",
-			Value:   signedToken,
-			Path:    "/",
-			Expires: expiresAt,
-		})
+	// Authorization: check login user contains c.allowGitHubUserIDs
+	if !utils.Contains(c.allowGitHubUserIDs, user.UserID) {
+		return ctx.Redirect(http.StatusTemporaryRedirect, "/")
 	}
+
+	// Set Cookie the JWT token
+	now := time.Now()
+	expiresAt := now.Add(c.expiredTime)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, MyCustomClaims{
+		user.Name,
+		user.AvatarURL,
+		jwt.StandardClaims{
+			IssuedAt:  now.Unix(),
+			ExpiresAt: expiresAt.Unix(),
+			Issuer:    jwtIssuer,
+		},
+	})
+	signedToken, err := token.SignedString([]byte(c.jwtSecret))
+	if err != nil {
+		return err
+	}
+	ctx.SetCookie(&http.Cookie{
+		Name:    "jwt",
+		Value:   signedToken,
+		Path:    "/",
+		Expires: expiresAt,
+	})
 
 	return ctx.Redirect(http.StatusTemporaryRedirect, "/")
 }

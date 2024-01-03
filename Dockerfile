@@ -9,7 +9,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 ## build
 COPY . ./
-RUN GOOS=linux go build -ldflags "-X main.appVersion=${APP_VERSION} -X main.appCommit=${APP_COMMIT}" -o app main.go
+RUN GOOS=linux go build -ldflags "-X main.appVersion=${APP_VERSION} -X main.appCommit=${APP_COMMIT}" -o app cmd/kubeportal/main.go
 
 
 ### Build Next.js ###

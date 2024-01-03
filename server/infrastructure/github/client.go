@@ -4,19 +4,22 @@ import (
 	"context"
 	"strconv"
 
+	"github.com/ShotaKitazawa/kube-portal/server/models/ports"
 	"github.com/google/go-github/github"
 	"github.com/sirupsen/logrus"
 )
 
-type GitHubClient struct {
+type Client struct {
 	logger *logrus.Logger
 }
 
-func NewGitHubClient(l *logrus.Logger) *GitHubClient {
-	return &GitHubClient{l}
+var _ ports.GitHub = (*Client)(nil)
+
+func NewGitHubClient(l *logrus.Logger) *Client {
+	return &Client{l}
 }
 
-func (c *GitHubClient) GetUserIDByUserName(ctx context.Context, name string) (string, error) {
+func (c *Client) GetUserIDByUserName(ctx context.Context, name string) (string, error) {
 	client := github.NewClient(nil)
 	user, _, err := client.Users.Get(ctx, name)
 	if err != nil {

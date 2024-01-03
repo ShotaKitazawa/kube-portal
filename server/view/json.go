@@ -1,11 +1,13 @@
 package view
 
 import (
-	"github.com/ShotaKitazawa/kube-portal/server/entities"
+	"github.com/ShotaKitazawa/kube-portal/server/models"
 	"github.com/labstack/echo/v4"
 )
 
-type JsonView struct{}
+type JSON struct{}
+
+var _ Iface = (*JSON)(nil)
 
 type IngressInfo struct {
 	Name    string `json:"name"`
@@ -13,7 +15,7 @@ type IngressInfo struct {
 	IconUrl string `json:"icon_url"`
 }
 
-func (v JsonView) ListIngressInfo(ctx echo.Context, list []entities.IngressInfo) error {
+func (v JSON) ListIngressInfo(ctx echo.Context, list []models.IngressInfo) error {
 	var res []IngressInfo
 	for _, val := range list {
 		res = append(res, IngressInfo{

@@ -2,7 +2,7 @@ package utils
 
 import "strings"
 
-func ContainsStr(s []string, e string) bool {
+func Contains[T comparable](s []T, e T) bool {
 	for _, a := range s {
 		if a == e {
 			return true

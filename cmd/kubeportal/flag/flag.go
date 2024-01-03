@@ -1,4 +1,4 @@
-package kubeportal
+package flag
 
 import (
 	"flag"

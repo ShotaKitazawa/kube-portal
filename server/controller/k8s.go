@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
 
-	"github.com/ShotaKitazawa/kube-portal/server/entities"
+	"github.com/ShotaKitazawa/kube-portal/server/models/ports"
 	"github.com/ShotaKitazawa/kube-portal/server/view"
 )
 
@@ -17,28 +17,28 @@ var (
 
 type K8sController struct {
 	logger    *logrus.Logger
-	k8sClient entities.KubernetesPort
-	view      view.ViewPort
+	k8sClient ports.Kubernetes
+	view      view.Iface
 
 	jwtSecret string
 }
 
-func NewK8sController(l *logrus.Logger, k8sClient entities.KubernetesPort, jwtSecret string) *K8sController {
-	return &K8sController{l, k8sClient, &view.JsonView{}, jwtSecret}
+func NewK8sController(l *logrus.Logger, k8sClient ports.Kubernetes, jwtSecret string) *K8sController {
+	return &K8sController{l, k8sClient, &view.JSON{}, jwtSecret}
 }
 
 func (c K8sController) ListIngressInfo(ctx echo.Context) error {
 	isLoggin := ctx.Get(contextKeyIsLogin).(bool)
 
 	// logic
-	list, err := c.k8sClient.ListIngressInfo(ctx.Request().Context())
+	l, err := c.k8sClient.ListIngressInfo(ctx.Request().Context())
 	if err != nil {
 		return err
 	}
-	list = entities.ExcludePrivateLinkIfNotLogIn(list, isLoggin)
+	l = l.ExcludePrivateLinkIfNotLogIn(isLoggin)
 
 	// view
-	return c.view.ListIngressInfo(ctx, list)
+	return c.view.ListIngressInfo(ctx, l)
 }
 
 func (c K8sController) JwtAuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {

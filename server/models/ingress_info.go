@@ -1,10 +1,4 @@
-package entities
-
-import "context"
-
-type KubernetesPort interface {
-	ListIngressInfo(ctx context.Context) ([]IngressInfo, error)
-}
+package models
 
 type IngressInfo struct {
 	Name      string
@@ -14,7 +8,9 @@ type IngressInfo struct {
 	IsPrivate bool
 }
 
-func ExcludePrivateLinkIfNotLogIn(list []IngressInfo, isLogin bool) []IngressInfo {
+type IngressInfoList []IngressInfo
+
+func (list IngressInfoList) ExcludePrivateLinkIfNotLogIn(isLogin bool) IngressInfoList {
 	var result []IngressInfo
 	if !isLogin {
 		for _, val := range list {
