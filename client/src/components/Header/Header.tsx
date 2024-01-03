@@ -1,18 +1,10 @@
-import React from 'react';
-import Link from 'next/link';
-import {
-  Toolbar,
-  AppBar,
-  Typography,
-  IconButton,
-} from '@material-ui/core';
+import React from 'react'
+import Link from 'next/link'
+import { Toolbar, AppBar, Typography, IconButton } from '@mui/material'
 
 import { Login } from '../Login'
 
-
-export const Header: React.FC = ({
-  children,
-}) => {
+export const Header: React.FC = ({ children }) => {
   return (
     <div className="flex">
       <AppBar position="static">
@@ -32,6 +24,6 @@ export const Header: React.FC = ({
           </div>
         </Toolbar>
       </AppBar>
-    </div >
+    </div>
   )
 }

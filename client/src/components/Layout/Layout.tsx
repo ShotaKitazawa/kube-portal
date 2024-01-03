@@ -2,11 +2,9 @@ import Head from 'next/head'
 
 import { Header } from '../Header'
 
-const name = "kube-portal"
+const name = 'kube-portal'
 
-export const Layout: React.FC = ({
-  children,
-}) => {
+export const Layout: React.FC = ({ children }) => {
   return (
     <>
       <Head>
@@ -14,14 +12,15 @@ export const Layout: React.FC = ({
         <link rel="shortcut icon" href="/favicon.ico" />
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-        <script src="https://code.iconify.design/1/1.0.7/iconify.min.js"></script>
+        <script
+          src="https://code.iconify.design/1/1.0.7/iconify.min.js"
+          async
+        />
       </Head>
       <div className="relative z-20">
         <Header />
       </div>
-      <main className="relative z-10">
-        {children}
-      </main>
+      <main className="relative z-10">{children}</main>
     </>
   )
 }
