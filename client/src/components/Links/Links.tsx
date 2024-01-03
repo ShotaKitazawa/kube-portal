@@ -12,7 +12,7 @@ export const getStaticProps = async () => {
   return { props: {} }
 }
 
-export const Links: NextPage<Props> = (props) => {
+export const Links: React.FC<Props> = (props) => {
   // get links from API
   const [linksList, setLinksList] = useState<LinkInfo[]>(null)
   const list = async () => {
