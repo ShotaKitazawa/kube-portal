@@ -23,22 +23,23 @@ type K8sController struct {
 	jwtSecret string
 }
 
-func NewK8sController(l *logrus.Logger, k8sClient ports.Kubernetes, jwtSecret string) *K8sController {
-	return &K8sController{l, k8sClient, &view.JSON{}, jwtSecret}
+func NewK8sController(l *logrus.Logger, k8sClient ports.Kubernetes, jwtSecret string, showUntaggedLinks bool) *K8sController {
+	v := &view.JSON{ShowUntaggedLinks: showUntaggedLinks}
+	return &K8sController{l, k8sClient, v, jwtSecret}
 }
 
 func (c K8sController) ListIngressInfo(ctx echo.Context) error {
 	isLoggin := ctx.Get(contextKeyIsLogin).(bool)
 
 	// logic
-	l, err := c.k8sClient.ListIngressInfo(ctx.Request().Context())
+	res, err := c.k8sClient.ListIngressInfo(ctx.Request().Context())
 	if err != nil {
 		return err
 	}
-	l = l.ExcludePrivateLinkIfNotLogIn(isLoggin)
+	res = res.ExcludePrivateLinkIfNotLogIn(isLoggin)
 
 	// view
-	return c.view.ListIngressInfo(ctx, l)
+	return c.view.ListIngressInfo(ctx, res)
 }
 
 func (c K8sController) JwtAuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {

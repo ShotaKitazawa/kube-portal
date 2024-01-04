@@ -72,6 +72,13 @@ func (c *Client) ListIngressInfo(ctx context.Context) (models.IngressInfoList, e
 		// fqdn
 		// - TODO: ref ing.Spec.Rules[1:].Host
 		fqdn := ing.Spec.Rules[0].Host
+		// path
+		// - TODO: ref ing.Spec.Rules[1:].http.Paths[1:].path
+		path := ing.Spec.Rules[0].HTTP.Paths[0].Path
+		if path == "" {
+			path = "/"
+		}
+
 		// proto
 		// - allow only "http" or "https"
 		proto, ok := ing.Annotations["kube-portal.kanatakita.com/proto"]
@@ -79,8 +86,13 @@ func (c *Client) ListIngressInfo(ctx context.Context) (models.IngressInfoList, e
 			proto = "https"
 		}
 		// icon_url
-		// - allow empty
 		iconUrl := ing.Annotations["kube-portal.kanatakita.com/icon-url"]
+		// tags
+		tags := []string{}
+		tagsStr, ok := ing.Annotations["kube-portal.kanatakita.com/tags"]
+		if ok {
+			tags = strings.Split(tagsStr, ",")
+		}
 		// is_private
 		var isPrivate bool
 		isPrivateStr, ok := ing.Annotations["kube-portal.kanatakita.com/is-private"]
@@ -92,8 +104,10 @@ func (c *Client) ListIngressInfo(ctx context.Context) (models.IngressInfoList, e
 		result = append(result, models.IngressInfo{
 			Name:      name,
 			Fqdn:      fqdn,
+			Path:      path,
 			Proto:     proto,
 			IconUrl:   iconUrl,
+			Tags:      tags,
 			IsPrivate: isPrivate,
 		})
 	}

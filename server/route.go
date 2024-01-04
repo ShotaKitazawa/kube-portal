@@ -28,7 +28,8 @@ func Run(opts *flag.Opts) error {
 	}
 	githubClient := github.NewGitHubClient(l)
 	// New Controllers
-	k8sController := controller.NewK8sController(l, k8sClient, opts.JwtSecret)
+	k8sController := controller.NewK8sController(l,
+		k8sClient, opts.JwtSecret, opts.ShowUntaggedLinks)
 	u, err := url.Parse(fmt.Sprintf("%s/auth/callback", opts.BaseUrl))
 	if err != nil {
 		panic(err)

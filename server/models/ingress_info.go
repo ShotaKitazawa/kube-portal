@@ -3,8 +3,10 @@ package models
 type IngressInfo struct {
 	Name      string
 	Fqdn      string
+	Path      string
 	Proto     string
 	IconUrl   string
+	Tags      []string
 	IsPrivate bool
 }
 
