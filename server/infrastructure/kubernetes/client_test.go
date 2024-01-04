@@ -38,7 +38,16 @@ func TestClient_ListIngressInfo(t *testing.T) {
 							Annotations: map[string]string{},
 						},
 						Spec: networkingv1.IngressSpec{
-							Rules: []networkingv1.IngressRule{{Host: "01.example.com"}},
+							Rules: []networkingv1.IngressRule{{
+								Host: "01.example.com",
+								IngressRuleValue: networkingv1.IngressRuleValue{
+									HTTP: &networkingv1.HTTPIngressRuleValue{
+										Paths: []networkingv1.HTTPIngressPath{{
+											Path: "/",
+										}},
+									},
+								},
+							}},
 						},
 					},
 				),
@@ -48,8 +57,10 @@ func TestClient_ListIngressInfo(t *testing.T) {
 				{
 					Name:      "test01",
 					Fqdn:      "01.example.com",
+					Path:      "/",
 					Proto:     "https",
 					IconUrl:   "",
+					Tags:      []string{},
 					IsPrivate: false,
 				},
 			},
