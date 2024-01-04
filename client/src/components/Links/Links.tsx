@@ -1,32 +1,14 @@
 /* eslint @next/next/no-img-element: 0 */
 
-import { useState, useEffect } from 'react'
-import { InferGetStaticPropsType, NextPage } from 'next'
-import { CircularProgress, Card, CardContent } from '@mui/material'
+import { Card, CardContent } from '@mui/material'
 
 import IngressInfo, { LinkInfo } from '../../drivers/ingress-info'
 
-type Props = InferGetStaticPropsType<typeof getStaticProps>
-
-export const getStaticProps = async () => {
-  return { props: {} }
+type Props = {
+  linksList: LinkInfo[]
 }
 
-export const Links: React.FC<Props> = (props) => {
-  // get links from API
-  const [linksList, setLinksList] = useState<LinkInfo[]>(null)
-  const list = async () => {
-    if (typeof window !== undefined) {
-      setLinksList(await new IngressInfo().List())
-    }
-  }
-  useEffect(() => {
-    list()
-    setInterval(() => {
-      list()
-    }, 10000)
-  }, [])
-
+export const Links: React.FC<Props> = ({ linksList }) => {
   return (
     <section id="links" className="mt-6">
       <div className="mx-auto flex flex-wrap justify-center">
@@ -58,7 +40,7 @@ export const Links: React.FC<Props> = (props) => {
             </div>
           ))
         ) : (
-          <CircularProgress />
+          <></>
         )}
       </div>
     </section>

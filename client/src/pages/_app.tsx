@@ -1,9 +1,13 @@
 import 'normalize.css'
-import "tailwindcss/tailwind.css"
+import 'tailwindcss/tailwind.css'
+
+import { GlobalProvider } from '../contexts/global'
 
 function MyApp({ Component, pageProps }) {
   return (
-    <Component {...pageProps} />
+    <GlobalProvider>
+      <Component {...pageProps} />
+    </GlobalProvider>
   )
 }
 

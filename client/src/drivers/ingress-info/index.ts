@@ -4,19 +4,19 @@ export type LinkInfo = {
   name: string
   url: string
   icon_url: string
+  tags: string[]
 }
 
-class IngressInfo {
+class Client {
   private url: string
-  private jwt: string
 
   constructor() {
+    let origin: string
     if (process.env.NEXT_PUBLIC_BACKEND_URL !== undefined) {
       origin = process.env.NEXT_PUBLIC_BACKEND_URL
-    } else if (typeof window !== undefined) {
+    } else if (typeof window !== 'undefined') {
       origin = window.location.origin
     }
-
     this.url = origin + '/api/list'
   }
 
@@ -31,4 +31,4 @@ class IngressInfo {
   }
 }
 
-export default IngressInfo
+export default Client

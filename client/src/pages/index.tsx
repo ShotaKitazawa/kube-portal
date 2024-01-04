@@ -1,12 +1,12 @@
 import { NextPage } from 'next'
 
 import { Layout } from '../components/Layout'
-import { Links } from '../components/Links'
+import { LinkGroups } from '../components/LinkGroups'
 
 const IndexPage: NextPage = () => {
   return (
     <Layout>
-      <Links />
+      <LinkGroups />
     </Layout>
   )
 }
