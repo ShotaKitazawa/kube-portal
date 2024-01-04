@@ -14,7 +14,7 @@ class Client {
     let origin: string
     if (process.env.NEXT_PUBLIC_BACKEND_URL !== undefined) {
       origin = process.env.NEXT_PUBLIC_BACKEND_URL
-    } else if (typeof window !== undefined) {
+    } else if (typeof window !== 'undefined') {
       origin = window.location.origin
     }
     this.url = origin + '/api/list'
