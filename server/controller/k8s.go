@@ -32,11 +32,15 @@ func (c K8sController) ListIngressInfo(ctx echo.Context) error {
 	isLoggin := ctx.Get(contextKeyIsLogin).(bool)
 
 	// logic
-	res, err := c.k8sClient.ListIngressInfo(ctx.Request().Context())
+	res1, err := c.k8sClient.ListIngress(ctx.Request().Context())
 	if err != nil {
 		return err
 	}
-	res = res.ExcludePrivateLinkIfNotLogIn(isLoggin)
+	res2, err := c.k8sClient.ListExternalLink(ctx.Request().Context())
+	if err != nil {
+		return err
+	}
+	res := append(res1, res2...).ExcludePrivateLinkIfNotLogIn(isLoggin)
 
 	// view
 	return c.view.ListIngressInfo(ctx, res)

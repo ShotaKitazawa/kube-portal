@@ -74,7 +74,7 @@ func TestClient_ListIngressInfo(t *testing.T) {
 			c := &Client{
 				clientset: tt.fields.clientset,
 			}
-			got, err := c.ListIngressInfo(tt.args.ctx)
+			got, err := c.ListIngress(tt.args.ctx)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Client.ListIngressInfo() error = %v, wantErr %v", err, tt.wantErr)
 				return

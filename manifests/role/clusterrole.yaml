@@ -8,9 +8,16 @@ metadata:
 rules:
 - apiGroups:
   - networking.k8s.io
-  - extensions
   resources:
   - ingresses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - kubeportal.kanatakita.com
+  resources:
+  - externallinks
   verbs:
   - get
   - list
