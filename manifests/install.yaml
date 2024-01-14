@@ -42,15 +42,17 @@ spec:
                 type: string
               iconURL:
                 type: string
-              message:
-                type: string
+              isPrivate:
+                type: boolean
               tags:
                 items:
                   type: string
                 type: array
+              title:
+                type: string
             required:
             - href
-            - message
+            - title
             type: object
           status:
             description: ExternalLinkStatus defines the observed state of ExternalLink
