@@ -22,7 +22,7 @@ RUN yarn build
 
 
 ### Run ###
-FROM gcr.io/distroless/base
+FROM gcr.io/distroless/base-debian12:latest
 ## copy binary
 COPY --from=build-backend /workdir/app .
 COPY --from=build-frontend /workdir/out client/out
