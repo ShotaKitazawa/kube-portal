@@ -18,6 +18,6 @@ spec:
       serviceAccountName: kube-portal
       containers:
         - name: kube-portal
-          image: kanatakita/kube-portal:latest
+          image: kanatakita/kube-portal
           ports:
             - containerPort: 8080

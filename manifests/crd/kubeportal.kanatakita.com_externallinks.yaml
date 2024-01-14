@@ -1,3 +1,4 @@
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -42,15 +43,17 @@ spec:
                 type: string
               iconURL:
                 type: string
-              message:
-                type: string
+              isPrivate:
+                type: boolean
               tags:
                 items:
                   type: string
                 type: array
+              title:
+                type: string
             required:
             - href
-            - message
+            - title
             type: object
           status:
             description: ExternalLinkStatus defines the observed state of ExternalLink
@@ -60,89 +63,3 @@ spec:
     storage: true
     subresources:
       status: {}
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  labels:
-    app: kube-portal
-  name: kube-portal
-  namespace: kube-portal
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  labels:
-    app: kube-portal
-  name: kube-portal
-rules:
-- apiGroups:
-  - networking.k8s.io
-  resources:
-  - ingresses
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - kubeportal.kanatakita.com
-  resources:
-  - externallinks
-  verbs:
-  - get
-  - list
-  - watch
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  labels:
-    app: kube-portal
-  name: kube-portal
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: kube-portal
-subjects:
-- kind: ServiceAccount
-  name: kube-portal
-  namespace: kube-portal
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: kube-portal
-  name: kube-portal
-  namespace: kube-portal
-spec:
-  ports:
-  - port: 8080
-    protocol: TCP
-    targetPort: 8080
-  selector:
-    app: kube-portal
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    app: kube-portal
-  name: kube-portal
-  namespace: kube-portal
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: kube-portal
-  template:
-    metadata:
-      labels:
-        app: kube-portal
-    spec:
-      containers:
-      - image: kanatakita/kube-portal:latest
-        name: kube-portal
-        ports:
-        - containerPort: 8080
-      serviceAccountName: kube-portal

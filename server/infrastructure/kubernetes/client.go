@@ -3,19 +3,25 @@ package kubernetes
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"strings"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 
+	kubeportalv1alpha1 "github.com/ShotaKitazawa/kube-portal/server/infrastructure/kubernetes/api/v1alpha1"
 	"github.com/ShotaKitazawa/kube-portal/server/models"
 	"github.com/ShotaKitazawa/kube-portal/server/models/ports"
 )
 
 type Client struct {
 	clientset kubernetes.Interface
+	dynamic   dynamic.Interface
 }
 
 var _ ports.Kubernetes = (*Client)(nil)
@@ -29,7 +35,11 @@ func NewClient(kubeconfigPath string) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Client{client}, nil
+	dynamic, err := dynamic.NewForConfig(kubeConfig)
+	if err != nil {
+		return nil, err
+	}
+	return &Client{client, dynamic}, nil
 }
 
 func buildConfig(kubeconfig string) (*rest.Config, error) {
@@ -47,7 +57,7 @@ func buildConfig(kubeconfig string) (*rest.Config, error) {
 	return cfg, nil
 }
 
-func (c *Client) ListIngressInfo(ctx context.Context) (models.IngressInfoList, error) {
+func (c *Client) ListIngress(ctx context.Context) (models.IngressInfoList, error) {
 	ings, err := c.clientset.NetworkingV1().Ingresses("").List(ctx, metav1.ListOptions{})
 	if err != nil {
 		return nil, err
@@ -112,5 +122,40 @@ func (c *Client) ListIngressInfo(ctx context.Context) (models.IngressInfoList, e
 		})
 	}
 
+	return result, nil
+}
+
+func (c *Client) ListExternalLink(ctx context.Context) (models.IngressInfoList, error) {
+	gvr := schema.GroupVersionResource{
+		Group:    kubeportalv1alpha1.GroupVersion.Group,
+		Version:  kubeportalv1alpha1.GroupVersion.Version,
+		Resource: "externallinks",
+	}
+	uList, err := c.dynamic.Resource(gvr).List(ctx, metav1.ListOptions{})
+	if err != nil {
+		return nil, err
+	}
+	var result []models.IngressInfo
+	for _, u := range uList.Items {
+		exLink := kubeportalv1alpha1.ExternalLink{}
+		if err := runtime.DefaultUnstructuredConverter.FromUnstructured(u.Object, &exLink); err != nil {
+			return nil, err
+		}
+		/* get & validate values */
+		u, err := url.Parse(exLink.Spec.Href)
+		if err != nil {
+			return nil, err
+		}
+		/* set values to result */
+		result = append(result, models.IngressInfo{
+			Name:      exLink.Spec.Title,
+			Fqdn:      u.Host,
+			Path:      u.Path,
+			Proto:     u.Scheme,
+			IconUrl:   exLink.Spec.IconURL,
+			Tags:      exLink.Spec.Tags,
+			IsPrivate: exLink.Spec.IsPrivate,
+		})
+	}
 	return result, nil
 }

@@ -7,5 +7,6 @@ import (
 )
 
 type Kubernetes interface {
-	ListIngressInfo(ctx context.Context) (models.IngressInfoList, error)
+	ListIngress(ctx context.Context) (models.IngressInfoList, error)
+	ListExternalLink(ctx context.Context) (models.IngressInfoList, error)
 }
