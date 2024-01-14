@@ -12,15 +12,11 @@ export const Layout: React.FC = ({ children }) => {
         <link rel="shortcut icon" href="/favicon.ico" />
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-        <script
-          src="https://code.iconify.design/1/1.0.7/iconify.min.js"
-          async
-        />
       </Head>
       <div className="relative z-20">
         <Header />
       </div>
-      <main className="relative z-10">{children}</main>
+      <main className="relative z-10 mt-20">{children}</main>
     </>
   )
 }

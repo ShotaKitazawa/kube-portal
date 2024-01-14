@@ -1,5 +1,4 @@
 import React from 'react'
-import Link from 'next/link'
 import { Toolbar, AppBar, Typography, IconButton } from '@mui/material'
 
 import { Login } from '../Login'
@@ -8,7 +7,7 @@ const repositoryLink = 'https://github.com/ShotaKitazawa/kube-portal'
 
 export const Header: React.FC = ({ children }) => {
   return (
-    <div className="flex">
+    <div className="fixed w-full top-0 left-0 flex">
       <AppBar position="static">
         <Toolbar>
           <div className="mr-2">
