@@ -4,20 +4,24 @@ import { Toolbar, AppBar, Typography, IconButton } from '@mui/material'
 
 import { Login } from '../Login'
 
+const repositoryLink = 'https://github.com/ShotaKitazawa/kube-portal'
+
 export const Header: React.FC = ({ children }) => {
   return (
     <div className="flex">
       <AppBar position="static">
         <Toolbar>
           <div className="mr-2">
-            <IconButton edge="start" color="inherit">
-              <Link href="/">
+            <a href={repositoryLink}>
+              <IconButton edge="start" color="inherit">
                 <span className="iconify" data-icon="mdi-kubernetes" />
-              </Link>
-            </IconButton>
+              </IconButton>
+            </a>
           </div>
           <div className="flex-grow">
-            <Typography variant="h6">kube-portal</Typography>
+            <a href={repositoryLink}>
+              <Typography variant="h6">kube-portal</Typography>
+            </a>
           </div>
           <div className="ml-auto">
             <Login />
