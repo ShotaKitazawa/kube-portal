@@ -35,25 +35,27 @@ export const LinkGroups: React.FC<Props> = (props) => {
   return (
     <>
       {linkInfoByTags != null ? (
-        Array.from(linkInfoByTags.keys()).map((tagName) => (
-          <>
-            {tagName != '' ? (
-              <>
-                <div className="grid grid-cols-7">
-                  <h2 className="col-start-2 text-4xl mt-20 font-bold">
-                    {tagName}
-                  </h2>
-                </div>
-                <div className="grid grid-cols-8">
-                  <hr className="col-start-2 col-end-8 h-px my-4 bg-gray-200 border-0" />
-                </div>
-              </>
-            ) : (
-              <></>
-            )}
-            <Links linksList={linkInfoByTags.get(tagName)} />
-          </>
-        ))
+        Array.from(linkInfoByTags.keys())
+          .sort()
+          .map((tagName) => (
+            <>
+              {tagName != '' ? (
+                <>
+                  <div className="grid grid-cols-7">
+                    <h2 className="col-start-2 text-4xl mt-20 font-bold">
+                      {tagName}
+                    </h2>
+                  </div>
+                  <div className="grid grid-cols-8">
+                    <hr className="col-start-2 col-end-8 h-px my-4 bg-gray-200 border-0" />
+                  </div>
+                </>
+              ) : (
+                <></>
+              )}
+              <Links linksList={linkInfoByTags.get(tagName)} />
+            </>
+          ))
       ) : (
         <CircularProgress />
       )}
