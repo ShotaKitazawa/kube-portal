@@ -2,10 +2,16 @@ package kubernetes
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/url"
+	"regexp"
+	"strconv"
 	"strings"
 
+	"github.com/elliotchance/orderedmap/v2"
+	"github.com/mattn/go-jsonpointer"
+	"github.com/sirupsen/logrus"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -19,14 +25,24 @@ import (
 	"github.com/ShotaKitazawa/kube-portal/server/models/ports"
 )
 
+const ingressAnnotationPrefix = "kube-portal.kanatakita.com/"
+
+var ingressAnnotationMatcher *regexp.Regexp
+
+func init() {
+	ingressAnnotationMatcher = regexp.MustCompile(
+		`^rules\.(\d+)\.paths\.(\d+)\.(.+)$`)
+}
+
 type Client struct {
 	clientset kubernetes.Interface
 	dynamic   dynamic.Interface
+	log       *logrus.Logger
 }
 
 var _ ports.Kubernetes = (*Client)(nil)
 
-func NewClient(kubeconfigPath string) (*Client, error) {
+func NewClient(l *logrus.Logger, kubeconfigPath string) (*Client, error) {
 	kubeConfig, err := buildConfig(kubeconfigPath)
 	if err != nil {
 		return nil, err
@@ -39,7 +55,7 @@ func NewClient(kubeconfigPath string) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Client{client, dynamic}, nil
+	return &Client{client, dynamic, l}, nil
 }
 
 func buildConfig(kubeconfig string) (*rest.Config, error) {
@@ -63,63 +79,103 @@ func (c *Client) ListIngress(ctx context.Context) (models.IngressInfoList, error
 		return nil, err
 	}
 
-	var result []models.IngressInfo
+	var result models.IngressInfoList
 	for _, ing := range ings.Items {
+		m := orderedmap.NewOrderedMap[string, models.IngressInfo]()
+		for key, val := range ing.Annotations {
+			// Skip if it's not related annotation
+			if !strings.HasPrefix(key, ingressAnnotationPrefix) {
+				continue
+			}
+			key = strings.TrimPrefix(key, ingressAnnotationPrefix)
 
-		/* check ignore flag */
-		ignoreStr := ing.Annotations["kube-portal.kanatakita.com/ignore"]
-		if strings.ToLower(ignoreStr) == "true" {
-			continue
+			// Extract value from annotations
+			l := ingressAnnotationMatcher.FindStringSubmatch(key)
+			if len(l) != 4 {
+				c.log.Warn("TODO_1")
+				continue
+			}
+			ruleIdx, _ := strconv.Atoi(l[1])
+			pathIdx, _ := strconv.Atoi(l[2])
+			action := l[3]
+
+			//
+			// Fill models.IngressInfo
+			//
+			tmpIngressInfo, _ := m.Get(fmt.Sprintf("%d-%d", ruleIdx, pathIdx))
+			// Fill from annotations
+			switch action {
+			case "enable":
+				// pass
+			case "name":
+				tmpIngressInfo.Name = val
+			case "proto":
+				tmpIngressInfo.Proto = val
+			case "icon-url":
+				tmpIngressInfo.IconUrl = val
+			case "tags":
+				tmpIngressInfo.Tags = strings.Split(val, ",")
+			case "is-private":
+				if strings.ToLower(val) == "true" {
+					tmpIngressInfo.IsPrivate = true
+				}
+			default:
+				c.log.Warn("TODO")
+				continue
+			}
+			// Fill Fqdn & Path if first time
+			if tmpIngressInfo.Hostname == "" || tmpIngressInfo.Path == "" {
+				b, err := json.Marshal(&ing.Spec)
+				if err != nil {
+					return nil, err
+				}
+				var obj interface{}
+				if err := json.Unmarshal(b, &obj); err != nil {
+					return nil, err
+				}
+				// Hostname
+				rvRule, err := jsonpointer.Get(obj,
+					fmt.Sprintf("/rules/%d/host", ruleIdx))
+				if err != nil {
+					c.log.Warn("TODO_2")
+					return nil, err
+				} else if rule, ok := rvRule.(string); !ok {
+					c.log.Warn("TODO_2")
+					continue
+				} else {
+					tmpIngressInfo.Hostname = rule
+				}
+				// Path
+				rvPath, err := jsonpointer.Get(obj,
+					fmt.Sprintf("/rules/%d/http/paths/%d/path", ruleIdx, pathIdx))
+				if err != nil {
+					c.log.Warn("TODO_3")
+					tmpIngressInfo.Path = "/"
+				} else if path, ok := rvPath.(string); !ok {
+					c.log.Warn("TODO_4")
+					tmpIngressInfo.Path = "/"
+				} else {
+					tmpIngressInfo.Path = path
+				}
+			}
+			m.Set(fmt.Sprintf("%d-%d", ruleIdx, pathIdx), tmpIngressInfo)
 		}
 
-		/* get & validate values */
-		// name
-		// - using metadata.name if annotation is empty
-		name, ok := ing.Annotations["kube-portal.kanatakita.com/name"]
-		if !ok {
-			name = ing.Name
+		// append result from orderedMap
+		for _, key := range m.Keys() {
+			val, _ := m.Get(key)
+			// defaulting
+			if val.Name == "" {
+				val.Name = ing.GetName()
+			}
+			if val.Proto == "" {
+				val.Proto = "https"
+			}
+			if val.Tags == nil {
+				val.Tags = []string{}
+			}
+			result = append(result, val)
 		}
-		// fqdn
-		// - TODO: ref ing.Spec.Rules[1:].Host
-		fqdn := ing.Spec.Rules[0].Host
-		// path
-		// - TODO: ref ing.Spec.Rules[1:].http.Paths[1:].path
-		path := ing.Spec.Rules[0].HTTP.Paths[0].Path
-		if path == "" {
-			path = "/"
-		}
-
-		// proto
-		// - allow only "http" or "https"
-		proto, ok := ing.Annotations["kube-portal.kanatakita.com/proto"]
-		if !ok || !(strings.ToLower(proto) == "http" || strings.ToLower(proto) == "https") {
-			proto = "https"
-		}
-		// icon_url
-		iconUrl := ing.Annotations["kube-portal.kanatakita.com/icon-url"]
-		// tags
-		tags := []string{}
-		tagsStr, ok := ing.Annotations["kube-portal.kanatakita.com/tags"]
-		if ok {
-			tags = strings.Split(tagsStr, ",")
-		}
-		// is_private
-		var isPrivate bool
-		isPrivateStr, ok := ing.Annotations["kube-portal.kanatakita.com/is-private"]
-		if ok && strings.ToLower(isPrivateStr) == "true" {
-			isPrivate = true
-		}
-
-		/* set values to result */
-		result = append(result, models.IngressInfo{
-			Name:      name,
-			Fqdn:      fqdn,
-			Path:      path,
-			Proto:     proto,
-			IconUrl:   iconUrl,
-			Tags:      tags,
-			IsPrivate: isPrivate,
-		})
 	}
 
 	return result, nil
@@ -149,7 +205,7 @@ func (c *Client) ListExternalLink(ctx context.Context) (models.IngressInfoList, 
 		/* set values to result */
 		result = append(result, models.IngressInfo{
 			Name:      exLink.Spec.Title,
-			Fqdn:      u.Host,
+			Hostname:  u.Host,
 			Path:      u.Path,
 			Proto:     u.Scheme,
 			IconUrl:   exLink.Spec.IconURL,

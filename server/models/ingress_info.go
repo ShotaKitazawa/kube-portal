@@ -2,7 +2,7 @@ package models
 
 type IngressInfo struct {
 	Name      string
-	Fqdn      string
+	Hostname  string
 	Path      string
 	Proto     string
 	IconUrl   string
