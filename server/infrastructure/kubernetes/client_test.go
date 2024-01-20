@@ -33,9 +33,11 @@ func TestClient_ListIngressInfo(t *testing.T) {
 				fake.NewSimpleClientset(
 					&networkingv1.Ingress{
 						ObjectMeta: metav1.ObjectMeta{
-							Name:        "test01",
-							Namespace:   "default",
-							Annotations: map[string]string{},
+							Name:      "test01",
+							Namespace: "default",
+							Annotations: map[string]string{
+								"kube-portal.kanatakita.com/rules.0.paths.0.enable": "true",
+							},
 						},
 						Spec: networkingv1.IngressSpec{
 							Rules: []networkingv1.IngressRule{{
@@ -56,7 +58,7 @@ func TestClient_ListIngressInfo(t *testing.T) {
 			want: models.IngressInfoList{
 				{
 					Name:      "test01",
-					Fqdn:      "01.example.com",
+					Hostname:  "01.example.com",
 					Path:      "/",
 					Proto:     "https",
 					IconUrl:   "",

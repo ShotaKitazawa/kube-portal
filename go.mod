@@ -4,11 +4,13 @@ go 1.21
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/elliotchance/orderedmap/v2 v2.2.0
 	github.com/form3tech-oss/jwt-go v3.2.5+incompatible
 	github.com/google/go-cmp v0.6.0
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/labstack/echo/v4 v4.11.4
 	github.com/markbates/goth v1.78.0
+	github.com/mattn/go-jsonpointer v0.0.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/thanhpk/randstr v1.0.6
 	k8s.io/api v0.29.1

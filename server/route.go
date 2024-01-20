@@ -22,7 +22,7 @@ func Run(opts *flag.Opts) error {
 	e := echo.New()
 	l := logrus.New()
 	// New Clients
-	k8sClient, err := kubernetes.NewClient(opts.KubeConfigPath)
+	k8sClient, err := kubernetes.NewClient(l, opts.KubeConfigPath)
 	if err != nil {
 		panic(err)
 	}
