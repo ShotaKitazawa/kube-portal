@@ -29,6 +29,18 @@ jobs:
           current_version: ${{ steps.get-latest-tag.outputs.tag }}
           level: ${{ steps.release-label.outputs.level }}
 
+      # switch to `release-vX.X.X` branch & update manifest's tag
+      - uses: imranismail/setup-kustomize@v2
+      - run: |
+        git switch -c release-${{ steps.bump-semver.outputs.new_version }}
+        cd manifests/base/
+        kustomize edit set image kanatakita/kube-portal:${{ steps.bump-semver.outputs.new_version }}
+        cd ..
+        kustomize build install/ > ./install.yaml
+        git add .
+        git commit -m "update manifests"
+        git push origin HEAD
+
       - uses: actions-ecosystem/action-push-tag@v1
         if: ${{ steps.release-label.outputs.level != null }}
         with:
