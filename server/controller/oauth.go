@@ -3,6 +3,7 @@ package controller
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"time"
 
@@ -11,7 +12,6 @@ import (
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
 	"github.com/markbates/goth/providers/github"
-	"github.com/sirupsen/logrus"
 
 	"github.com/ShotaKitazawa/kube-portal/server/models/ports"
 	"github.com/ShotaKitazawa/kube-portal/server/utils"
@@ -28,14 +28,14 @@ func init() {
 }
 
 type OAuthController struct {
-	logger *logrus.Logger
+	logger *slog.Logger
 
 	jwtSecret          string
 	expiredTime        time.Duration
 	allowGitHubUserIDs []string
 }
 
-func NewOAuthController(l *logrus.Logger, githubClient ports.GitHub, githubKey, githubSecret, callbackUrl string, jwtSecret string, expiredTime time.Duration, allowGitHubUserName ...string) (*OAuthController, error) {
+func NewOAuthController(l *slog.Logger, githubClient ports.GitHub, githubKey, githubSecret, callbackUrl string, jwtSecret string, expiredTime time.Duration, allowGitHubUserName ...string) (*OAuthController, error) {
 	// set OAuth Provider
 	goth.UseProviders(
 		github.New(githubKey, githubSecret, callbackUrl),

@@ -2,20 +2,20 @@ package github
 
 import (
 	"context"
+	"log/slog"
 	"strconv"
 
 	"github.com/ShotaKitazawa/kube-portal/server/models/ports"
 	"github.com/google/go-github/github"
-	"github.com/sirupsen/logrus"
 )
 
 type Client struct {
-	logger *logrus.Logger
+	logger *slog.Logger
 }
 
 var _ ports.GitHub = (*Client)(nil)
 
-func NewGitHubClient(l *logrus.Logger) *Client {
+func NewGitHubClient(l *slog.Logger) *Client {
 	return &Client{l}
 }
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"net/url"
 	"regexp"
 	"strconv"
@@ -11,7 +12,6 @@ import (
 
 	"github.com/elliotchance/orderedmap/v2"
 	"github.com/mattn/go-jsonpointer"
-	"github.com/sirupsen/logrus"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -35,14 +35,14 @@ func init() {
 }
 
 type Client struct {
+	log       *slog.Logger
 	clientset kubernetes.Interface
 	dynamic   dynamic.Interface
-	log       *logrus.Logger
 }
 
 var _ ports.Kubernetes = (*Client)(nil)
 
-func NewClient(l *logrus.Logger, kubeconfigPath string) (*Client, error) {
+func NewClient(logger *slog.Logger, kubeconfigPath string) (*Client, error) {
 	kubeConfig, err := buildConfig(kubeconfigPath)
 	if err != nil {
 		return nil, err
@@ -55,7 +55,7 @@ func NewClient(l *logrus.Logger, kubeconfigPath string) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Client{client, dynamic, l}, nil
+	return &Client{logger, client, dynamic}, nil
 }
 
 func buildConfig(kubeconfig string) (*rest.Config, error) {
@@ -82,7 +82,14 @@ func (c *Client) ListIngress(ctx context.Context) (models.IngressInfoList, error
 	var result models.IngressInfoList
 	for _, ing := range ings.Items {
 		m := orderedmap.NewOrderedMap[string, models.IngressInfo]()
+		logger := c.log.With(
+			slog.String("name", ing.Name),
+			slog.String("namespace", ing.Namespace),
+		)
 		for key, val := range ing.Annotations {
+			logger = logger.With(
+				slog.String("annotation", key),
+			)
 			// Skip if it's not related annotation
 			if !strings.HasPrefix(key, ingressAnnotationPrefix) {
 				continue
@@ -92,7 +99,7 @@ func (c *Client) ListIngress(ctx context.Context) (models.IngressInfoList, error
 			// Extract value from annotations
 			l := ingressAnnotationMatcher.FindStringSubmatch(key)
 			if len(l) != 4 {
-				c.log.Warn("TODO_1")
+				logger.Warn("skip: annotation didn't match the matcher")
 				continue
 			}
 			ruleIdx, _ := strconv.Atoi(l[1])
@@ -120,7 +127,7 @@ func (c *Client) ListIngress(ctx context.Context) (models.IngressInfoList, error
 					tmpIngressInfo.IsPrivate = true
 				}
 			default:
-				c.log.Warn("TODO")
+				logger.Warn("skip: annotation is not supported")
 				continue
 			}
 			// Fill Fqdn & Path if first time
@@ -137,10 +144,12 @@ func (c *Client) ListIngress(ctx context.Context) (models.IngressInfoList, error
 				rvRule, err := jsonpointer.Get(obj,
 					fmt.Sprintf("/rules/%d/host", ruleIdx))
 				if err != nil {
-					c.log.Warn("TODO_2")
-					return nil, err
+					logger.Warn(fmt.Sprintf(
+						"skip: Ingress.spec.rules[%d].host is empty", ruleIdx))
+					continue
 				} else if rule, ok := rvRule.(string); !ok {
-					c.log.Warn("TODO_2")
+					logger.Warn(fmt.Sprintf(
+						"skip: Ingress.spec.rules[%d].host is empty", ruleIdx))
 					continue
 				} else {
 					tmpIngressInfo.Hostname = rule
@@ -149,10 +158,14 @@ func (c *Client) ListIngress(ctx context.Context) (models.IngressInfoList, error
 				rvPath, err := jsonpointer.Get(obj,
 					fmt.Sprintf("/rules/%d/http/paths/%d/path", ruleIdx, pathIdx))
 				if err != nil {
-					c.log.Warn("TODO_3")
+					logger.Warn(fmt.Sprintf(
+						`Ingress.spec.rules[%d].http.paths[%d].path is empty: use "/" as path`,
+						ruleIdx, pathIdx))
 					tmpIngressInfo.Path = "/"
 				} else if path, ok := rvPath.(string); !ok {
-					c.log.Warn("TODO_4")
+					logger.Warn(fmt.Sprintf(
+						`Ingress.spec.rules[%d].http.paths[%d].path is empty: use "/" as path`,
+						ruleIdx, pathIdx))
 					tmpIngressInfo.Path = "/"
 				} else {
 					tmpIngressInfo.Path = path
