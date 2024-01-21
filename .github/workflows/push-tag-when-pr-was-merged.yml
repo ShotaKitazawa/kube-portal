@@ -33,6 +33,7 @@ jobs:
       - id: push-tag
         if: ${{ steps.release-label.outputs.level != null }}
         run: |
+          chmod -R ugo+rwX .
           : # update manifest's tag
           cd manifests/base/
           kustomize edit set image kanatakita/kube-portal:${{ steps.bump-semver.outputs.new_version }}
