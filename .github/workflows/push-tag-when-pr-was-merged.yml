@@ -36,7 +36,9 @@ jobs:
           level: ${{ steps.release-label.outputs.level }}
 
       # switch to `release-vX.X.X` branch & update manifest's tag
-      - run: |
+      - id: push-tag
+        if: ${{ steps.release-label.outputs.level != null }}
+        run: |
           git switch -c release-${{ steps.bump-semver.outputs.new_version }}
           cd manifests/base/
           kustomize edit set image kanatakita/kube-portal:${{ steps.bump-semver.outputs.new_version }}
@@ -47,9 +49,5 @@ jobs:
           git config user.name "GitHub Action"
           git commit -m "update manifests"
           git push origin HEAD
-
-      - uses: actions-ecosystem/action-push-tag@v1
-        if: ${{ steps.release-label.outputs.level != null }}
-        with:
-          tag: ${{ steps.bump-semver.outputs.new_version }}
-          message: '${{ steps.bump-semver.outputs.new_version }}: PR #${{ github.event.pull_request.number }} ${{ github.event.pull_request.title }}'
+          git push ${{ steps.bump-semver.outputs.new_version }}
+          git push origin ${{ steps.bump-semver.outputs.new_version }}
