@@ -2,10 +2,10 @@ package controller
 
 import (
 	"fmt"
+	"log/slog"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
-	"github.com/sirupsen/logrus"
 
 	"github.com/ShotaKitazawa/kube-portal/server/models/ports"
 	"github.com/ShotaKitazawa/kube-portal/server/view"
@@ -16,14 +16,14 @@ var (
 )
 
 type K8sController struct {
-	logger    *logrus.Logger
+	logger    *slog.Logger
 	k8sClient ports.Kubernetes
 	view      view.Iface
 
 	jwtSecret string
 }
 
-func NewK8sController(l *logrus.Logger, k8sClient ports.Kubernetes, jwtSecret string, showUntaggedLinks bool) *K8sController {
+func NewK8sController(l *slog.Logger, k8sClient ports.Kubernetes, jwtSecret string, showUntaggedLinks bool) *K8sController {
 	v := &view.JSON{ShowUntaggedLinks: showUntaggedLinks}
 	return &K8sController{l, k8sClient, v, jwtSecret}
 }

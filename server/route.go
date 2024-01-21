@@ -2,13 +2,15 @@ package server
 
 import (
 	"fmt"
+	"log/slog"
 	"net/http"
 	"net/url"
+	"os"
 	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/sirupsen/logrus"
+	slogecho "github.com/samber/slog-echo"
 
 	"github.com/ShotaKitazawa/kube-portal/cmd/kube-portal/flag"
 	"github.com/ShotaKitazawa/kube-portal/server/controller"
@@ -20,22 +22,24 @@ import (
 func Run(opts *flag.Opts) error {
 	// New Instances
 	e := echo.New()
-	l := logrus.New()
+	logger := slog.New(slog.NewJSONHandler(os.Stderr, &slog.HandlerOptions{
+		AddSource: true,
+	}))
 	// New Clients
-	k8sClient, err := kubernetes.NewClient(l, opts.KubeConfigPath)
+	k8sClient, err := kubernetes.NewClient(logger, opts.KubeConfigPath)
 	if err != nil {
 		panic(err)
 	}
-	githubClient := github.NewGitHubClient(l)
+	githubClient := github.NewGitHubClient(logger)
 	// New Controllers
-	k8sController := controller.NewK8sController(l,
+	k8sController := controller.NewK8sController(logger,
 		k8sClient, opts.JwtSecret, opts.ShowUntaggedLinks)
 	u, err := url.Parse(fmt.Sprintf("%s/auth/callback", opts.BaseUrl))
 	if err != nil {
 		panic(err)
 	}
 	oauthController, err := controller.NewOAuthController(
-		l, githubClient,
+		logger, githubClient,
 		opts.GitHubOAuthKey, opts.GitHubOAuthSecret, u.String(),
 		opts.JwtSecret, time.Duration(opts.ExpiredHour)*time.Hour,
 		utils.Split(opts.GitHubAllowUsers, ",")...,
@@ -46,7 +50,15 @@ func Run(opts *flag.Opts) error {
 
 	// Middleware
 	e.Use(middleware.Recover())
-	e.Use(middleware.Logger())
+	loggerForMiddleware := slog.New(slog.NewJSONHandler(os.Stderr,
+		&slog.HandlerOptions{
+			AddSource: false,
+		}))
+	e.Use(slogecho.NewWithConfig(loggerForMiddleware, slogecho.Config{
+		WithUserAgent:     true,
+		WithRequestID:     true,
+		WithRequestHeader: true,
+	}))
 
 	// Route
 	e.Static("/", "./client/out")

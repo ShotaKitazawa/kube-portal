@@ -2,6 +2,8 @@ package kubernetes
 
 import (
 	"context"
+	"io"
+	"log/slog"
 	"testing"
 
 	networkingv1 "k8s.io/api/networking/v1"
@@ -74,6 +76,7 @@ func TestClient_ListIngressInfo(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := &Client{
+				log:       slog.New(slog.NewJSONHandler(io.Discard, nil)),
 				clientset: tt.fields.clientset,
 			}
 			got, err := c.ListIngress(tt.args.ctx)
