@@ -45,7 +45,7 @@ jobs:
           git add .
           git commit -m "update manifests"
           git tag ${{ steps.bump-semver.outputs.new_version }}
-          git push origin ${{ steps.bump-semver.outputs.new_version }}
           : # revert the commit & push to origin
           git revert HEAD --no-edit
           git push origin HEAD
+          git push origin ${{ steps.bump-semver.outputs.new_version }}
