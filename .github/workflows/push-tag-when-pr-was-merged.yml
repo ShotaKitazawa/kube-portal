@@ -11,22 +11,17 @@ jobs:
       - uses: actions-ecosystem/action-release-label@v1
         id: release-label
         if: ${{ github.event.pull_request.merged == true }}
+      - uses: imranismail/setup-kustomize@v2
 
       - uses: actions/checkout@v4
         if: ${{ steps.release-label.outputs.level != null }}
         with:
           # to trigger release.yml Action
           token: ${{ secrets.TOKEN }}
-      - uses: imranismail/setup-kustomize@v2
 
-      #- uses: actions-ecosystem/action-get-latest-tag@v1
-      #  id: get-latest-tag
-      #  if: ${{ steps.release-label.outputs.level != null }}
-      - id: get-latest-tag
+      - uses: actions-ecosystem/action-get-latest-tag@v1
+        id: get-latest-tag
         if: ${{ steps.release-label.outputs.level != null }}
-        run: |
-          latest_tag=$(curl -s ${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/releases/latest | jq -r .tag_name)
-          echo "tag=${latest_tag}" >> ${GITHUB_OUTPUT}
 
       - uses: actions-ecosystem/action-bump-semver@v1
         id: bump-semver
@@ -35,19 +30,22 @@ jobs:
           current_version: ${{ steps.get-latest-tag.outputs.tag }}
           level: ${{ steps.release-label.outputs.level }}
 
-      # switch to `release-vX.X.X` branch & update manifest's tag
-      - id: push-tag
-        if: ${{ steps.release-label.outputs.level != null }}
+      - if: ${{ steps.release-label.outputs.level != null }}
         run: |
-          git switch -c release-${{ steps.bump-semver.outputs.new_version }}
+          : # Push tag for new_version with updating manifests
+          sudo chmod -R ugo+rwX .
+          : ## update manifest's tag
           cd manifests/base/
           kustomize edit set image kanatakita/kube-portal:${{ steps.bump-semver.outputs.new_version }}
           cd ..
-          kustomize build install/ > ./install.yaml
+          kustomize build ./install/ > ./install.yaml
+          : ## commit the above & grant a tag for new_version
           git add .
           git config user.email "action@users.noreply.github.com"
           git config user.name "GitHub Action"
           git commit -m "update manifests"
-          git push origin HEAD
           git tag ${{ steps.bump-semver.outputs.new_version }}
+          : ## revert the commit & push to origin
+          git revert HEAD --no-edit
+          git push origin HEAD
           git push origin ${{ steps.bump-semver.outputs.new_version }}
