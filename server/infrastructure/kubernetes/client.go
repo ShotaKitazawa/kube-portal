@@ -158,13 +158,13 @@ func (c *Client) ListIngress(ctx context.Context) (models.IngressInfoList, error
 				rvPath, err := jsonpointer.Get(obj,
 					fmt.Sprintf("/rules/%d/http/paths/%d/path", ruleIdx, pathIdx))
 				if err != nil {
-					logger.Warn(fmt.Sprintf(
-						`Ingress.spec.rules[%d].http.paths[%d].path is empty: use "/" as path`,
+					logger.Debug(fmt.Sprintf(
+						"Ingress.spec.rules[%d].http.paths[%d].path is empty: use / as path",
 						ruleIdx, pathIdx))
 					tmpIngressInfo.Path = "/"
 				} else if path, ok := rvPath.(string); !ok {
-					logger.Warn(fmt.Sprintf(
-						`Ingress.spec.rules[%d].http.paths[%d].path is empty: use "/" as path`,
+					logger.Debug(fmt.Sprintf(
+						"Ingress.spec.rules[%d].http.paths[%d].path is empty: use / as path",
 						ruleIdx, pathIdx))
 					tmpIngressInfo.Path = "/"
 				} else {
