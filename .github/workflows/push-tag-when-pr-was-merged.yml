@@ -49,5 +49,5 @@ jobs:
           git config user.name "GitHub Action"
           git commit -m "update manifests"
           git push origin HEAD
-          git push ${{ steps.bump-semver.outputs.new_version }}
+          git tag ${{ steps.bump-semver.outputs.new_version }}
           git push origin ${{ steps.bump-semver.outputs.new_version }}
