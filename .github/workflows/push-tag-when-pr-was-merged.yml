@@ -42,9 +42,9 @@ jobs:
           cd ..
           kustomize build ./install/ > ./install.yaml
           : # commit the above & grant a tag for new_version
-          : git add .
-          : git commit -m "update manifests"
-          : git tag ${{ steps.bump-semver.outputs.new_version }}
+          git add .
+          git commit -m "update manifests"
+          git tag ${{ steps.bump-semver.outputs.new_version }}
           : : # revert the commit & push to origin
           : git revert HEAD --no-edit
           : git push origin master
