@@ -33,19 +33,19 @@ jobs:
       - id: push-tag
         if: ${{ steps.release-label.outputs.level != null }}
         run: |
-          git config user.email "action@users.noreply.github.com"
-          git config user.name "GitHub Action"
+          git config --global user.email "action@users.noreply.github.com"
+          git config --global user.name "GitHub Action"
           git switch master
           : # update manifest's tag
           cd manifests/base/
           kustomize edit set image kanatakita/kube-portal:${{ steps.bump-semver.outputs.new_version }}
           cd ..
-          kustomize build install/ > ./install.yaml
+          kustomize build ./install/ > ./install.yaml
           : # commit the above & grant a tag for new_version
-          git add .
-          git commit -m "update manifests"
-          git tag ${{ steps.bump-semver.outputs.new_version }}
-          : # revert the commit & push to origin
-          git revert HEAD --no-edit
-          git push origin HEAD
-          git push origin ${{ steps.bump-semver.outputs.new_version }}
+          : git add .
+          : git commit -m "update manifests"
+          : git tag ${{ steps.bump-semver.outputs.new_version }}
+          : : # revert the commit & push to origin
+          : git revert HEAD --no-edit
+          : git push origin master
+          : git push origin ${{ steps.bump-semver.outputs.new_version }}
