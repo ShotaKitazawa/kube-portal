@@ -10,4 +10,4 @@ resources:
 
 images:
 - name: kanatakita/kube-portal
-  newTag: v0.3.1
+  newTag: latest
