@@ -25,8 +25,8 @@ jobs:
       - id: get-latest-tag
         if: ${{ steps.release-label.outputs.level != null }}
         run: |
-          latest_tag=$(curl -s $GITHUB_API_URL/repos/$GITHUB_REPOSITORY/releases/latest | jq -r .tag_name)
-          echo "::set-output name=tag::${latest_tag}"
+          latest_tag=$(curl -s ${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/releases/latest | jq -r .tag_name)
+          echo "tag=${latest_tag}" >> ${GITHUB_OUTPUT}
 
       - uses: actions-ecosystem/action-bump-semver@v1
         id: bump-semver
