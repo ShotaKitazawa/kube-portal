@@ -17,10 +17,16 @@ jobs:
         with:
           # to trigger release.yml Action
           token: ${{ secrets.TOKEN }}
+      - uses: imranismail/setup-kustomize@v2
 
-      - uses: actions-ecosystem/action-get-latest-tag@v1
-        id: get-latest-tag
+      #- uses: actions-ecosystem/action-get-latest-tag@v1
+      #  id: get-latest-tag
+      #  if: ${{ steps.release-label.outputs.level != null }}
+      - id: get-latest-tag
         if: ${{ steps.release-label.outputs.level != null }}
+        run: |
+          latest_tag=$(curl -s $GITHUB_API_URL/repos/$GITHUB_REPOSITORY/releases/latest | jq -r .tag_name)
+          echo "::set-output name=tag::${latest_tag}"
 
       - uses: actions-ecosystem/action-bump-semver@v1
         id: bump-semver
@@ -30,7 +36,6 @@ jobs:
           level: ${{ steps.release-label.outputs.level }}
 
       # switch to `release-vX.X.X` branch & update manifest's tag
-      - uses: imranismail/setup-kustomize@v2
       - run: |
           git switch -c release-${{ steps.bump-semver.outputs.new_version }}
           cd manifests/base/
