@@ -38,6 +38,8 @@ jobs:
           cd ..
           kustomize build install/ > ./install.yaml
           git add .
+          git config user.email "action@users.noreply.github.com"
+          git config user.name "GitHub Action"
           git commit -m "update manifests"
           git push origin HEAD
 
