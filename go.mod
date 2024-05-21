@@ -9,7 +9,7 @@ require (
 	github.com/google/go-cmp v0.6.0
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/labstack/echo/v4 v4.12.0
-	github.com/markbates/goth v1.79.0
+	github.com/markbates/goth v1.80.0
 	github.com/mattn/go-jsonpointer v0.0.1
 	github.com/samber/slog-echo v1.14.1
 	github.com/thanhpk/randstr v1.0.6
