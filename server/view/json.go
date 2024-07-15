@@ -33,9 +33,10 @@ func (v JSON) ListIngressInfo(ctx echo.Context, list []models.IngressInfo) error
 
 	var res []IngressInfo
 	for _, val := range list {
-		u, err := url.Parse(val.Proto + "://" + val.Hostname + "/" + val.Path)
-		if err != nil {
-			return err
+		u := &url.URL{
+			Scheme: val.Proto,
+			Host:   val.Hostname,
+			Path:   val.Path,
 		}
 		res = append(res, IngressInfo{
 			Name:    val.Name,
