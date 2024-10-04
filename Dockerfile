@@ -1,5 +1,5 @@
 ### Build Golang ###
-FROM golang:1.22 AS build-backend
+FROM golang:1.23 AS build-backend
 WORKDIR /workdir
 ENV GO111MODULE="on"
 ARG APP_VERSION
@@ -14,7 +14,7 @@ RUN GOOS=linux go build -ldflags "-X main.appVersion=${APP_VERSION} -X main.appC
 
 
 ### Build Next.js ###
-FROM node:20.16.0 AS build-frontend
+FROM node:20.18.0 AS build-frontend
 WORKDIR /workdir
 COPY client/ ./
 RUN yarn install
