@@ -13,9 +13,9 @@ require (
 	github.com/mattn/go-jsonpointer v0.0.1
 	github.com/samber/slog-echo v1.14.7
 	github.com/thanhpk/randstr v1.0.6
-	k8s.io/api v0.31.2
-	k8s.io/apimachinery v0.31.2
-	k8s.io/client-go v0.31.2
+	k8s.io/api v0.31.3
+	k8s.io/apimachinery v0.31.3
+	k8s.io/client-go v0.31.3
 	sigs.k8s.io/controller-runtime v0.19.1
 	sigs.k8s.io/controller-tools v0.16.5
 )
