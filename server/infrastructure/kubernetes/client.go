@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/elliotchance/orderedmap/v2"
+	"github.com/elliotchance/orderedmap/v3"
 	"github.com/mattn/go-jsonpointer"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
