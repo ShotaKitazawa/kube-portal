@@ -13,7 +13,7 @@ require (
 	github.com/labstack/echo/v4 v4.13.3
 	github.com/markbates/goth v1.80.0
 	github.com/mattn/go-jsonpointer v0.0.1
-	github.com/samber/slog-echo v1.14.8
+	github.com/samber/slog-echo v1.15.0
 	github.com/thanhpk/randstr v1.0.6
 	k8s.io/api v0.32.0
 	k8s.io/apimachinery v0.32.0
