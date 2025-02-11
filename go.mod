@@ -2,7 +2,7 @@ module github.com/ShotaKitazawa/kube-portal
 
 go 1.23.0
 
-toolchain go1.23.6
+toolchain go1.24.0
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
