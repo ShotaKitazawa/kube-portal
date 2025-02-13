@@ -14,7 +14,7 @@ RUN GOOS=linux go build -ldflags "-X main.appVersion=${APP_VERSION} -X main.appC
 
 
 ### Build Next.js ###
-FROM node:22.13.1 AS build-frontend
+FROM node:22.14.0 AS build-frontend
 WORKDIR /workdir
 COPY client/ ./
 RUN yarn install
