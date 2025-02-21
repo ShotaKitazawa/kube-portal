@@ -8,7 +8,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/elliotchance/orderedmap/v2 v2.7.0
 	github.com/form3tech-oss/jwt-go v3.2.5+incompatible
-	github.com/google/go-cmp v0.6.0
+	github.com/google/go-cmp v0.7.0
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/labstack/echo/v4 v4.13.3
 	github.com/markbates/goth v1.80.0
