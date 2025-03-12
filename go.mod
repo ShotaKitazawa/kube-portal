@@ -13,7 +13,7 @@ require (
 	github.com/labstack/echo/v4 v4.13.3
 	github.com/markbates/goth v1.80.0
 	github.com/mattn/go-jsonpointer v0.0.1
-	github.com/samber/slog-echo v1.15.1
+	github.com/samber/slog-echo v1.16.1
 	github.com/thanhpk/randstr v1.0.6
 	k8s.io/api v0.32.3
 	k8s.io/apimachinery v0.32.3
@@ -53,7 +53,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/samber/lo v1.47.0 // indirect
+	github.com/samber/lo v1.49.1 // indirect
 	github.com/spf13/cobra v1.8.1 // indirect
 	github.com/spf13/pflag v1.0.6 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
