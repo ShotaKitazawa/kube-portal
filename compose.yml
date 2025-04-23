@@ -20,7 +20,7 @@ services:
       - '$HOME/.kube/config:/mnt/kubeconfig'
 
   frontend:
-    image: node:22.14-alpine
+    image: node:22.15-alpine
     volumes:
       - './client:/client'
     working_dir: /client
