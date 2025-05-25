@@ -50,6 +50,13 @@ func Run(opts *flag.Opts) error {
 
 	// Middleware
 	e.Use(middleware.Recover())
+	if opts.Development {
+		e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+			AllowOrigins:     []string{os.Getenv("ALLOWED_ORIGIN_URL")},
+			AllowMethods:     []string{"*"},
+			AllowCredentials: true,
+		}))
+	}
 	loggerForMiddleware := slog.New(slog.NewJSONHandler(os.Stderr,
 		&slog.HandlerOptions{
 			AddSource: false,
