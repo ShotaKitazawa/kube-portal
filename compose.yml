@@ -4,26 +4,27 @@
 
 version: '3.8'
 services:
-  server:
+  backend:
     build:
       context: .
-      dockerfile: ./development/server.dockerfile
+      dockerfile: ./development/backend.dockerfile
     command:
       - --kubeconfig=/mnt/kubeconfig
       - --bind-addr=0.0.0.0:3001
     ports:
       - 3001:3001
     volumes:
-      - './cmd:/app/cmd'
-      - './server:/app/server'
+      - './main.go:/app/main.go'
+      - './flag:/app/flag'
+      - './backend:/app/backend'
       # specify your Kubeconfig filepath
       - '$HOME/.kube/config:/mnt/kubeconfig'
 
   frontend:
     image: node:22.16-alpine
     volumes:
-      - './client:/client'
-    working_dir: /client
+      - './frontend:/frontend'
+    working_dir: /frontend
     entrypoint: sh
     command:
       - -c

@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	"github.com/ShotaKitazawa/kube-portal/cmd/kube-portal/flag"
-	"github.com/ShotaKitazawa/kube-portal/server"
+	"github.com/ShotaKitazawa/kube-portal/backend"
+	"github.com/ShotaKitazawa/kube-portal/flag"
 )
 
 var (
@@ -17,7 +17,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err := server.Run(opts); err != nil {
+	if err := backend.Run(opts); err != nil {
 		log.Fatal(err)
 	}
 }

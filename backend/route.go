@@ -1,4 +1,4 @@
-package server
+package backend
 
 import (
 	"fmt"
@@ -12,11 +12,11 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	slogecho "github.com/samber/slog-echo"
 
-	"github.com/ShotaKitazawa/kube-portal/cmd/kube-portal/flag"
-	"github.com/ShotaKitazawa/kube-portal/server/controller"
-	"github.com/ShotaKitazawa/kube-portal/server/infrastructure/github"
-	"github.com/ShotaKitazawa/kube-portal/server/infrastructure/kubernetes"
-	"github.com/ShotaKitazawa/kube-portal/server/utils"
+	"github.com/ShotaKitazawa/kube-portal/backend/controller"
+	"github.com/ShotaKitazawa/kube-portal/backend/infrastructure/github"
+	"github.com/ShotaKitazawa/kube-portal/backend/infrastructure/kubernetes"
+	"github.com/ShotaKitazawa/kube-portal/backend/utils"
+	"github.com/ShotaKitazawa/kube-portal/flag"
 )
 
 func Run(opts *flag.Opts) error {
@@ -61,7 +61,7 @@ func Run(opts *flag.Opts) error {
 	}))
 
 	// Route
-	e.Static("/", "./client/out")
+	e.Static("/", "./frontend/out")
 	api := e.Group("/api")
 	api.GET("/list", k8sController.ListIngressInfo, k8sController.JwtAuthMiddleware)
 	auth := e.Group("/auth")

@@ -3,7 +3,7 @@ package view
 import (
 	"net/url"
 
-	"github.com/ShotaKitazawa/kube-portal/server/models"
+	"github.com/ShotaKitazawa/kube-portal/backend/models"
 	"github.com/labstack/echo/v4"
 )
 

@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"strconv"
 
-	"github.com/ShotaKitazawa/kube-portal/server/models/ports"
+	"github.com/ShotaKitazawa/kube-portal/backend/models/ports"
 	"github.com/google/go-github/github"
 )
 

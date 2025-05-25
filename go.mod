@@ -6,7 +6,6 @@ toolchain go1.24.3
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/elliotchance/orderedmap/v2 v2.7.0
 	github.com/form3tech-oss/jwt-go v3.2.5+incompatible
 	github.com/google/go-cmp v0.7.0
 	github.com/google/go-github v17.0.0+incompatible
@@ -24,6 +23,7 @@ require (
 
 require (
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
+	github.com/elliotchance/orderedmap/v3 v3.1.0 // indirect
 	github.com/emicklei/go-restful/v3 v3.11.0 // indirect
 	github.com/fatih/color v1.18.0 // indirect
 	github.com/fxamacker/cbor/v2 v2.7.0 // indirect

@@ -7,8 +7,8 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
 
-	"github.com/ShotaKitazawa/kube-portal/server/models/ports"
-	"github.com/ShotaKitazawa/kube-portal/server/view"
+	"github.com/ShotaKitazawa/kube-portal/backend/models/ports"
+	"github.com/ShotaKitazawa/kube-portal/backend/view"
 )
 
 var (
