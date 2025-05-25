@@ -2,7 +2,6 @@
 # It's a docker-compose file for building development environment.
 #
 
-version: '3.8'
 services:
   backend:
     build:
@@ -11,6 +10,9 @@ services:
     command:
       - --kubeconfig=/mnt/kubeconfig
       - --bind-addr=0.0.0.0:3001
+      - --development
+    environment:
+      ALLOWED_ORIGIN_URL: http://${SERVER_ADDR}:3000
     ports:
       - 3001:3001
     volumes:
@@ -18,7 +20,8 @@ services:
       - './flag:/app/flag'
       - './backend:/app/backend'
       # specify your Kubeconfig filepath
-      - '$HOME/.kube/config:/mnt/kubeconfig'
+      #- '$HOME/.kube/config:/mnt/kubeconfig'
+      - /var/folders/fn/q_z6y1bs5r77y1vq2h0460g00000gn/T/kubie-configFjQWKW.yaml:/mnt/kubeconfig
 
   frontend:
     image: node:22.16-alpine
