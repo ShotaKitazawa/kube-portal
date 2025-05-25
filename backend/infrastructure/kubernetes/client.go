@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/elliotchance/orderedmap/v2"
+	"github.com/elliotchance/orderedmap/v3"
 	"github.com/mattn/go-jsonpointer"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -20,9 +20,9 @@ import (
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 
-	kubeportalv1alpha1 "github.com/ShotaKitazawa/kube-portal/server/infrastructure/kubernetes/api/v1alpha1"
-	"github.com/ShotaKitazawa/kube-portal/server/models"
-	"github.com/ShotaKitazawa/kube-portal/server/models/ports"
+	kubeportalv1alpha1 "github.com/ShotaKitazawa/kube-portal/backend/infrastructure/kubernetes/api/v1alpha1"
+	"github.com/ShotaKitazawa/kube-portal/backend/models"
+	"github.com/ShotaKitazawa/kube-portal/backend/models/ports"
 )
 
 const ingressAnnotationPrefix = "kube-portal.kanatakita.com/"
@@ -147,13 +147,14 @@ func (c *Client) ListIngress(ctx context.Context) (models.IngressInfoList, error
 					logger.Warn(fmt.Sprintf(
 						"skip: Ingress.spec.rules[%d].host is empty", ruleIdx))
 					continue
-				} else if rule, ok := rvRule.(string); !ok {
+				}
+				rule, ok := rvRule.(string)
+				if !ok {
 					logger.Warn(fmt.Sprintf(
 						"skip: Ingress.spec.rules[%d].host is empty", ruleIdx))
 					continue
-				} else {
-					tmpIngressInfo.Hostname = rule
 				}
+				tmpIngressInfo.Hostname = rule
 				// Path
 				rvPath, err := jsonpointer.Get(obj,
 					fmt.Sprintf("/rules/%d/http/paths/%d/path", ruleIdx, pathIdx))
@@ -162,20 +163,21 @@ func (c *Client) ListIngress(ctx context.Context) (models.IngressInfoList, error
 						"Ingress.spec.rules[%d].http.paths[%d].path is empty: use / as path",
 						ruleIdx, pathIdx))
 					tmpIngressInfo.Path = "/"
-				} else if path, ok := rvPath.(string); !ok {
+				}
+				path, ok := rvPath.(string)
+				if !ok {
 					logger.Debug(fmt.Sprintf(
 						"Ingress.spec.rules[%d].http.paths[%d].path is empty: use / as path",
 						ruleIdx, pathIdx))
 					tmpIngressInfo.Path = "/"
-				} else {
-					tmpIngressInfo.Path = path
 				}
+				tmpIngressInfo.Path = path
 			}
 			m.Set(fmt.Sprintf("%d-%d", ruleIdx, pathIdx), tmpIngressInfo)
 		}
 
 		// append result from orderedMap
-		for _, key := range m.Keys() {
+		for key := range m.Keys() {
 			val, _ := m.Get(key)
 			// defaulting
 			if val.Name == "" {

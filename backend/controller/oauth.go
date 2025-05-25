@@ -13,8 +13,8 @@ import (
 	"github.com/markbates/goth/gothic"
 	"github.com/markbates/goth/providers/github"
 
-	"github.com/ShotaKitazawa/kube-portal/server/models/ports"
-	"github.com/ShotaKitazawa/kube-portal/server/utils"
+	"github.com/ShotaKitazawa/kube-portal/backend/models/ports"
+	"github.com/ShotaKitazawa/kube-portal/backend/utils"
 )
 
 var (

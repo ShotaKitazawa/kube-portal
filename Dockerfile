@@ -8,15 +8,16 @@ ARG APP_COMMIT
 COPY go.mod go.sum ./
 RUN go mod download
 ## build
-COPY cmd cmd
-COPY server server
-RUN GOOS=linux go build -ldflags "-X main.appVersion=${APP_VERSION} -X main.appCommit=${APP_COMMIT}" -o app cmd/kube-portal/main.go
+COPY main.go .
+COPY flag flag
+COPY backend backend
+RUN GOOS=linux go build -ldflags "-X main.appVersion=${APP_VERSION} -X main.appCommit=${APP_COMMIT}" -o app main.go
 
 
 ### Build Next.js ###
 FROM node:22.16.0 AS build-frontend
 WORKDIR /workdir
-COPY client/ ./
+COPY frontend/ ./
 RUN yarn install
 RUN yarn build
 
@@ -25,7 +26,7 @@ RUN yarn build
 FROM gcr.io/distroless/base-debian12:latest
 ## copy binary
 COPY --from=build-backend /workdir/app .
-COPY --from=build-frontend /workdir/out client/out
+COPY --from=build-frontend /workdir/out frontend/out
 ## Run
 ENTRYPOINT ["./app"]
 
