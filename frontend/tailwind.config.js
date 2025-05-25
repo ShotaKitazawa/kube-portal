@@ -1,11 +1,20 @@
+/** @type {import('tailwindcss').Config} */
 module.exports = {
-  purge: ['./src/pages/**/*.{js,ts,jsx,tsx}', './src/components/**/*.{js,ts,jsx,tsx}'],
-  darkMode: false, // or 'media' or 'class'
+  content: [
+    './src/pages/**/*.{js,ts,jsx,tsx}',
+    './src/components/**/*.{js,ts,jsx,tsx}',
+  ],
+  darkMode: 'media', // 'media' or 'class'
   theme: {
-    extend: {},
+    extend: {
+      // Add custom theme settings here
+    },
   },
-  variants: {
-    extend: {},
-  },
+  // variants section is not needed in Tailwind CSS v4
   plugins: [],
+  // Tailwind CSS v4 new features
+  future: {
+    // Enable future features
+    hoverOnlyWhenSupported: true,
+  },
 }

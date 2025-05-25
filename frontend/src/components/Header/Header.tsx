@@ -1,11 +1,15 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { Toolbar, AppBar, Typography, IconButton } from '@mui/material'
 
 import { Login } from '../Login'
 
 const repositoryLink = 'https://github.com/ShotaKitazawa/kube-portal'
 
-export const Header: React.FC = ({ children }) => {
+interface HeaderProps {
+  children?: ReactNode
+}
+
+export const Header: React.FC<HeaderProps> = ({ children }) => {
   return (
     <div className="fixed w-full top-0 left-0 flex">
       <AppBar position="static">

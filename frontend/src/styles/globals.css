@@ -1,0 +1,25 @@
+/* Tailwind CSS v4 Directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global Styles */
+@layer base {
+  html {
+    @apply antialiased;
+  }
+  
+  body {
+    @apply bg-[#ffffff] text-[#1a202c] dark:bg-[#1a202c] dark:text-[#ffffff];
+  }
+}
+
+/* Custom Component Styles */
+@layer components {
+  /* Add custom component styles here */
+}
+
+/* Custom Utilities */
+@layer utilities {
+  /* Add custom utilities here */
+}

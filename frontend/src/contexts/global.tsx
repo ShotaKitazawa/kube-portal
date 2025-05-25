@@ -8,11 +8,11 @@ type contexts = {
 
 export const GlobalContext = React.createContext({} as contexts)
 
-type Props = {
+interface GlobalProviderProps {
   children: React.ReactNode
 }
 
-export const GlobalProvider: React.FC<Props> = (props) => {
+export const GlobalProvider: React.FC<GlobalProviderProps> = (props) => {
   const [linkInfo, setLinkInfo] = useState<LinkInfo[]>()
 
   const client = new Client()
@@ -25,9 +25,12 @@ export const GlobalProvider: React.FC<Props> = (props) => {
 
   useEffect(() => {
     listLinkInfo()
-    setInterval(() => {
+    const intervalId = setInterval(() => {
       listLinkInfo()
     }, 10000)
+    return () => {
+      clearInterval(intervalId)
+    }
   }, [])
 
   return (

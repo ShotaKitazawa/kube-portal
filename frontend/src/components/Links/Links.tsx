@@ -1,14 +1,16 @@
 /* eslint @next/next/no-img-element: 0 */
 
+import React, { ReactNode } from 'react'
 import { Card, CardContent } from '@mui/material'
 
 import IngressInfo, { LinkInfo } from '../../drivers/ingress-info'
 
-type Props = {
+interface LinksProps {
   linksList: LinkInfo[]
+  children?: ReactNode
 }
 
-export const Links: React.FC<Props> = ({ linksList }) => {
+export const Links: React.FC<LinksProps> = ({ linksList }) => {
   return (
     <section id="links" className="mt-6">
       <div className="mx-auto flex flex-wrap justify-center">
@@ -40,7 +42,7 @@ export const Links: React.FC<Props> = ({ linksList }) => {
             </div>
           ))
         ) : (
-          <></>
+          <React.Fragment></React.Fragment>
         )}
       </div>
     </section>

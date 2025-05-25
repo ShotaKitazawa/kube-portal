@@ -1,10 +1,15 @@
+import React, { ReactNode } from 'react'
 import Head from 'next/head'
 
 import { Header } from '../Header'
 
 const name = 'kube-portal'
 
-export const Layout: React.FC = ({ children }) => {
+interface LayoutProps {
+  children: ReactNode
+}
+
+export const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <>
       <Head>

@@ -1,15 +1,17 @@
 /* eslint @next/next/no-img-element: 0 */
 
-import { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, ReactNode } from 'react'
 import { CircularProgress } from '@mui/material'
 
 import { Links } from '../Links'
 import { GlobalContext } from '../../contexts/global'
 import { LinkInfo } from '../../drivers/ingress-info'
 
-type Props = {}
+interface LinkGroupsProps {
+  children?: ReactNode
+}
 
-export const LinkGroups: React.FC<Props> = (props) => {
+export const LinkGroups: React.FC<LinkGroupsProps> = (props) => {
   const { linkInfo } = useContext(GlobalContext)
   const [linkInfoByTags, setLinkInfoByTags] =
     useState<Map<string, LinkInfo[]>>()
@@ -37,10 +39,10 @@ export const LinkGroups: React.FC<Props> = (props) => {
       {linkInfoByTags != null ? (
         Array.from(linkInfoByTags.keys())
           .sort()
-          .map((tagName) => (
-            <>
+          .map((tagName, index) => (
+            <React.Fragment key={`tag-group-${index}`}>
               {tagName != '' ? (
-                <>
+                <React.Fragment key={`tag-header-${index}`}>
                   <div className="grid grid-cols-7">
                     <h2 className="col-start-2 text-4xl mt-20 font-bold">
                       {tagName}
@@ -49,12 +51,12 @@ export const LinkGroups: React.FC<Props> = (props) => {
                   <div className="grid grid-cols-8">
                     <hr className="col-start-2 col-end-8 h-px my-4 bg-gray-200 border-0" />
                   </div>
-                </>
+                </React.Fragment>
               ) : (
-                <></>
+                <React.Fragment key={`empty-tag-${index}`}></React.Fragment>
               )}
               <Links linksList={linkInfoByTags.get(tagName)} />
-            </>
+            </React.Fragment>
           ))
       ) : (
         <CircularProgress />

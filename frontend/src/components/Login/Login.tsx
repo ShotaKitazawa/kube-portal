@@ -1,6 +1,6 @@
 /* eslint @next/next/no-img-element: 0 */
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, ReactNode } from 'react'
 import { parseCookies } from 'nookies'
 import { IconButton, Button, Menu, MenuItem } from '@mui/material'
 
@@ -11,7 +11,11 @@ type User = {
   avatarUrl: string
 }
 
-export const Login: React.FC = ({ children }) => {
+interface LoginProps {
+  children?: ReactNode
+}
+
+export const Login: React.FC<LoginProps> = ({ children }) => {
   const [user, setUser] = useState<User>(null)
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
