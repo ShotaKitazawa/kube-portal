@@ -1,40 +1,60 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:base",
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'config:recommended',
   ],
-  "labels": ["dependencies", "automerge"],
-  "packageRules": [
+  labels: [
+    'dependencies',
+    'automerge',
+  ],
+  packageRules: [
     {
-      "matchManagers": ["gomod"],
-      "matchUpdateTypes": ["patch", "digest"],
-      "groupName": "all patch, or digest dependencies on Go",
+      matchManagers: [
+        'gomod',
+      ],
+      matchUpdateTypes: [
+        'patch',
+        'digest',
+      ],
+      groupName: 'all patch, or digest dependencies on Go',
     },
     {
-      "matchManagers": ["npm"],
-      "matchUpdateTypes": ["patch", "minor"],
-      "groupName": "all minor, or patch dependencies on npm",
+      matchManagers: [
+        'npm',
+      ],
+      matchUpdateTypes: [
+        'patch',
+        'minor',
+      ],
+      groupName: 'all minor, or patch dependencies on npm',
     },
-
     {
-      "matchManagers": ["github-actions"],
-      "groupName": "all dependencies on GitHub Actions",
+      matchManagers: [
+        'github-actions',
+      ],
+      groupName: 'all dependencies on GitHub Actions',
     },
     {
-      "matchManagers": ["dockerfile", "docker-compose"],
-      "matchUpdateTypes": ["patch", "minor"],
-      "groupName": "all minor, or patch dependencies on Docker configurations",
+      matchManagers: [
+        'dockerfile',
+        'docker-compose',
+      ],
+      matchUpdateTypes: [
+        'patch',
+        'minor',
+      ],
+      groupName: 'all minor, or patch dependencies on Docker configurations',
     },
   ],
-  "postUpdateOptions": [
-    "gomodTidy",
-    "gomodUpdateImportPaths",
+  postUpdateOptions: [
+    'gomodTidy',
+    'gomodUpdateImportPaths',
   ],
-  "enabledManagers": [
-    "dockerfile",
-    "docker-compose",
-    "github-actions",
-    "gomod",
-    "npm",
+  enabledManagers: [
+    'dockerfile',
+    'docker-compose',
+    'github-actions',
+    'gomod',
+    'npm',
   ],
 }
