@@ -10,7 +10,7 @@
   }
   
   body {
-    @apply bg-white text-gray-900 dark:bg-gray-900 dark:text-white;
+    @apply bg-[#ffffff] text-[#1a202c] dark:bg-[#1a202c] dark:text-[#ffffff];
   }
 }
 
