@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && next export",
     "start": "next start",
     "lint": "next lint"
   },
@@ -13,7 +13,6 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^7.0.0",
     "@mui/material": "^7.0.0",
-    "@tailwindcss/postcss": "^4.1.7",
     "@types/react": "^19.0.0",
     "autoprefixer": "^10.4.16",
     "axios": "^1.0.0",
@@ -23,7 +22,7 @@
     "postcss": "^8.4.31",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "tailwindcss": "^4.0.0"
+    "tailwindcss": "^3.0.23"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

@@ -17,14 +17,12 @@ export const Header: React.FC<HeaderProps> = ({ children }) => {
           <div className="mr-2">
             <a href={repositoryLink}>
               <IconButton edge="start" color="inherit">
-                <span className="iconify" data-icon="mdi-kubernetes" />
+                <img src="/kube-portal.png" width={32} height={32} />
               </IconButton>
             </a>
           </div>
           <div className="flex-grow">
-            <a href={repositoryLink}>
-              <Typography variant="h6">kube-portal</Typography>
-            </a>
+            <Typography variant="h6">kube-portal</Typography>
           </div>
           <div className="ml-auto">
             <Login />
