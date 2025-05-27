@@ -2,6 +2,7 @@
 
 import React, { ReactNode } from 'react'
 import { Card, CardContent } from '@mui/material'
+import Image from 'next/image'
 
 import IngressInfo, { LinkInfo } from '../../drivers/ingress-info'
 
@@ -24,11 +25,18 @@ export const Links: React.FC<LinksProps> = ({ linksList }) => {
                 <Card className="flex hover:bg-indigo-200">
                   <div className="flex-none w-16 h-16">
                     {icon_url != '' ? (
-                      <img alt="icon" src={icon_url} />
+                      <Image
+                        alt="item-icon"
+                        src={icon_url}
+                        width={64}
+                        height={64}
+                      />
                     ) : (
-                      <img
-                        alt="icon"
-                        src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/external-link-alt.svg"
+                      <Image
+                        alt="item-icon"
+                        src="/external-link-alt.svg"
+                        width={64}
+                        height={64}
                       />
                     )}
                   </div>

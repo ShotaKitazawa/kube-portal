@@ -37,7 +37,7 @@ func Parse(version, commit string) (*Opts, error) {
 	flag.StringVar(&opts.GitHubOAuthSecret, "github-client-secret", "", "GitHub OAuth Client Secret (optional, required if enable Login feature)")
 	flag.StringVar(&opts.JwtSecret, "jwt-secret", "", "jwt secret using to check whether user is logging in (optional)")
 	flag.StringVar(&opts.KubeConfigPath, "kubeconfig", "", "filepath of KubeConfig")
-	flag.BoolVar(&opts.ShowUntaggedLinks, "show-untagged-links", true, "show untagged links")
+	flag.BoolVar(&opts.ShowUntaggedLinks, "show-untagged-links", false, "show untagged links")
 	flag.VisitAll(func(f *flag.Flag) {
 		if s := os.Getenv(strings.ToUpper(strings.ReplaceAll(f.Name, "-", "_"))); s != "" {
 			_ = f.Value.Set(s)

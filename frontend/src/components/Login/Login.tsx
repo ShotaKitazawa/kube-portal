@@ -1,10 +1,16 @@
 /* eslint @next/next/no-img-element: 0 */
 
 import React, { useState, useEffect, ReactNode } from 'react'
+import Image from 'next/image'
 import { parseCookies } from 'nookies'
 import { IconButton, Button, Menu, MenuItem } from '@mui/material'
 
 import Jwt from '../../drivers/jwt'
+
+const origin =
+  process.env.NEXT_PUBLIC_BACKEND_URL !== undefined
+    ? process.env.NEXT_PUBLIC_BACKEND_URL
+    : ''
 
 type User = {
   user: string
@@ -48,7 +54,7 @@ export const Login: React.FC<LoginProps> = ({ children }) => {
             onClick={handleMenu}
             color="inherit"
           >
-            <img
+            <Image
               src={user.avatarUrl}
               alt="avatar"
               className="rounded-full"
@@ -63,6 +69,7 @@ export const Login: React.FC<LoginProps> = ({ children }) => {
               vertical: 'top',
               horizontal: 'right',
             }}
+            disableScrollLock={true}
             keepMounted
             transformOrigin={{
               vertical: 'top',
@@ -77,7 +84,7 @@ export const Login: React.FC<LoginProps> = ({ children }) => {
           </Menu>
         </div>
       ) : (
-        <a href="/auth/login">
+        <a href={origin + '/auth/login'}>
           <Button color="inherit">Login</Button>
         </a>
       )}
