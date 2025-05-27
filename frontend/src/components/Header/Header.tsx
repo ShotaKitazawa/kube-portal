@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react'
+import Image from 'next/image'
 import { Toolbar, AppBar, Typography, IconButton } from '@mui/material'
 
 import { Login } from '../Login'
@@ -17,7 +18,12 @@ export const Header: React.FC<HeaderProps> = ({ children }) => {
           <div className="mr-2">
             <a href={repositoryLink}>
               <IconButton edge="start" color="inherit">
-                <img src="/kube-portal.png" width={32} height={32} />
+                <Image
+                  alt="icon"
+                  src="/kube-portal.png"
+                  width={32}
+                  height={32}
+                />
               </IconButton>
             </a>
           </div>

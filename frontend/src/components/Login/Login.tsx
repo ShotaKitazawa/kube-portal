@@ -1,6 +1,7 @@
 /* eslint @next/next/no-img-element: 0 */
 
 import React, { useState, useEffect, ReactNode } from 'react'
+import Image from 'next/image'
 import { parseCookies } from 'nookies'
 import { IconButton, Button, Menu, MenuItem } from '@mui/material'
 
@@ -53,7 +54,7 @@ export const Login: React.FC<LoginProps> = ({ children }) => {
             onClick={handleMenu}
             color="inherit"
           >
-            <img
+            <Image
               src={user.avatarUrl}
               alt="avatar"
               className="rounded-full"
