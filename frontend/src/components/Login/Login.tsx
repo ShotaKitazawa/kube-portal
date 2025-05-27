@@ -6,6 +6,11 @@ import { IconButton, Button, Menu, MenuItem } from '@mui/material'
 
 import Jwt from '../../drivers/jwt'
 
+const origin =
+  process.env.NEXT_PUBLIC_BACKEND_URL !== undefined
+    ? process.env.NEXT_PUBLIC_BACKEND_URL
+    : ''
+
 type User = {
   user: string
   avatarUrl: string
@@ -63,6 +68,7 @@ export const Login: React.FC<LoginProps> = ({ children }) => {
               vertical: 'top',
               horizontal: 'right',
             }}
+            disableScrollLock={true}
             keepMounted
             transformOrigin={{
               vertical: 'top',
@@ -77,7 +83,7 @@ export const Login: React.FC<LoginProps> = ({ children }) => {
           </Menu>
         </div>
       ) : (
-        <a href="/auth/login">
+        <a href={origin + '/auth/login'}>
           <Button color="inherit">Login</Button>
         </a>
       )}
