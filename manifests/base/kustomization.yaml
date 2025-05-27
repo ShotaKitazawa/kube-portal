@@ -9,5 +9,6 @@ resources:
 - sa.yaml
 
 images:
-- name: kanatakita/kube-portal
+- name: __IMAGE__
+  newName: ghcr.io/shotakitazawa/kube-portal
   newTag: latest
