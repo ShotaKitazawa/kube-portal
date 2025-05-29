@@ -14,7 +14,7 @@ require (
 	github.com/mattn/go-jsonpointer v0.0.1
 	github.com/samber/slog-echo v1.16.1
 	github.com/urfave/cli/v3 v3.3.3
-	golang.org/x/oauth2 v0.28.0
+	golang.org/x/oauth2 v0.30.0
 	k8s.io/api v0.33.1
 	k8s.io/apimachinery v0.33.1
 	k8s.io/client-go v0.33.1
