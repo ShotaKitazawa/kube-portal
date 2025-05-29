@@ -1,6 +1,6 @@
-package models
+package model
 
-type IngressInfo struct {
+type Link struct {
 	Name      string
 	Hostname  string
 	Path      string
@@ -10,10 +10,10 @@ type IngressInfo struct {
 	IsPrivate bool
 }
 
-type IngressInfoList []IngressInfo
+type LinkList []Link
 
-func (list IngressInfoList) ExcludePrivateLinkIfNotLogIn(isLogin bool) IngressInfoList {
-	var result []IngressInfo
+func (list LinkList) ExcludePrivateLinkIfNotLogIn(isLogin bool) LinkList {
+	var result []Link
 	if !isLogin {
 		for _, val := range list {
 			if !val.IsPrivate {

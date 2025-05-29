@@ -3,19 +3,20 @@ package view
 import (
 	"net/url"
 
-	"github.com/ShotaKitazawa/kube-portal/backend/models"
 	"github.com/labstack/echo/v4"
+
+	"github.com/ShotaKitazawa/kube-portal/backend/model"
 )
 
-type Iface interface {
-	ListIngressInfo(ctx echo.Context, list []models.IngressInfo) error
+type API interface {
+	ListIngressInfo(ctx echo.Context, list []model.Link) error
 }
 
-type JSON struct {
+type JSONForAPI struct {
 	ShowUntaggedLinks bool
 }
 
-var _ Iface = (*JSON)(nil)
+var _ API = (*JSONForAPI)(nil)
 
 type IngressInfo struct {
 	Name    string   `json:"name"`
@@ -24,7 +25,7 @@ type IngressInfo struct {
 	Tags    []string `json:"tags"`
 }
 
-func (v JSON) ListIngressInfo(ctx echo.Context, list []models.IngressInfo) error {
+func (v JSONForAPI) ListIngressInfo(ctx echo.Context, list []model.Link) error {
 	if v.ShowUntaggedLinks {
 		for idx := range list {
 			list[idx].Tags = append(list[idx].Tags, "")

@@ -11,7 +11,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/fake"
 
-	"github.com/ShotaKitazawa/kube-portal/backend/models"
+	"github.com/ShotaKitazawa/kube-portal/backend/model"
 	"github.com/google/go-cmp/cmp"
 )
 
@@ -26,7 +26,7 @@ func TestClient_ListIngressInfo(t *testing.T) {
 		name    string
 		fields  fields
 		args    args
-		want    models.IngressInfoList
+		want    model.LinkList
 		wantErr bool
 	}{
 		{
@@ -57,7 +57,7 @@ func TestClient_ListIngressInfo(t *testing.T) {
 				),
 			},
 			args: args{context.Background()},
-			want: models.IngressInfoList{
+			want: model.LinkList{
 				{
 					Name:      "test01",
 					Hostname:  "01.example.com",
