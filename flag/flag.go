@@ -1,58 +1,87 @@
 package flag
 
 import (
-	"flag"
 	"fmt"
-	"os"
-	"strings"
+	"net/url"
 
-	"github.com/thanhpk/randstr"
+	"github.com/urfave/cli/v3"
 )
 
-type Opts struct {
-	BaseUrl           string
-	BindAddr          string
-	Development       bool
-	ExpiredHour       int
-	GitHubAllowUsers  string
-	GitHubOAuthKey    string
-	GitHubOAuthSecret string
-	JwtSecret         string
-	KubeConfigPath    string
-	ShowUntaggedLinks bool
-}
-
-func Parse(version, commit string) (*Opts, error) {
-	var showVersion bool
-	flag.BoolVar(&showVersion, "version", false,
-		"show version")
-
-	var opts Opts
-	flag.StringVar(&opts.BaseUrl, "base-url", "", "app's externally facing base URL (optional, required if enable Login feature)")
-	flag.StringVar(&opts.BindAddr, "bind-addr", "0.0.0.0:8080", "bind address")
-	flag.BoolVar(&opts.Development, "development", false, "development mode")
-	flag.IntVar(&opts.ExpiredHour, "expired-hour", 12, "jwt expired time (hour)")
-	flag.StringVar(&opts.GitHubAllowUsers, "github-allow-users", "", "specified GitHub Usernames by comma-separated that you allowed to get private links")
-	flag.StringVar(&opts.GitHubOAuthKey, "github-client-id", "", "GitHub OAuth Client ID (optional, required if enable Login feature)")
-	flag.StringVar(&opts.GitHubOAuthSecret, "github-client-secret", "", "GitHub OAuth Client Secret (optional, required if enable Login feature)")
-	flag.StringVar(&opts.JwtSecret, "jwt-secret", "", "jwt secret using to check whether user is logging in (optional)")
-	flag.StringVar(&opts.KubeConfigPath, "kubeconfig", "", "filepath of KubeConfig")
-	flag.BoolVar(&opts.ShowUntaggedLinks, "show-untagged-links", false, "show untagged links")
-	flag.VisitAll(func(f *flag.Flag) {
-		if s := os.Getenv(strings.ToUpper(strings.ReplaceAll(f.Name, "-", "_"))); s != "" {
-			_ = f.Value.Set(s)
-		}
-	})
-	flag.Parse()
-
-	if showVersion {
-		fmt.Printf("Version: %s (Commit: %s)\n", version, commit)
-		return nil, fmt.Errorf("")
+var (
+	BindAddr = cli.StringFlag{
+		Name:  "bind-addr",
+		Usage: "bind address",
+		Value: "0.0.0.0:8080",
+	}
+	Development = cli.BoolFlag{
+		Name:  "development",
+		Usage: "development mode",
+		Value: false,
+	}
+	KubeConfigPath = cli.StringFlag{
+		Name:    "kube-config-path",
+		Usage:   "filepath of KubeConfig",
+		Sources: cli.EnvVars("KUBECONFIG"),
+		Value:   "$HOME/.kube/config",
+	}
+	OIDCProviderURL = cli.StringFlag{
+		Name:     "oidc-provider-url",
+		Usage:    "The URL of OpenID Provider. (refer to https://openid.net/specs/openid-connect-core-1_0.html#Terminology)",
+		Required: true,
+		Sources:  cli.EnvVars("OIDC_PROVIDER_URL"),
+		Validator: func(s string) error {
+			if _, err := url.ParseRequestURI(s); err != nil {
+				return fmt.Errorf("failed to parse URL: %w", err)
+			}
+			return nil
+		},
+	}
+	OIDCClientID = cli.StringFlag{
+		Name:     "oidc-client-id",
+		Usage:    "OIDC Client Identifer. (refer to https://openid.net/specs/openid-connect-core-1_0.html#Terminology)",
+		Required: true,
+		Sources:  cli.EnvVars("OIDC_CLIENT_ID"),
+	}
+	OIDCClientSecret = cli.StringFlag{
+		Name:     "oidc-client-secret",
+		Usage:    "OIDC Client Secret. (refer to https://openid.net/specs/openid-connect-core-1_0.html#Terminology)",
+		Required: true,
+		Sources:  cli.EnvVars("OIDC_CLIENT_SECRET"),
 	}
 
-	if opts.JwtSecret == "" {
-		opts.JwtSecret = randstr.String(32)
+	RoleAttributePath = cli.StringFlag{
+		Name:     "role-attribute-path",
+		Usage:    "This value must be JMESPath format. Only entities that return true are allowed.",
+		Required: true,
 	}
+	ServerURL = cli.StringFlag{
+		Name:  "server-url",
+		Usage: "The URL of this server.",
+		Value: "http://localhost:8080",
+		Validator: func(s string) error {
+			if _, err := url.ParseRequestURI(s); err != nil {
+				return fmt.Errorf("failed to parse URL: %w", err)
+			}
+			return nil
+		},
+	}
+	ShowUntaggedLinks = cli.BoolFlag{
+		Name:  "show-untagged-links",
+		Usage: "Show untagged links",
+		Value: false,
+	}
+)
 
-	return &opts, nil
+func Flags(version, commit string) []cli.Flag {
+	return []cli.Flag{
+		&BindAddr,
+		&Development,
+		&KubeConfigPath,
+		&OIDCProviderURL,
+		&OIDCClientID,
+		&OIDCClientSecret,
+		&RoleAttributePath,
+		&ServerURL,
+		&ShowUntaggedLinks,
+	}
 }

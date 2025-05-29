@@ -20,9 +20,9 @@ import (
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 
+	"github.com/ShotaKitazawa/kube-portal/backend/model"
+	"github.com/ShotaKitazawa/kube-portal/backend/model/port"
 	kubeportalv1alpha1 "github.com/ShotaKitazawa/kube-portal/backend/infrastructure/kubernetes/api/v1alpha1"
-	"github.com/ShotaKitazawa/kube-portal/backend/models"
-	"github.com/ShotaKitazawa/kube-portal/backend/models/ports"
 )
 
 const ingressAnnotationPrefix = "kube-portal.kanatakita.com/"
@@ -40,7 +40,7 @@ type Client struct {
 	dynamic   dynamic.Interface
 }
 
-var _ ports.Kubernetes = (*Client)(nil)
+var _ port.Kubernetes = (*Client)(nil)
 
 func NewClient(logger *slog.Logger, kubeconfigPath string) (*Client, error) {
 	kubeConfig, err := buildConfig(kubeconfigPath)
@@ -73,15 +73,15 @@ func buildConfig(kubeconfig string) (*rest.Config, error) {
 	return cfg, nil
 }
 
-func (c *Client) ListIngress(ctx context.Context) (models.IngressInfoList, error) {
+func (c *Client) ListIngress(ctx context.Context) (model.LinkList, error) {
 	ings, err := c.clientset.NetworkingV1().Ingresses("").List(ctx, metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
 
-	var result models.IngressInfoList
+	var result model.LinkList
 	for _, ing := range ings.Items {
-		m := orderedmap.NewOrderedMap[string, models.IngressInfo]()
+		m := orderedmap.NewOrderedMap[string, model.Link]()
 		logger := c.log.With(
 			slog.String("name", ing.Name),
 			slog.String("namespace", ing.Namespace),
@@ -107,7 +107,7 @@ func (c *Client) ListIngress(ctx context.Context) (models.IngressInfoList, error
 			action := l[3]
 
 			//
-			// Fill models.IngressInfo
+			// Fill model.IngressInfo
 			//
 			tmpIngressInfo, _ := m.Get(fmt.Sprintf("%d-%d", ruleIdx, pathIdx))
 			// Fill from annotations
@@ -196,7 +196,7 @@ func (c *Client) ListIngress(ctx context.Context) (models.IngressInfoList, error
 	return result, nil
 }
 
-func (c *Client) ListExternalLink(ctx context.Context) (models.IngressInfoList, error) {
+func (c *Client) ListExternalLink(ctx context.Context) (model.LinkList, error) {
 	gvr := schema.GroupVersionResource{
 		Group:    kubeportalv1alpha1.GroupVersion.Group,
 		Version:  kubeportalv1alpha1.GroupVersion.Version,
@@ -206,7 +206,7 @@ func (c *Client) ListExternalLink(ctx context.Context) (models.IngressInfoList, 
 	if err != nil {
 		return nil, err
 	}
-	var result []models.IngressInfo
+	var result []model.Link
 	for _, u := range uList.Items {
 		exLink := kubeportalv1alpha1.ExternalLink{}
 		if err := runtime.DefaultUnstructuredConverter.FromUnstructured(u.Object, &exLink); err != nil {
@@ -218,7 +218,7 @@ func (c *Client) ListExternalLink(ctx context.Context) (models.IngressInfoList, 
 			return nil, err
 		}
 		/* set values to result */
-		result = append(result, models.IngressInfo{
+		result = append(result, model.Link{
 			Name:      exLink.Spec.Title,
 			Hostname:  u.Host,
 			Path:      u.Path,
