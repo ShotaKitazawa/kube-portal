@@ -21,10 +21,10 @@ var (
 		Value:   false,
 	}
 	KubeConfigPath = cli.StringFlag{
-		Name:    "kube-config-path",
-		Usage:   "filepath of KubeConfig",
-		Sources: cli.EnvVars("KUBECONFIG"),
-		Value:   "$HOME/.kube/config",
+		Name:     "kubeconfig",
+		Usage:    "filepath of KubeConfig",
+		Sources:  cli.EnvVars("KUBECONFIG"),
+		Required: false,
 	}
 	OIDCProviderURL = cli.StringFlag{
 		Name:     "oidc-provider-url",
