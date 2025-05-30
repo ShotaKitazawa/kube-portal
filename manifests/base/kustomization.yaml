@@ -12,3 +12,5 @@ images:
 - name: __IMAGE__
   newName: ghcr.io/shotakitazawa/kube-portal
   newTag: latest
+- name: kanatakita/kube-portal
+  newTag: v0.5.2
