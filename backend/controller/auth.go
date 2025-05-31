@@ -37,7 +37,15 @@ func (c *AuthController) Login(ctx echo.Context) error {
 }
 
 func (c *AuthController) Logout(ctx echo.Context) error {
-	// TODO
+	// delete cookie
+	ctx.SetCookie(&http.Cookie{
+		Name:   util.CookieKeyIDToken,
+		Path:   "/",
+		Value:  "",
+		MaxAge: -1,
+	})
+
+	// TODO: redirect to provider logout URL
 	return ctx.Redirect(http.StatusTemporaryRedirect, "/")
 }
 
