@@ -34,8 +34,8 @@ export const Login: React.FC<LoginProps> = ({ children }) => {
 
   useEffect(() => {
     const cookies = parseCookies()
-    if (cookies.jwt !== undefined) {
-      const jwt: Jwt = new Jwt(cookies.jwt)
+    if (cookies['id-token'] !== undefined) {
+      const jwt: Jwt = new Jwt(cookies['id-token'])
       setUser({
         user: jwt.GetUsername(),
         avatarUrl: jwt.GetAvatarUrl(),
@@ -79,7 +79,7 @@ export const Login: React.FC<LoginProps> = ({ children }) => {
             onClose={handleClose}
           >
             <MenuItem onClick={handleClose}>
-              <a href="/auth/logout">Logout</a>
+              <a href={origin + '/auth/logout'}>Logout</a>
             </MenuItem>
           </Menu>
         </div>

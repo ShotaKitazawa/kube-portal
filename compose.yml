@@ -11,8 +11,13 @@ services:
       - --kubeconfig=/mnt/kubeconfig
       - --bind-addr=0.0.0.0:3001
       - --development
+      - --server-url=http://localhost:3001/
     environment:
       ALLOWED_ORIGIN_URL: http://${SERVER_ADDR}:3000
+      OIDC_PROVIDER_URL: ${OIDC_PROVIDER_URL}
+      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID}
+      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
+      ROLE_ATTRIBUTE_PATH: ${ROLE_ATTRIBUTE_PATH}
     ports:
       - 3001:3001
     volumes:
@@ -20,8 +25,7 @@ services:
       - './flag:/app/flag'
       - './backend:/app/backend'
       # specify your Kubeconfig filepath
-      #- '$HOME/.kube/config:/mnt/kubeconfig'
-      - /var/folders/fn/q_z6y1bs5r77y1vq2h0460g00000gn/T/kubie-configFjQWKW.yaml:/mnt/kubeconfig
+      - '$HOME/.kube/config:/mnt/kubeconfig'
 
   frontend:
     image: node:22.16-alpine
