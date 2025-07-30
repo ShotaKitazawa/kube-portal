@@ -5,7 +5,7 @@ go 1.24.0
 toolchain go1.24.5
 
 require (
-	github.com/coreos/go-oidc/v3 v3.14.1
+	github.com/coreos/go-oidc/v3 v3.15.0
 	github.com/elliotchance/orderedmap/v3 v3.1.0
 	github.com/google/go-cmp v0.7.0
 	github.com/google/uuid v1.6.0
