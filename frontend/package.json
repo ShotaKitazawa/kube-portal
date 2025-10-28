@@ -25,7 +25,7 @@
     "tailwindcss": "^3.0.23"
   },
   "devDependencies": {
-    "@types/node": "^22.0.0",
+    "@types/node": "^24.0.0",
     "@types/react": "^19.0.0",
     "cssnano": "^7.0.0",
     "eslint": "^9.0.0",
