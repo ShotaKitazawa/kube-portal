@@ -2,7 +2,7 @@ module github.com/ShotaKitazawa/kube-portal
 
 go 1.24.0
 
-toolchain go1.25.3
+toolchain go1.25.4
 
 require (
 	github.com/coreos/go-oidc/v3 v3.16.0
