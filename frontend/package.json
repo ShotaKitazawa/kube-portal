@@ -21,7 +21,7 @@
     "normalize.css": "^8.0.1",
     "postcss": "^8.4.31",
     "react": "19.1.1",
-    "react-dom": "^19.0.0",
+    "react-dom": "19.1.1",
     "tailwindcss": "^3.0.23"
   },
   "devDependencies": {
