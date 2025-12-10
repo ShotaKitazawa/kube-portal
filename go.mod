@@ -15,9 +15,9 @@ require (
 	github.com/samber/slog-echo v1.18.0
 	github.com/urfave/cli/v3 v3.6.1
 	golang.org/x/oauth2 v0.34.0
-	k8s.io/api v0.34.2
-	k8s.io/apimachinery v0.34.2
-	k8s.io/client-go v0.34.2
+	k8s.io/api v0.34.3
+	k8s.io/apimachinery v0.34.3
+	k8s.io/client-go v0.34.3
 	sigs.k8s.io/controller-runtime v0.22.4
 	sigs.k8s.io/controller-tools v0.19.0
 )
