@@ -882,7 +882,14 @@
   resolved "https://registry.yarnpkg.com/@types/react-transition-group/-/react-transition-group-4.4.12.tgz#b5d76568485b02a307238270bfe96cb51ee2a044"
   integrity sha512-8TV6R3h2j7a91c+1DXdJi3Syo69zzIZbz7Lg5tORM5LEJG7X/E6a1V3drRyBRZq7/utz7A+c4OgYLiLcYGHG6w==
 
-"@types/react@19.1.8", "@types/react@^19.0.0":
+"@types/react@19.1.3":
+  version "19.1.3"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-19.1.3.tgz#c75a24b775a63280b02c66a55a3cfa04f4022cf7"
+  integrity sha512-dLWQ+Z0CkIvK1J8+wrDPwGxEYFA4RAyHoZPxHVGspYmFVnwGSNT24cGIhFJrtfRnWVuW8X7NO52gCXmhkVUWGQ==
+  dependencies:
+    csstype "^3.0.2"
+
+"@types/react@19.1.8":
   version "19.1.8"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-19.1.8.tgz#ff8395f2afb764597265ced15f8dddb0720ae1c3"
   integrity sha512-AwAfQ2Wa5bCx9WP8nZL2uMZWod7J7/JSplxbTmBQ5ms6QpqNYm672H0Vu9ZVKVngQ+ii4R/byguVEUZQyeg44g==
@@ -3547,10 +3554,10 @@ queue-microtask@^1.2.2:
   resolved "https://registry.yarnpkg.com/queue-microtask/-/queue-microtask-1.2.3.tgz#4929228bbc724dfac43e0efb058caf7b6cfb6243"
   integrity sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==
 
-react-dom@19.1.1:
-  version "19.1.1"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-19.1.1.tgz#2daa9ff7f3ae384aeb30e76d5ee38c046dc89893"
-  integrity sha512-Dlq/5LAZgF0Gaz6yiqZCf6VCcZs1ghAJyrsu84Q/GT0gV+mCxbfmKNoGRKBYMJ8IEdGPqu49YWXD02GCknEDkw==
+react-dom@19.1.3:
+  version "19.1.3"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-19.1.3.tgz#3ef45979d2657ae2d0f4abe9e1a05af9c38a6760"
+  integrity sha512-stZrJtR8ovt0w3Dn8kTWwcx8hGHMhwjYOcv7hyzPPX/Ym+yl+Z39XFa+1meucWq0FgxF5IIE3h93SYP1kWB0tg==
   dependencies:
     scheduler "^0.26.0"
 
@@ -3574,10 +3581,10 @@ react-transition-group@^4.4.5:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
-react@19.1.1:
-  version "19.1.1"
-  resolved "https://registry.yarnpkg.com/react/-/react-19.1.1.tgz#06d9149ec5e083a67f9a1e39ce97b06a03b644af"
-  integrity sha512-w8nqGImo45dmMIfljjMwOGtbmC/mk4CMYhWIicdSflH91J9TyCyczcPFXJzrZ/ZXcgGRFeP6BU0BEJTw6tZdfQ==
+react@19.1.3:
+  version "19.1.3"
+  resolved "https://registry.yarnpkg.com/react/-/react-19.1.3.tgz#0d2b68b3c3b516c8deec0154e2db59a35fd9c5d9"
+  integrity sha512-A4YW2fBH0DryMfkcPOfIPd6YO7jP/0KguaRmONj69EcxMbHerGFzxeCqfznKipB8aJIwr/VefHwehTakgfDA1g==
 
 read-cache@^1.0.0:
   version "1.0.0"
