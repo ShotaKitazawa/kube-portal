@@ -19,8 +19,8 @@
     "nookies": "^2.5.2",
     "normalize.css": "^8.0.1",
     "postcss": "^8.4.31",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
     "tailwindcss": "^3.0.23"
   },
   "devDependencies": {
