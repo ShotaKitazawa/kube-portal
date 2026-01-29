@@ -9,8 +9,8 @@ import (
 	"os"
 
 	"github.com/coreos/go-oidc/v3/oidc"
-	"github.com/labstack/echo/v4"
-	echomiddleware "github.com/labstack/echo/v4/middleware"
+	"github.com/labstack/echo/v5"
+	echomiddleware "github.com/labstack/echo/v5/middleware"
 	slogecho "github.com/samber/slog-echo"
 	"github.com/urfave/cli/v3"
 	"golang.org/x/oauth2"
