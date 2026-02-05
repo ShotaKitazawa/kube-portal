@@ -25,13 +25,13 @@
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
-    "@types/react": "19.2.12",
+    "@types/react": "19.2.13",
     "cssnano": "^7.0.0",
     "eslint": "^9.0.0",
     "eslint-config-next": "^16.0.0",
     "typescript": "^5.0.0"
   },
   "resolutions": {
-    "@types/react": "19.2.12"
+    "@types/react": "19.2.13"
   }
 }
