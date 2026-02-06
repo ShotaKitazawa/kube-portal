@@ -12,7 +12,7 @@ require (
 	github.com/jmespath/go-jmespath v0.4.0
 	github.com/labstack/echo/v4 v4.15.0
 	github.com/mattn/go-jsonpointer v0.0.1
-	github.com/samber/slog-echo v1.19.1
+	github.com/samber/slog-echo v1.20.1
 	github.com/urfave/cli/v3 v3.6.2
 	golang.org/x/oauth2 v0.34.0
 	k8s.io/api v0.35.0
