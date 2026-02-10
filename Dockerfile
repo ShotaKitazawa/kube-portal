@@ -1,5 +1,5 @@
 ### Build Golang ###
-FROM golang:1.25 AS build-backend
+FROM golang:1.26 AS build-backend
 WORKDIR /workdir
 ENV GO111MODULE="on"
 ARG APP_VERSION
