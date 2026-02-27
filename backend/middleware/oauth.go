@@ -8,7 +8,7 @@ import (
 	"github.com/ShotaKitazawa/kube-portal/backend/view"
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/jmespath/go-jmespath"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 )
 
 type AuthConfig struct {

@@ -1,7 +1,7 @@
 package util
 
 import (
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 )
 
 var contextKeyIsLogin = "is_login"
