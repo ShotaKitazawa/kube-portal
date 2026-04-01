@@ -1,6 +1,6 @@
 package view
 
-import "github.com/labstack/echo/v4"
+import "github.com/labstack/echo/v5"
 
 type CommonResponse struct {
 	Message string `json:"message"`
