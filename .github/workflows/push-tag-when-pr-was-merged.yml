@@ -11,7 +11,7 @@ jobs:
       - uses: actions-ecosystem/action-release-label@v1
         id: release-label
         if: ${{ github.event.pull_request.merged == true }}
-      - uses: imranismail/setup-kustomize@v2
+      - uses: imranismail/setup-kustomize@v3
 
       - uses: actions/checkout@v6
         if: ${{ steps.release-label.outputs.level != null }}
