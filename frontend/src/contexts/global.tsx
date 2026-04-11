@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 
 import Client, { LinkInfo } from '../drivers/ingress-info'
+import { AuthContext } from './auth'
 
 type contexts = {
   linkInfo?: LinkInfo[]
@@ -14,11 +15,12 @@ interface GlobalProviderProps {
 
 export const GlobalProvider: React.FC<GlobalProviderProps> = (props) => {
   const [linkInfo, setLinkInfo] = useState<LinkInfo[]>()
+  const { user } = useContext(AuthContext)
 
   const client = new Client()
   const listLinkInfo = async () => {
     try {
-      const resp = await client.List()
+      const resp = await client.List(user?.access_token)
       setLinkInfo(resp)
     } catch (error) {}
   }
@@ -31,7 +33,7 @@ export const GlobalProvider: React.FC<GlobalProviderProps> = (props) => {
     return () => {
       clearInterval(intervalId)
     }
-  }, [])
+  }, [user])
 
   return (
     <GlobalContext.Provider

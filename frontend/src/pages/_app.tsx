@@ -4,6 +4,7 @@ import type { AppProps } from 'next/app'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 
+import { AuthProvider } from '../contexts/auth'
 import { GlobalProvider } from '../contexts/global'
 
 const theme = createTheme({
@@ -21,9 +22,11 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline /> {/* reset MUI based style */}
-      <GlobalProvider>
-        <Component {...pageProps} />
-      </GlobalProvider>
+      <AuthProvider>
+        <GlobalProvider>
+          <Component {...pageProps} />
+        </GlobalProvider>
+      </AuthProvider>
     </ThemeProvider>
   )
 }

@@ -3,6 +3,7 @@ package middleware
 import (
 	"log/slog"
 	"net/http"
+	"strings"
 
 	"github.com/ShotaKitazawa/kube-portal/backend/util"
 	"github.com/ShotaKitazawa/kube-portal/backend/view"
@@ -19,12 +20,13 @@ type AuthConfig struct {
 func AuthWithConfig(conf AuthConfig, l *slog.Logger) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(ctx echo.Context) (returnErr error) {
-			cookie, err := ctx.Cookie(util.CookieKeyIDToken)
-			if err != nil {
+			authHeader := ctx.Request().Header.Get("Authorization")
+			if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
 				return next(ctx)
 			}
+			tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
 
-			idToken, err := conf.OIDCVerifier.Verify(ctx.Request().Context(), cookie.Value)
+			idToken, err := conf.OIDCVerifier.Verify(ctx.Request().Context(), tokenStr)
 			if err != nil {
 				return view.ResponseJSON(ctx, http.StatusForbidden, "Provided token is invalid")
 			}

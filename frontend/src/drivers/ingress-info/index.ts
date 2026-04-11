@@ -20,10 +20,14 @@ class Client {
     this.url = origin + '/api/list'
   }
 
-  async List(): Promise<LinkInfo[]> {
+  async List(accessToken?: string): Promise<LinkInfo[]> {
+    const headers: Record<string, string> = {}
+    if (accessToken) {
+      headers['Authorization'] = `Bearer ${accessToken}`
+    }
     let res
     try {
-      res = await axios.get<LinkInfo[]>(this.url, { withCredentials: true })
+      res = await axios.get<LinkInfo[]>(this.url, { headers })
     } catch {
       res = { data: null }
     }

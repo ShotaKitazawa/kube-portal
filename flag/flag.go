@@ -44,10 +44,10 @@ var (
 		Sources:  cli.EnvVars("OIDC_CLIENT_ID"),
 		Required: true,
 	}
-	OIDCClientSecret = cli.StringFlag{
-		Name:     "oidc-client-secret",
-		Usage:    "OIDC Client Secret. (refer to https://openid.net/specs/openid-connect-core-1_0.html#Terminology)",
-		Sources:  cli.EnvVars("OIDC_CLIENT_SECRET"),
+	OIDCAudience = cli.StringFlag{
+		Name:     "oidc-audience",
+		Usage:    "The audience identifier for the API registered in the OIDC provider. Used to verify the access token's aud claim.",
+		Sources:  cli.EnvVars("OIDC_AUDIENCE"),
 		Required: true,
 	}
 
@@ -56,18 +56,6 @@ var (
 		Usage:    "This value must be JMESPath format. Only entities that return true are allowed.",
 		Sources:  cli.EnvVars("ROLE_ATTRIBUTE_PATH"),
 		Required: true,
-	}
-	ServerURL = cli.StringFlag{
-		Name:    "server-url",
-		Usage:   "The URL of this server.",
-		Sources: cli.EnvVars("SERVER_URL"),
-		Value:   "http://localhost:8080",
-		Validator: func(s string) error {
-			if _, err := url.ParseRequestURI(s); err != nil {
-				return fmt.Errorf("failed to parse URL: %w", err)
-			}
-			return nil
-		},
 	}
 	ShowUntaggedLinks = cli.BoolFlag{
 		Name:    "show-untagged-links",
@@ -84,9 +72,8 @@ func Flags(version, commit string) []cli.Flag {
 		&KubeConfigPath,
 		&OIDCProviderURL,
 		&OIDCClientID,
-		&OIDCClientSecret,
+		&OIDCAudience,
 		&RoleAttributePath,
-		&ServerURL,
 		&ShowUntaggedLinks,
 	}
 }
