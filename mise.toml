@@ -1,0 +1,56 @@
+[tools]
+go = "1.26.1"
+node = "24.14.1"
+pnpm = "10.33.0"
+
+[tasks.generate]
+depends = ["generate:backend"]
+
+[tasks."generate:backend"]
+run = "go generate ./..."
+
+[tasks.format]
+depends = ["format:backend", "format:frontend"]
+
+[tasks."format:backend"]
+run = "gofmt -w ."
+
+[tasks."format:frontend"]
+dir = "{{config_root}}/frontend"
+run = "pnpm lint --fix"
+
+[tasks."test:backend"]
+run = "go test -coverprofile=coverage.txt -covermode=atomic ./..."
+
+[tasks.ci]
+depends = [
+  "ci:build-backend",
+  "ci:build-frontend",
+  "ci:lint-backend",
+  "ci:lint-frontend",
+  "ci:test-backend",
+]
+
+[tasks."ci:build-backend"]
+run = "go build ./..."
+
+[tasks."ci:build-frontend"]
+dir = "{{config_root}}/frontend"
+run = "pnpm build"
+
+[tasks."ci:lint-backend"]
+run = "go vet ./..."
+
+[tasks."ci:lint-frontend"]
+dir = "{{config_root}}/frontend"
+run = "pnpm lint"
+
+[tasks."ci:test-backend"]
+run = "go test -coverprofile=coverage.txt -covermode=atomic ./..."
+
+[tasks.pre-merge]
+run = [
+  "mise run generate",
+  "mise run format",
+  "mise run ci",
+]
