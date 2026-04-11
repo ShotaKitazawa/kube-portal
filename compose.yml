@@ -36,8 +36,9 @@ services:
     command:
       - -c
       - |
-        yarn install
-        yarn dev
+        corepack enable
+        pnpm install
+        pnpm dev
     environment:
       NEXT_PUBLIC_BACKEND_URL: http://${SERVER_ADDR}:3001
     ports:

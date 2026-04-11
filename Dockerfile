@@ -16,10 +16,11 @@ RUN GOOS=linux go build -ldflags "-X main.appVersion=${APP_VERSION} -X main.appC
 
 ### Build Next.js ###
 FROM node:24.14.1 AS build-frontend
+RUN corepack enable
 WORKDIR /workdir
 COPY frontend/ ./
-RUN yarn install
-RUN yarn build
+RUN pnpm install --frozen-lockfile
+RUN pnpm build
 
 
 ### Run ###
