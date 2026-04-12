@@ -1,0 +1,36 @@
+name: Cleanup PR Images
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      pull-requests: read
+    steps:
+      - name: Delete images for closed PRs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.event.repository.name }}
+        run: |
+          gh api "/users/${OWNER}/packages/container/${REPO}/versions" \
+            --paginate \
+            --jq '.[] | {id: .id, tags: .metadata.container.tags}' \
+          | jq -r 'select(.tags[] | test("^pr-[0-9]+$")) | "\(.id) \(.tags[] | select(test("^pr-[0-9]+$")))"' \
+          | while read VERSION_ID TAG; do
+              PR_NUMBER="${TAG#pr-}"
+              STATE=$(gh api "/repos/${OWNER}/${REPO}/pulls/${PR_NUMBER}" \
+                --jq '.state' 2>/dev/null || echo "not_found")
+
+              if [ "$STATE" = "closed" ] || [ "$STATE" = "not_found" ]; then
+                gh api --method DELETE "/users/${OWNER}/packages/container/${REPO}/versions/${VERSION_ID}"
+                echo "Deleted ghcr.io/${OWNER}/${REPO}:${TAG} (PR #${PR_NUMBER} is ${STATE})"
+              else
+                echo "Skipping ghcr.io/${OWNER}/${REPO}:${TAG} (PR #${PR_NUMBER} is ${STATE})"
+              fi
+            done
