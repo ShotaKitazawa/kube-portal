@@ -15,7 +15,6 @@
     "@mui/icons-material": "^7.0.0",
     "@mui/material": "^7.0.0",
     "autoprefixer": "^10.4.16",
-    "axios": "^1.0.0",
     "next": "^16.0.7",
     "normalize.css": "^8.0.1",
     "oidc-client-ts": "^3.1.0",

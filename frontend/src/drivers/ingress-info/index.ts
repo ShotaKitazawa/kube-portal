@@ -1,23 +1,20 @@
-import axios from 'axios'
+import createClient from 'openapi-fetch'
+import type { paths } from '../../gen/api'
 
-export type LinkInfo = {
-  name: string
-  url: string
-  icon_url: string
-  tags: string[]
-}
+export type LinkInfo = paths['/list']['get']['responses'][200]['content']['application/json'][number]
 
 class Client {
-  private url: string
+  private client: ReturnType<typeof createClient<paths>>
 
   constructor() {
-    let origin: string
-    if (process.env.NEXT_PUBLIC_BACKEND_URL !== undefined) {
-      origin = process.env.NEXT_PUBLIC_BACKEND_URL
-    } else if (typeof window !== 'undefined') {
-      origin = window.location.origin
-    }
-    this.url = origin + '/api/list'
+    const baseUrl =
+      process.env.NEXT_PUBLIC_BACKEND_URL !== undefined
+        ? process.env.NEXT_PUBLIC_BACKEND_URL + '/api'
+        : typeof window !== 'undefined'
+          ? window.location.origin + '/api'
+          : '/api'
+
+    this.client = createClient<paths>({ baseUrl })
   }
 
   async List(accessToken?: string): Promise<LinkInfo[]> {
@@ -25,13 +22,8 @@ class Client {
     if (accessToken) {
       headers['Authorization'] = `Bearer ${accessToken}`
     }
-    let res
-    try {
-      res = await axios.get<LinkInfo[]>(this.url, { headers })
-    } catch {
-      res = { data: null }
-    }
-    return res.data
+    const { data } = await this.client.GET('/list', { headers }).catch(() => ({ data: null }))
+    return data ?? []
   }
 }
 
