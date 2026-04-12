@@ -4,10 +4,14 @@ node = "24.14.1"
 pnpm = "10.33.0"
 
 [tasks.generate]
-depends = ["generate:backend"]
+depends = ["generate:backend", "generate:frontend"]
 
 [tasks."generate:backend"]
 run = "go generate ./..."
+
+[tasks."generate:frontend"]
+dir = "{{config_root}}/frontend"
+run = "pnpm openapi-ts"
 
 [tasks.format]
 depends = ["format:backend", "format:frontend"]
