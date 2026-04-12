@@ -37,9 +37,10 @@ jobs:
           git config user.email "action@github.com"
           git config user.name "GitHub Action"
           : ## update manifest's tag
-          cd manifests/base/
+          cd manifests/install/
           kustomize edit set image ghcr.io/shotakitazawa/kube-portal:${{ steps.bump-semver.outputs.new_version }}
-          cd ..
+          cd ../..
+
           kustomize build ./install/ > ./install.yaml
           : ## commit the above & grant a tag for new_version
           git add .
