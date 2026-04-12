@@ -152,6 +152,7 @@ func (c *Client) sendListIngressInfo(ctx context.Context) (res []IngressInfo, er
 		nextRequirement:
 			for _, requirement := range []bitset{
 				{0b00000001},
+				{},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {

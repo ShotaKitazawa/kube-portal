@@ -134,6 +134,7 @@ func (s *Server) handleListIngressInfoRequest(args [0]string, argsEscaped bool, 
 		nextRequirement:
 			for _, requirement := range []bitset{
 				{0b00000001},
+				{},
 			} {
 				for i, mask := range requirement {
 					if satisfied[i]&mask != mask {
