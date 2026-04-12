@@ -11,7 +11,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/fake"
 
-	"github.com/ShotaKitazawa/kube-portal/backend/model"
+	"github.com/ShotaKitazawa/kube-portal/internal/model"
 	"github.com/google/go-cmp/cmp"
 )
 

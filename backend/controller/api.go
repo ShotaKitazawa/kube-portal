@@ -5,9 +5,9 @@ import (
 
 	"github.com/labstack/echo/v4"
 
-	"github.com/ShotaKitazawa/kube-portal/backend/model/port"
-	"github.com/ShotaKitazawa/kube-portal/backend/util"
 	"github.com/ShotaKitazawa/kube-portal/backend/view"
+	"github.com/ShotaKitazawa/kube-portal/internal/model/port"
+	"github.com/ShotaKitazawa/kube-portal/internal/util"
 )
 
 type APIController struct {

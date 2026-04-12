@@ -5,7 +5,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 
-	"github.com/ShotaKitazawa/kube-portal/backend/model"
+	"github.com/ShotaKitazawa/kube-portal/internal/model"
 )
 
 type API interface {

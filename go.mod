@@ -7,6 +7,8 @@ toolchain go1.26.1
 require (
 	github.com/coreos/go-oidc/v3 v3.17.0
 	github.com/elliotchance/orderedmap/v3 v3.1.0
+	github.com/go-faster/errors v0.7.1
+	github.com/go-faster/jx v1.2.0
 	github.com/google/go-cmp v0.7.0
 	github.com/jmespath/go-jmespath v0.4.0
 	github.com/labstack/echo/v4 v4.15.1
@@ -14,6 +16,9 @@ require (
 	github.com/ogen-go/ogen v1.20.3
 	github.com/samber/slog-echo v1.21.0
 	github.com/urfave/cli/v3 v3.8.0
+	go.opentelemetry.io/otel v1.42.0
+	go.opentelemetry.io/otel/metric v1.42.0
+	go.opentelemetry.io/otel/trace v1.42.0
 	k8s.io/api v0.35.3
 	k8s.io/apimachinery v0.35.3
 	k8s.io/client-go v0.35.3
@@ -29,11 +34,10 @@ require (
 	github.com/fatih/color v1.19.0 // indirect
 	github.com/fxamacker/cbor/v2 v2.9.0 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
-	github.com/go-faster/errors v0.7.1 // indirect
-	github.com/go-faster/jx v1.2.0 // indirect
 	github.com/go-faster/yaml v0.4.6 // indirect
 	github.com/go-jose/go-jose/v4 v4.1.3 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
+	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-openapi/jsonpointer v0.21.0 // indirect
 	github.com/go-openapi/jsonreference v0.20.2 // indirect
 	github.com/go-openapi/swag v0.23.0 // indirect
@@ -58,8 +62,7 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
-	go.opentelemetry.io/otel v1.42.0 // indirect
-	go.opentelemetry.io/otel/trace v1.42.0 // indirect
+	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.1 // indirect
 	go.yaml.in/yaml/v2 v2.4.3 // indirect

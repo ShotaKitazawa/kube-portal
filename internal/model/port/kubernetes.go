@@ -3,7 +3,7 @@ package port
 import (
 	"context"
 
-	"github.com/ShotaKitazawa/kube-portal/backend/model"
+	"github.com/ShotaKitazawa/kube-portal/internal/model"
 )
 
 type Kubernetes interface {

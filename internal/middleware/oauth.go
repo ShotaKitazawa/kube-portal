@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/ShotaKitazawa/kube-portal/backend/util"
 	"github.com/ShotaKitazawa/kube-portal/backend/view"
+	"github.com/ShotaKitazawa/kube-portal/internal/util"
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/jmespath/go-jmespath"
 	"github.com/labstack/echo/v4"

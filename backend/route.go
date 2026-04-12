@@ -14,10 +14,10 @@ import (
 	"github.com/urfave/cli/v3"
 
 	"github.com/ShotaKitazawa/kube-portal/backend/controller"
-	"github.com/ShotaKitazawa/kube-portal/backend/infrastructure/kubernetes"
-	"github.com/ShotaKitazawa/kube-portal/backend/middleware"
 	"github.com/ShotaKitazawa/kube-portal/backend/view"
 	"github.com/ShotaKitazawa/kube-portal/flag"
+	"github.com/ShotaKitazawa/kube-portal/internal/infrastructure/kubernetes"
+	"github.com/ShotaKitazawa/kube-portal/internal/middleware"
 )
 
 func Run(ctx context.Context, cmd *cli.Command) error {
