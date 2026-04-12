@@ -1,0 +1,52 @@
+openapi: "3.1.0"
+info:
+  title: kube-portal API
+  version: "0.1.0"
+
+servers:
+  - url: /api
+
+security:
+  - bearerAuth: []
+
+paths:
+  /list:
+    get:
+      operationId: listIngressInfo
+      summary: List ingress info
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/IngressInfo"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    IngressInfo:
+      type: object
+      required:
+        - name
+        - url
+        - icon_url
+        - tags
+      properties:
+        name:
+          type: string
+        url:
+          type: string
+        icon_url:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
