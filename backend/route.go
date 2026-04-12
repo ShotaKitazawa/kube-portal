@@ -13,11 +13,10 @@ import (
 	slogecho "github.com/samber/slog-echo"
 	"github.com/urfave/cli/v3"
 
-	"github.com/ShotaKitazawa/kube-portal/backend/controller"
-	"github.com/ShotaKitazawa/kube-portal/backend/view"
 	"github.com/ShotaKitazawa/kube-portal/flag"
+	"github.com/ShotaKitazawa/kube-portal/internal/api"
+	"github.com/ShotaKitazawa/kube-portal/internal/handler"
 	"github.com/ShotaKitazawa/kube-portal/internal/infrastructure/kubernetes"
-	"github.com/ShotaKitazawa/kube-portal/internal/middleware"
 )
 
 func Run(ctx context.Context, cmd *cli.Command) error {
@@ -26,23 +25,30 @@ func Run(ctx context.Context, cmd *cli.Command) error {
 	logger := slog.New(slog.NewJSONHandler(os.Stderr, &slog.HandlerOptions{
 		AddSource: true,
 	}))
+
 	// OIDC configuration
 	provider, err := oidc.NewProvider(ctx, cmd.String(flag.OIDCProviderURL.Name))
 	if err != nil {
 		return fmt.Errorf("failed to initialize provider: %w", err)
 	}
-	// Verify access tokens using the API audience as the expected aud claim
 	oidcVerifier := provider.Verifier(&oidc.Config{
 		ClientID: cmd.String(flag.OIDCAudience.Name),
 	})
+
 	// New Clients
 	k8sClient, err := kubernetes.NewClient(logger, cmd.String(flag.KubeConfigPath.Name))
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("failed to initialize k8s client: %w", err)
 	}
-	// New Controllers
-	k8sController := controller.NewAPIController(logger, k8sClient,
-		&view.JSONForAPI{ShowUntaggedLinks: cmd.Bool(flag.ShowUntaggedLinks.Name)})
+
+	// Build ogen server
+	srv, err := api.NewServer(
+		handler.NewHandler(k8sClient, cmd.Bool(flag.ShowUntaggedLinks.Name)),
+		handler.NewSecurityHandler(oidcVerifier, cmd.String(flag.RoleAttributePath.Name), logger),
+	)
+	if err != nil {
+		return fmt.Errorf("failed to initialize api server: %w", err)
+	}
 
 	// Middlewares
 	e.Use(echomiddleware.Recover())
@@ -64,14 +70,9 @@ func Run(ctx context.Context, cmd *cli.Command) error {
 		}))
 	}
 
-	// Route
+	// Routes
 	e.Static("/", "./frontend/out")
-	api := e.Group("/api")
-	api.Use(middleware.AuthWithConfig(middleware.AuthConfig{
-		OIDCVerifier:      oidcVerifier,
-		RoleAttributePath: cmd.String(flag.RoleAttributePath.Name),
-	}, logger))
-	api.GET("/list", k8sController.ListIngressInfo)
+	e.Any("/api/*", echo.WrapHandler(http.StripPrefix("/api", srv)))
 
 	// Listen
 	return http.ListenAndServe(cmd.String(flag.BindAddr.Name), e)
