@@ -35,13 +35,19 @@ export const Login: React.FC = () => {
         onClick={handleMenu}
         color="inherit"
       >
-        <Image
-          src={user.profile.picture}
-          alt="avatar"
-          className="rounded-full"
-          width={40}
-          height={40}
-        />
+        {user.profile.picture ? (
+          <Image
+            src={user.profile.picture}
+            alt="avatar"
+            className="rounded-full"
+            width={40}
+            height={40}
+          />
+        ) : (
+          <span className="rounded-full w-10 h-10 bg-gray-400 flex items-center justify-center text-white text-sm">
+            {(user.profile.name ?? user.profile.email ?? 'U')[0].toUpperCase()}
+          </span>
+        )}
       </IconButton>
       <Menu
         id="menu-appbar"
