@@ -8,7 +8,6 @@ import (
 
 	"github.com/urfave/cli/v3"
 
-	"github.com/ShotaKitazawa/kube-portal/backend"
 	"github.com/ShotaKitazawa/kube-portal/flag"
 )
 
@@ -21,7 +20,7 @@ func main() {
 	cmd := &cli.Command{}
 	cmd.Flags = flag.Flags(appVersion, appCommit)
 	cmd.Action = func(ctx context.Context, cmd *cli.Command) error {
-		return backend.Run(ctx, cmd)
+		return Run(ctx, cmd)
 	}
 	cmd.Version = fmt.Sprintf("%s (Commit: %s)\n", appVersion, appCommit)
 

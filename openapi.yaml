@@ -11,6 +11,20 @@ security:
   - {}
 
 paths:
+  /userinfo:
+    get:
+      operationId: getUserinfo
+      summary: Get userinfo from OIDC provider
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserInfo"
+        "401":
+          description: Unauthorized
+
   /list:
     get:
       operationId: listIngressInfo
@@ -33,6 +47,20 @@ components:
       bearerFormat: JWT
 
   schemas:
+    UserInfo:
+      type: object
+      required:
+        - sub
+      properties:
+        sub:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        picture:
+          type: string
+
     IngressInfo:
       type: object
       required:

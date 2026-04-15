@@ -1,4 +1,4 @@
-package backend
+package main
 
 import (
 	"context"
@@ -26,24 +26,29 @@ func Run(ctx context.Context, cmd *cli.Command) error {
 		AddSource: true,
 	}))
 
-	// OIDC configuration
-	provider, err := oidc.NewProvider(ctx, cmd.String(flag.OIDCProviderURL.Name))
-	if err != nil {
-		return fmt.Errorf("failed to initialize provider: %w", err)
-	}
-	oidcVerifier := provider.Verifier(&oidc.Config{
-		ClientID: cmd.String(flag.OIDCAudience.Name),
-	})
-
 	// New Clients
 	k8sClient, err := kubernetes.NewClient(logger, cmd.String(flag.KubeConfigPath.Name))
 	if err != nil {
 		return fmt.Errorf("failed to initialize k8s client: %w", err)
 	}
 
+	disableOIDC := cmd.Bool(flag.DisableOIDC.Name)
+
+	var provider *oidc.Provider
+	var oidcVerifier *oidc.IDTokenVerifier
+	if !disableOIDC {
+		provider, err = oidc.NewProvider(ctx, cmd.String(flag.OIDCProviderURL.Name))
+		if err != nil {
+			return fmt.Errorf("failed to initialize provider: %w", err)
+		}
+		oidcVerifier = provider.Verifier(&oidc.Config{
+			ClientID: cmd.String(flag.OIDCAudience.Name),
+		})
+	}
+
 	// Build ogen server
 	srv, err := api.NewServer(
-		handler.NewHandler(k8sClient, cmd.Bool(flag.ShowUntaggedLinks.Name)),
+		handler.NewHandler(k8sClient, cmd.Bool(flag.ShowUntaggedLinks.Name), disableOIDC, provider),
 		handler.NewSecurityHandler(oidcVerifier, cmd.String(flag.RoleAttributePath.Name), logger),
 	)
 	if err != nil {

@@ -29,6 +29,10 @@ func NewSecurityHandler(v *oidc.IDTokenVerifier, roleAttributePath string, l *sl
 }
 
 func (s *SecurityHandler) HandleBearerAuth(ctx context.Context, _ api.OperationName, t api.BearerAuth) (context.Context, error) {
+	if s.oidcVerifier == nil {
+		// --disable-oidc mode: skip verification
+		return ctx, nil
+	}
 	idToken, err := s.oidcVerifier.Verify(ctx, t.Token)
 	if err != nil {
 		return ctx, fmt.Errorf("%w: %w", ErrUnauthorized, err)
@@ -48,5 +52,6 @@ func (s *SecurityHandler) HandleBearerAuth(ctx context.Context, _ api.OperationN
 		return ctx, fmt.Errorf("%w: JMESPath result is not true", ErrForbidden)
 	}
 
+	ctx = setToken(ctx, t.Token)
 	return setIsLogin(ctx, true), nil
 }

@@ -13,6 +13,15 @@ type UnimplementedHandler struct{}
 
 var _ Handler = UnimplementedHandler{}
 
+// GetUserinfo implements getUserinfo operation.
+//
+// Get userinfo from OIDC provider.
+//
+// GET /userinfo
+func (UnimplementedHandler) GetUserinfo(ctx context.Context) (r GetUserinfoRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListIngressInfo implements listIngressInfo operation.
 //
 // List ingress info.

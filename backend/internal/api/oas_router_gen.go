@@ -11,6 +11,9 @@ import (
 )
 
 var (
+	rn3AllowedHeaders = map[string]string{
+		"GET": "Authorization",
+	}
 	rn1AllowedHeaders = map[string]string{
 		"GET": "Authorization",
 	}
@@ -54,29 +57,68 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		switch elem[0] {
-		case '/': // Prefix: "/list"
+		case '/': // Prefix: "/"
 
-			if l := len("/list"); len(elem) >= l && elem[0:l] == "/list" {
+			if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
 				elem = elem[l:]
 			} else {
 				break
 			}
 
 			if len(elem) == 0 {
-				// Leaf node.
-				switch r.Method {
-				case "GET":
-					s.handleListIngressInfoRequest([0]string{}, elemIsEscaped, w, r)
-				default:
-					s.notAllowed(w, r, notAllowedParams{
-						allowedMethods: "GET",
-						allowedHeaders: rn1AllowedHeaders,
-						acceptPost:     "",
-						acceptPatch:    "",
-					})
+				break
+			}
+			switch elem[0] {
+			case 'l': // Prefix: "list"
+
+				if l := len("list"); len(elem) >= l && elem[0:l] == "list" {
+					elem = elem[l:]
+				} else {
+					break
 				}
 
-				return
+				if len(elem) == 0 {
+					// Leaf node.
+					switch r.Method {
+					case "GET":
+						s.handleListIngressInfoRequest([0]string{}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, notAllowedParams{
+							allowedMethods: "GET",
+							allowedHeaders: rn3AllowedHeaders,
+							acceptPost:     "",
+							acceptPatch:    "",
+						})
+					}
+
+					return
+				}
+
+			case 'u': // Prefix: "userinfo"
+
+				if l := len("userinfo"); len(elem) >= l && elem[0:l] == "userinfo" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					// Leaf node.
+					switch r.Method {
+					case "GET":
+						s.handleGetUserinfoRequest([0]string{}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, notAllowedParams{
+							allowedMethods: "GET",
+							allowedHeaders: rn1AllowedHeaders,
+							acceptPost:     "",
+							acceptPatch:    "",
+						})
+					}
+
+					return
+				}
+
 			}
 
 		}
@@ -165,29 +207,68 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 			break
 		}
 		switch elem[0] {
-		case '/': // Prefix: "/list"
+		case '/': // Prefix: "/"
 
-			if l := len("/list"); len(elem) >= l && elem[0:l] == "/list" {
+			if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
 				elem = elem[l:]
 			} else {
 				break
 			}
 
 			if len(elem) == 0 {
-				// Leaf node.
-				switch method {
-				case "GET":
-					r.name = ListIngressInfoOperation
-					r.summary = "List ingress info"
-					r.operationID = "listIngressInfo"
-					r.operationGroup = ""
-					r.pathPattern = "/list"
-					r.args = args
-					r.count = 0
-					return r, true
-				default:
-					return
+				break
+			}
+			switch elem[0] {
+			case 'l': // Prefix: "list"
+
+				if l := len("list"); len(elem) >= l && elem[0:l] == "list" {
+					elem = elem[l:]
+				} else {
+					break
 				}
+
+				if len(elem) == 0 {
+					// Leaf node.
+					switch method {
+					case "GET":
+						r.name = ListIngressInfoOperation
+						r.summary = "List ingress info"
+						r.operationID = "listIngressInfo"
+						r.operationGroup = ""
+						r.pathPattern = "/list"
+						r.args = args
+						r.count = 0
+						return r, true
+					default:
+						return
+					}
+				}
+
+			case 'u': // Prefix: "userinfo"
+
+				if l := len("userinfo"); len(elem) >= l && elem[0:l] == "userinfo" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					// Leaf node.
+					switch method {
+					case "GET":
+						r.name = GetUserinfoOperation
+						r.summary = "Get userinfo from OIDC provider"
+						r.operationID = "getUserinfo"
+						r.operationGroup = ""
+						r.pathPattern = "/userinfo"
+						r.args = args
+						r.count = 0
+						return r, true
+					default:
+						return
+					}
+				}
+
 			}
 
 		}

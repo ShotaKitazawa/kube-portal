@@ -8,6 +8,12 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
+	// GetUserinfo implements getUserinfo operation.
+	//
+	// Get userinfo from OIDC provider.
+	//
+	// GET /userinfo
+	GetUserinfo(ctx context.Context) (GetUserinfoRes, error)
 	// ListIngressInfo implements listIngressInfo operation.
 	//
 	// List ingress info.

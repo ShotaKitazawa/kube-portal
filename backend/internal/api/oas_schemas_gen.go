@@ -27,6 +27,11 @@ func (s *BearerAuth) SetRoles(val []string) {
 	s.Roles = val
 }
 
+// GetUserinfoUnauthorized is response for GetUserinfo operation.
+type GetUserinfoUnauthorized struct{}
+
+func (*GetUserinfoUnauthorized) getUserinfoRes() {}
+
 // Ref: #/components/schemas/IngressInfo
 type IngressInfo struct {
 	Name    string   `json:"name"`
@@ -74,3 +79,99 @@ func (s *IngressInfo) SetIconURL(val string) {
 func (s *IngressInfo) SetTags(val []string) {
 	s.Tags = val
 }
+
+// NewOptString returns new OptString with value set to v.
+func NewOptString(v string) OptString {
+	return OptString{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptString is optional string.
+type OptString struct {
+	Value string
+	Set   bool
+}
+
+// IsSet returns true if OptString was set.
+func (o OptString) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptString) Reset() {
+	var v string
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptString) SetTo(v string) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptString) Get() (v string, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptString) Or(d string) string {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// Ref: #/components/schemas/UserInfo
+type UserInfo struct {
+	Sub     string    `json:"sub"`
+	Name    OptString `json:"name"`
+	Email   OptString `json:"email"`
+	Picture OptString `json:"picture"`
+}
+
+// GetSub returns the value of Sub.
+func (s *UserInfo) GetSub() string {
+	return s.Sub
+}
+
+// GetName returns the value of Name.
+func (s *UserInfo) GetName() OptString {
+	return s.Name
+}
+
+// GetEmail returns the value of Email.
+func (s *UserInfo) GetEmail() OptString {
+	return s.Email
+}
+
+// GetPicture returns the value of Picture.
+func (s *UserInfo) GetPicture() OptString {
+	return s.Picture
+}
+
+// SetSub sets the value of Sub.
+func (s *UserInfo) SetSub(val string) {
+	s.Sub = val
+}
+
+// SetName sets the value of Name.
+func (s *UserInfo) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetEmail sets the value of Email.
+func (s *UserInfo) SetEmail(val OptString) {
+	s.Email = val
+}
+
+// SetPicture sets the value of Picture.
+func (s *UserInfo) SetPicture(val OptString) {
+	s.Picture = val
+}
+
+func (*UserInfo) getUserinfoRes() {}
