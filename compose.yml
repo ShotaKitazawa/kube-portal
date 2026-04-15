@@ -9,21 +9,11 @@ services:
       dockerfile: ./development/backend.dockerfile
     command:
       - --kubeconfig=/mnt/kubeconfig
-      - --bind-addr=0.0.0.0:3001
-      - --development
-      - --server-url=http://localhost:3001/
-    environment:
-      ALLOWED_ORIGIN_URL: http://${SERVER_ADDR}:3000
-      OIDC_PROVIDER_URL: ${OIDC_PROVIDER_URL}
-      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID}
-      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
-      ROLE_ATTRIBUTE_PATH: ${ROLE_ATTRIBUTE_PATH}
+      - --disable-oidc
     ports:
-      - 3001:3001
+      - 8080:8080
     volumes:
-      - './main.go:/app/main.go'
-      - './flag:/app/flag'
-      - './backend:/app/backend'
+      - './backend:/app'
       # specify your Kubeconfig filepath
       - '$HOME/.kube/config:/mnt/kubeconfig'
 
@@ -40,6 +30,6 @@ services:
         pnpm install
         pnpm dev
     environment:
-      NEXT_PUBLIC_BACKEND_URL: http://${SERVER_ADDR}:3001
+      BACKEND_URL: http://backend:8080
     ports:
       - 3000:3000
