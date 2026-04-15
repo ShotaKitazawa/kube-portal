@@ -1,8 +1,6 @@
 {
   "permissions": {
     "allow": [
-      "Bash(go build:*)",
-      "Bash(npx tsc:*)",
       "Bash(mise run:*)",
       "Bash(git add:*)",
       "Bash(git commit -m ':*)"

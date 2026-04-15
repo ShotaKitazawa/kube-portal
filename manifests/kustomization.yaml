@@ -4,10 +4,9 @@ kind: Kustomization
 namespace: kube-portal
 
 resources:
-- ../base
-- ../role
-- ../crd
-- ./clusterrolebinding.yaml
+- ./base
+- ./role
+- ./crd
 
 images:
 - name: __IMAGE__
