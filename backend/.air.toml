@@ -1,0 +1,30 @@
+# Config file for [Air](https://github.com/air-verse/air) in TOML format
+
+# Working directory
+root = "."
+tmp_dir = "tmp"
+
+[build]
+cmd = "go build -o ./tmp/app ."
+bin = "./tmp/app"
+include_ext = ["go"]
+exclude_dir = ["tmp"]
+exclude_unchanged = true
+follow_symlink = true
+log = "air.log"
+delay = 1000 # ms
+stop_on_error = true
+send_interrupt = false
+kill_delay = 500 # ms
+
+[log]
+time = false
+
+[color]
+main = "magenta"
+watcher = "cyan"
+build = "yellow"
+runner = "green"
+
+[misc]
+clean_on_exit = true
