@@ -16,7 +16,7 @@ jobs:
           path: |
             ~/go/pkg/mod
             ~/.cache/go-build
-          key: go-${{ hashFiles('go.sum') }}
+          key: go-${{ hashFiles('backend/go.sum') }}
           restore-keys: go-
 
       - name: Get pnpm store path
@@ -35,7 +35,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run backend tests
-        run: mise run test:backend
+        run: mise run test-backend
 
       - run: mise run pre-merge
 
