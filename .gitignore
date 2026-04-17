@@ -1,2 +1,9 @@
 node_modules
 coverage.txt
+
+# Air build output
+backend/tmp/
+
+# Next.js / TypeScript generated files
+frontend/next-env.d.ts
+frontend/tsconfig.tsbuildinfo
