@@ -8,6 +8,12 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
+	// GetOidcConfig implements getOidcConfig operation.
+	//
+	// Get OIDC configuration.
+	//
+	// GET /oidc-config
+	GetOidcConfig(ctx context.Context) (*OIDCConfig, error)
 	// GetUserinfo implements getUserinfo operation.
 	//
 	// Get userinfo from OIDC provider.

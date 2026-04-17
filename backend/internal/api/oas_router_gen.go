@@ -11,10 +11,7 @@ import (
 )
 
 var (
-	rn3AllowedHeaders = map[string]string{
-		"GET": "Authorization",
-	}
-	rn1AllowedHeaders = map[string]string{
+	rn4AllowedHeaders = map[string]string{
 		"GET": "Authorization",
 	}
 )
@@ -85,7 +82,32 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					default:
 						s.notAllowed(w, r, notAllowedParams{
 							allowedMethods: "GET",
-							allowedHeaders: rn3AllowedHeaders,
+							allowedHeaders: rn4AllowedHeaders,
+							acceptPost:     "",
+							acceptPatch:    "",
+						})
+					}
+
+					return
+				}
+
+			case 'o': // Prefix: "oidc-config"
+
+				if l := len("oidc-config"); len(elem) >= l && elem[0:l] == "oidc-config" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					// Leaf node.
+					switch r.Method {
+					case "GET":
+						s.handleGetOidcConfigRequest([0]string{}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, notAllowedParams{
+							allowedMethods: "GET",
+							allowedHeaders: nil,
 							acceptPost:     "",
 							acceptPatch:    "",
 						})
@@ -110,7 +132,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					default:
 						s.notAllowed(w, r, notAllowedParams{
 							allowedMethods: "GET",
-							allowedHeaders: rn1AllowedHeaders,
+							allowedHeaders: nil,
 							acceptPost:     "",
 							acceptPatch:    "",
 						})
@@ -236,6 +258,31 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						r.operationID = "listIngressInfo"
 						r.operationGroup = ""
 						r.pathPattern = "/list"
+						r.args = args
+						r.count = 0
+						return r, true
+					default:
+						return
+					}
+				}
+
+			case 'o': // Prefix: "oidc-config"
+
+				if l := len("oidc-config"); len(elem) >= l && elem[0:l] == "oidc-config" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					// Leaf node.
+					switch method {
+					case "GET":
+						r.name = GetOidcConfigOperation
+						r.summary = "Get OIDC configuration"
+						r.operationID = "getOidcConfig"
+						r.operationGroup = ""
+						r.pathPattern = "/oidc-config"
 						r.args = args
 						r.count = 0
 						return r, true

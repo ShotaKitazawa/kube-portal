@@ -48,7 +48,11 @@ func Run(ctx context.Context, cmd *cli.Command) error {
 
 	// Build ogen server
 	srv, err := api.NewServer(
-		handler.NewHandler(k8sClient, cmd.Bool(flag.ShowUntaggedLinks.Name), disableOIDC, provider),
+		handler.NewHandler(k8sClient, cmd.Bool(flag.ShowUntaggedLinks.Name), disableOIDC, handler.OIDCConfig{
+			Issuer:   cmd.String(flag.OIDCProviderURL.Name),
+			ClientID: cmd.String(flag.OIDCClientID.Name),
+			Audience: cmd.String(flag.OIDCAudience.Name),
+		}, provider),
 		handler.NewSecurityHandler(oidcVerifier, cmd.String(flag.RoleAttributePath.Name), logger),
 	)
 	if err != nil {

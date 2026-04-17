@@ -11,10 +11,24 @@ security:
   - {}
 
 paths:
+  /oidc-config:
+    get:
+      operationId: getOidcConfig
+      summary: Get OIDC configuration
+      security: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OIDCConfig"
+
   /userinfo:
     get:
       operationId: getUserinfo
       summary: Get userinfo from OIDC provider
+      security: []
       responses:
         "200":
           description: OK
@@ -47,6 +61,20 @@ components:
       bearerFormat: JWT
 
   schemas:
+    OIDCConfig:
+      type: object
+      required:
+        - enabled
+      properties:
+        enabled:
+          type: boolean
+        issuer:
+          type: string
+        client_id:
+          type: string
+        audience:
+          type: string
+
     UserInfo:
       type: object
       required:

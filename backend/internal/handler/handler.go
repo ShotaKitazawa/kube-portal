@@ -12,22 +12,42 @@ import (
 	"golang.org/x/oauth2"
 )
 
+type OIDCConfig struct {
+	Issuer   string
+	ClientID string
+	Audience string
+}
+
 type Handler struct {
 	k8sClient         port.Kubernetes
 	showUntaggedLinks bool
 	disableOIDC       bool
+	oidcConfig        OIDCConfig
 	provider          *oidc.Provider
 }
 
 var _ api.Handler = (*Handler)(nil)
 
-func NewHandler(k8sClient port.Kubernetes, showUntaggedLinks bool, disableOIDC bool, provider *oidc.Provider) *Handler {
+func NewHandler(k8sClient port.Kubernetes, showUntaggedLinks bool, disableOIDC bool, oidcConfig OIDCConfig, provider *oidc.Provider) *Handler {
 	return &Handler{
 		k8sClient:         k8sClient,
 		showUntaggedLinks: showUntaggedLinks,
 		disableOIDC:       disableOIDC,
+		oidcConfig:        oidcConfig,
 		provider:          provider,
 	}
+}
+
+func (h *Handler) GetOidcConfig(_ context.Context) (*api.OIDCConfig, error) {
+	if h.disableOIDC {
+		return &api.OIDCConfig{Enabled: false}, nil
+	}
+	return &api.OIDCConfig{
+		Enabled:  true,
+		Issuer:   api.NewOptString(h.oidcConfig.Issuer),
+		ClientID: api.NewOptString(h.oidcConfig.ClientID),
+		Audience: api.NewOptString(h.oidcConfig.Audience),
+	}, nil
 }
 
 func (h *Handler) GetUserinfo(ctx context.Context) (api.GetUserinfoRes, error) {

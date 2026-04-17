@@ -1,21 +1,35 @@
 import { UserManager, WebStorageStateStore } from 'oidc-client-ts'
 
-const disableOIDC = process.env.NEXT_PUBLIC_DISABLE_OIDC === 'true'
+export type OIDCSetup =
+  | { configured: false; userManager: null }
+  | { configured: true; userManager: UserManager }
 
-const userManager: UserManager | null =
-  disableOIDC || typeof window === 'undefined'
-    ? null
-    : new UserManager({
-        authority: process.env.NEXT_PUBLIC_OIDC_AUTHORITY ?? '',
-        client_id: process.env.NEXT_PUBLIC_OIDC_CLIENT_ID ?? '',
-        redirect_uri: `${window.location.origin}/callback`,
-        scope: 'openid profile email offline_access',
-        extraQueryParams: {
-          audience: process.env.NEXT_PUBLIC_OIDC_AUDIENCE ?? '',
-        },
-        userStore: new WebStorageStateStore({ store: window.localStorage }),
-        automaticSilentRenew: false,
-      })
+export async function loadOIDCSetup(): Promise<OIDCSetup> {
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BACKEND_URL !== undefined
+      ? process.env.NEXT_PUBLIC_BACKEND_URL + '/api'
+      : window.location.origin + '/api'
 
-export { disableOIDC }
-export default userManager
+  let config: { enabled: boolean; issuer?: string; client_id?: string }
+  try {
+    const res = await fetch(`${baseUrl}/oidc-config`)
+    config = await res.json()
+  } catch {
+    return { configured: false, userManager: null }
+  }
+
+  if (!config.enabled || !config.issuer || !config.client_id) {
+    return { configured: false, userManager: null }
+  }
+
+  const userManager = new UserManager({
+    authority: config.issuer,
+    client_id: config.client_id,
+    redirect_uri: `${window.location.origin}/callback`,
+    scope: 'openid profile email offline_access',
+    userStore: new WebStorageStateStore({ store: window.localStorage }),
+    automaticSilentRenew: false,
+  })
+
+  return { configured: true, userManager }
+}

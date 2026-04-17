@@ -1,19 +1,21 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
-import userManager, { disableOIDC } from '../drivers/auth'
+import { loadOIDCSetup } from '../drivers/auth'
 
 export default function Callback() {
   const router = useRouter()
 
   useEffect(() => {
-    if (disableOIDC) {
-      router.replace('/')
-      return
-    }
-    userManager!
-      .signinRedirectCallback()
-      .then(() => router.replace('/'))
-      .catch(console.error)
+    loadOIDCSetup().then((setup) => {
+      if (!setup.configured) {
+        router.replace('/')
+        return
+      }
+      setup.userManager
+        .signinRedirectCallback()
+        .then(() => router.replace('/'))
+        .catch(console.error)
+    })
   }, [])
 
   return null

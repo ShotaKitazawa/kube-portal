@@ -80,6 +80,54 @@ func (s *IngressInfo) SetTags(val []string) {
 	s.Tags = val
 }
 
+// Ref: #/components/schemas/OIDCConfig
+type OIDCConfig struct {
+	Enabled  bool      `json:"enabled"`
+	Issuer   OptString `json:"issuer"`
+	ClientID OptString `json:"client_id"`
+	Audience OptString `json:"audience"`
+}
+
+// GetEnabled returns the value of Enabled.
+func (s *OIDCConfig) GetEnabled() bool {
+	return s.Enabled
+}
+
+// GetIssuer returns the value of Issuer.
+func (s *OIDCConfig) GetIssuer() OptString {
+	return s.Issuer
+}
+
+// GetClientID returns the value of ClientID.
+func (s *OIDCConfig) GetClientID() OptString {
+	return s.ClientID
+}
+
+// GetAudience returns the value of Audience.
+func (s *OIDCConfig) GetAudience() OptString {
+	return s.Audience
+}
+
+// SetEnabled sets the value of Enabled.
+func (s *OIDCConfig) SetEnabled(val bool) {
+	s.Enabled = val
+}
+
+// SetIssuer sets the value of Issuer.
+func (s *OIDCConfig) SetIssuer(val OptString) {
+	s.Issuer = val
+}
+
+// SetClientID sets the value of ClientID.
+func (s *OIDCConfig) SetClientID(val OptString) {
+	s.ClientID = val
+}
+
+// SetAudience sets the value of Audience.
+func (s *OIDCConfig) SetAudience(val OptString) {
+	s.Audience = val
+}
+
 // NewOptString returns new OptString with value set to v.
 func NewOptString(v string) OptString {
 	return OptString{

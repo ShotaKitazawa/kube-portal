@@ -13,6 +13,15 @@ type UnimplementedHandler struct{}
 
 var _ Handler = UnimplementedHandler{}
 
+// GetOidcConfig implements getOidcConfig operation.
+//
+// Get OIDC configuration.
+//
+// GET /oidc-config
+func (UnimplementedHandler) GetOidcConfig(ctx context.Context) (r *OIDCConfig, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetUserinfo implements getUserinfo operation.
 //
 // Get userinfo from OIDC provider.
