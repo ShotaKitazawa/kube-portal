@@ -1,5 +1,3 @@
-/* eslint @next/next/no-img-element: 0 */
-
 import React, { useState, useEffect, useContext, ReactNode } from 'react'
 import { CircularProgress } from '@mui/material'
 
