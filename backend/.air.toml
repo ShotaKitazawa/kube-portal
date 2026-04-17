@@ -6,7 +6,7 @@ tmp_dir = "tmp"
 
 [build]
 cmd = "go build -o ./tmp/app ."
-bin = "./tmp/app"
+entrypoint = "./tmp/app"
 include_ext = ["go"]
 exclude_dir = ["tmp"]
 exclude_unchanged = true
