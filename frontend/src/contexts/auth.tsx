@@ -24,12 +24,7 @@ export const AuthContext = createContext<AuthContextType>({
   logout: async () => {},
 })
 
-const baseUrl =
-  process.env.NEXT_PUBLIC_BACKEND_URL !== undefined
-    ? process.env.NEXT_PUBLIC_BACKEND_URL + '/api'
-    : typeof window !== 'undefined'
-      ? window.location.origin + '/api'
-      : '/api'
+const baseUrl = '/api'
 
 async function fetchUserinfo(): Promise<AuthUser | null> {
   try {

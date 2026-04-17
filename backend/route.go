@@ -80,7 +80,7 @@ func Run(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	// Routes
-	e.Static("/", "./frontend/out")
+	e.Static("/", "./frontend/dist")
 	e.Any("/api/*", echo.WrapHandler(http.StripPrefix("/api", srv)))
 
 	// Listen

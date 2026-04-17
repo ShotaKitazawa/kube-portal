@@ -4,6 +4,7 @@ coverage.txt
 # Air build output
 backend/tmp/
 
-# Next.js / TypeScript generated files
-frontend/next-env.d.ts
+# Frontend build output and generated files
+frontend/dist/
+frontend/out/
 frontend/tsconfig.tsbuildinfo

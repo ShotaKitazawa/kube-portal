@@ -7,14 +7,7 @@ class Client {
   private client: ReturnType<typeof createClient<paths>>
 
   constructor() {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_BACKEND_URL !== undefined
-        ? process.env.NEXT_PUBLIC_BACKEND_URL + '/api'
-        : typeof window !== 'undefined'
-          ? window.location.origin + '/api'
-          : '/api'
-
-    this.client = createClient<paths>({ baseUrl })
+    this.client = createClient<paths>({ baseUrl: '/api' })
   }
 
   async List(accessToken?: string): Promise<LinkInfo[]> {

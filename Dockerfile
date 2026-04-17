@@ -12,7 +12,7 @@ COPY backend/ .
 RUN GOOS=linux go build -ldflags "-X main.appVersion=${APP_VERSION} -X main.appCommit=${APP_COMMIT}" -o app main.go
 
 
-### Build Next.js ###
+### Build Vite ###
 FROM node:24.14.1 AS build-frontend
 RUN corepack enable
 WORKDIR /workdir
@@ -27,7 +27,7 @@ RUN pnpm run build
 FROM gcr.io/distroless/base-debian12:latest
 ## copy binary
 COPY --from=build-backend /workdir/app .
-COPY --from=build-frontend /workdir/out frontend/out
+COPY --from=build-frontend /workdir/dist frontend/dist
 ## Run
 ENTRYPOINT ["./app"]
 

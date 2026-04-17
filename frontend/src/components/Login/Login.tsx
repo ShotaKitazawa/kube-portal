@@ -1,7 +1,4 @@
-/* eslint @next/next/no-img-element: 0 */
-
 import React, { useState } from 'react'
-import Image from 'next/image'
 import { IconButton, Button, Menu, MenuItem } from '@mui/material'
 
 import { useAuth } from '../../contexts/auth'
@@ -36,7 +33,7 @@ export const Login: React.FC = () => {
         color="inherit"
       >
         {user.profile.picture ? (
-          <Image
+          <img
             src={user.profile.picture}
             alt="avatar"
             className="rounded-full"

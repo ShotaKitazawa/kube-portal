@@ -9,13 +9,11 @@ run = "mise run dev-backend & mise run dev-frontend & wait"
 
 [tasks.dev-backend]
 dir = "{{config_root}}/backend"
-run = "air -- --disable-oidc --development"
-env = { ALLOWED_ORIGIN_URL = "http://localhost:3000" }
+run = "air -- --disable-oidc"
 
 [tasks.dev-frontend]
 dir = "{{config_root}}/frontend"
 run = "pnpm dev"
-env = { NEXT_PUBLIC_BACKEND_URL = "http://localhost:8080" }
 
 [tasks.generate]
 depends = ["generate-backend", "generate-frontend"]

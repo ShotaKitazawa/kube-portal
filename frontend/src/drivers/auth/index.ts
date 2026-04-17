@@ -5,10 +5,7 @@ export type OIDCSetup =
   | { configured: true; userManager: UserManager }
 
 export async function loadOIDCSetup(): Promise<OIDCSetup> {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_BACKEND_URL !== undefined
-      ? process.env.NEXT_PUBLIC_BACKEND_URL + '/api'
-      : window.location.origin + '/api'
+  const baseUrl = '/api'
 
   let config: { enabled: boolean; issuer?: string; client_id?: string }
   try {
