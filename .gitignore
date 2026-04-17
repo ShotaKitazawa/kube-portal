@@ -7,4 +7,5 @@ backend/tmp/
 # Frontend build output and generated files
 frontend/dist/
 frontend/out/
+frontend/next-env.d.ts
 frontend/tsconfig.tsbuildinfo
