@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 3, "column": 0}, "map": {"version":3,"sources":["file:///Users/admin/.ghq/github.com/ShotaKitazawa/kube-portal/frontend/node_modules/.pnpm/next%4016.2.3_%40babel%2Bcore%407.29.0_react-dom%4019.2.4_react%4019.2.4__react%4019.2.4/node_modules/next/head.js"],"sourcesContent":["module.exports = require('./dist/shared/lib/head')\n"],"names":["module","exports"],"mappings":"AAAAA,OAAOC,OAAO","ignoreList":[0]}},
-    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file:///Users/admin/.ghq/github.com/ShotaKitazawa/kube-portal/frontend/node_modules/.pnpm/next%4016.2.3_%40babel%2Bcore%407.29.0_react-dom%4019.2.4_react%4019.2.4__react%4019.2.4/node_modules/next/image.js"],"sourcesContent":["module.exports = require('./dist/shared/lib/image-external')\n"],"names":["module","exports"],"mappings":"AAAAA,OAAOC,OAAO","ignoreList":[0]}}]
-}
