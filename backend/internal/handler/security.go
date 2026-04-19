@@ -4,11 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log/slog"
 
 	"github.com/ShotaKitazawa/kube-portal/internal/api"
 	"github.com/coreos/go-oidc/v3/oidc"
-	"github.com/jmespath/go-jmespath"
 )
 
 var (
@@ -17,15 +15,14 @@ var (
 )
 
 type SecurityHandler struct {
-	oidcVerifier      *oidc.IDTokenVerifier
-	roleAttributePath string
-	logger            *slog.Logger
+	oidcVerifier *oidc.IDTokenVerifier
+	allowedSubs  []string
 }
 
 var _ api.SecurityHandler = (*SecurityHandler)(nil)
 
-func NewSecurityHandler(v *oidc.IDTokenVerifier, roleAttributePath string, l *slog.Logger) *SecurityHandler {
-	return &SecurityHandler{oidcVerifier: v, roleAttributePath: roleAttributePath, logger: l}
+func NewSecurityHandler(v *oidc.IDTokenVerifier, allowedSubs []string) *SecurityHandler {
+	return &SecurityHandler{oidcVerifier: v, allowedSubs: allowedSubs}
 }
 
 func (s *SecurityHandler) HandleBearerAuth(ctx context.Context, _ api.OperationName, t api.BearerAuth) (context.Context, error) {
@@ -38,18 +35,17 @@ func (s *SecurityHandler) HandleBearerAuth(ctx context.Context, _ api.OperationN
 		return ctx, fmt.Errorf("%w: %w", ErrUnauthorized, err)
 	}
 
-	var claims any
-	if err := idToken.Claims(&claims); err != nil {
-		return ctx, fmt.Errorf("failed to parse claims: %w", err)
-	}
-
-	res, err := jmespath.Search(s.roleAttributePath, claims)
-	if err != nil {
-		return ctx, fmt.Errorf("failed to search claims by JMESPath: %w", err)
-	}
-	typedRes, ok := res.(bool)
-	if !ok || !typedRes {
-		return ctx, fmt.Errorf("%w: JMESPath result is not true", ErrForbidden)
+	if len(s.allowedSubs) > 0 {
+		allowed := false
+		for _, sub := range s.allowedSubs {
+			if sub == idToken.Subject {
+				allowed = true
+				break
+			}
+		}
+		if !allowed {
+			return ctx, fmt.Errorf("%w: subject %q is not in allowed list", ErrForbidden, idToken.Subject)
+		}
 	}
 
 	ctx = setToken(ctx, t.Token)

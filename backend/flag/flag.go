@@ -51,10 +51,10 @@ var (
 		Sources: cli.EnvVars("OIDC_AUDIENCE"),
 	}
 
-	RoleAttributePath = cli.StringFlag{
-		Name:    "role-attribute-path",
-		Usage:   "This value must be JMESPath format. Only entities that return true are allowed.",
-		Sources: cli.EnvVars("ROLE_ATTRIBUTE_PATH"),
+	OIDCAllowedSubs = cli.StringSliceFlag{
+		Name:    "oidc-allowed-subs",
+		Usage:   "Comma-separated list of allowed OIDC subject identifiers. If empty, all authenticated users are allowed.",
+		Sources: cli.EnvVars("OIDC_ALLOWED_SUBS"),
 	}
 	ShowUntaggedLinks = cli.BoolFlag{
 		Name:    "show-untagged-links",
@@ -78,7 +78,7 @@ func Flags(version, commit string) []cli.Flag {
 		&OIDCProviderURL,
 		&OIDCClientID,
 		&OIDCAudience,
-		&RoleAttributePath,
+		&OIDCAllowedSubs,
 		&ShowUntaggedLinks,
 		&DisableOIDC,
 	}

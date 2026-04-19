@@ -53,7 +53,7 @@ func Run(ctx context.Context, cmd *cli.Command) error {
 			ClientID: cmd.String(flag.OIDCClientID.Name),
 			Audience: cmd.String(flag.OIDCAudience.Name),
 		}, provider),
-		handler.NewSecurityHandler(oidcVerifier, cmd.String(flag.RoleAttributePath.Name), logger),
+		handler.NewSecurityHandler(oidcVerifier, cmd.StringSlice(flag.OIDCAllowedSubs.Name)),
 	)
 	if err != nil {
 		return fmt.Errorf("failed to initialize api server: %w", err)

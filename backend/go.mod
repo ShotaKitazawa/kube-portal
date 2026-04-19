@@ -10,7 +10,6 @@ require (
 	github.com/go-faster/errors v0.7.1
 	github.com/go-faster/jx v1.2.0
 	github.com/google/go-cmp v0.7.0
-	github.com/jmespath/go-jmespath v0.4.0
 	github.com/labstack/echo/v4 v4.15.1
 	github.com/mattn/go-jsonpointer v0.0.1
 	github.com/ogen-go/ogen v1.20.3
