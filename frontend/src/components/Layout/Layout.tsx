@@ -1,9 +1,9 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode } from "react";
 
-import { Header } from '../Header'
+import { Header } from "../Header";
 
 interface LayoutProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
@@ -14,5 +14,5 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       </div>
       <main className="relative z-10 mt-20">{children}</main>
     </>
-  )
-}
+  );
+};

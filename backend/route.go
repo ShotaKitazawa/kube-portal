@@ -73,9 +73,9 @@ func Run(ctx context.Context, cmd *cli.Command) error {
 		}))
 	if cmd.Bool(flag.Development.Name) {
 		e.Use(echomiddleware.CORSWithConfig(echomiddleware.CORSConfig{
-			AllowOrigins:  []string{os.Getenv("ALLOWED_ORIGIN_URL")},
-			AllowMethods:  []string{"*"},
-			AllowHeaders:  []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
+			AllowOrigins: []string{os.Getenv("ALLOWED_ORIGIN_URL")},
+			AllowMethods: []string{"*"},
+			AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
 		}))
 	}
 

@@ -20,9 +20,9 @@ import (
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 
+	kubeportalv1alpha1 "github.com/ShotaKitazawa/kube-portal/internal/infrastructure/kubernetes/api/v1alpha1"
 	"github.com/ShotaKitazawa/kube-portal/internal/model"
 	"github.com/ShotaKitazawa/kube-portal/internal/model/port"
-	kubeportalv1alpha1 "github.com/ShotaKitazawa/kube-portal/internal/infrastructure/kubernetes/api/v1alpha1"
 )
 
 const ingressAnnotationPrefix = "kube-portal.kanatakita.com/"

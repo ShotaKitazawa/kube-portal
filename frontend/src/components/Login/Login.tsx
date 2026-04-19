@@ -1,26 +1,26 @@
-import React, { useState } from 'react'
-import { IconButton, Button, Menu, MenuItem } from '@mui/material'
+import React, { useState } from "react";
+import { IconButton, Button, Menu, MenuItem } from "@mui/material";
 
-import { useAuth } from '../../contexts/auth'
+import { useAuth } from "../../contexts/auth";
 
 export const Login: React.FC = () => {
-  const { user, login, logout } = useAuth()
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const open = Boolean(anchorEl)
+  const { user, login, logout } = useAuth();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
+    setAnchorEl(event.currentTarget);
+  };
   const handleClose = () => {
-    setAnchorEl(null)
-  }
+    setAnchorEl(null);
+  };
 
   if (!user) {
     return (
       <Button color="inherit" onClick={login}>
         Login
       </Button>
-    )
+    );
   }
 
   return (
@@ -42,7 +42,7 @@ export const Login: React.FC = () => {
           />
         ) : (
           <span className="rounded-full w-10 h-10 bg-gray-400 flex items-center justify-center text-white text-sm">
-            {(user.profile.name ?? user.profile.email ?? 'U')[0].toUpperCase()}
+            {(user.profile.name ?? user.profile.email ?? "U")[0].toUpperCase()}
           </span>
         )}
       </IconButton>
@@ -50,27 +50,27 @@ export const Login: React.FC = () => {
         id="menu-appbar"
         anchorEl={anchorEl}
         anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
+          vertical: "top",
+          horizontal: "right",
         }}
         disableScrollLock={true}
         keepMounted
         transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
+          vertical: "top",
+          horizontal: "right",
         }}
         open={open}
         onClose={handleClose}
       >
         <MenuItem
           onClick={() => {
-            handleClose()
-            logout()
+            handleClose();
+            logout();
           }}
         >
           Logout
         </MenuItem>
       </Menu>
     </div>
-  )
-}
+  );
+};

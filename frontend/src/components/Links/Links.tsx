@@ -1,11 +1,11 @@
-import React, { ReactNode } from 'react'
-import { Card, CardContent } from '@mui/material'
+import React, { ReactNode } from "react";
+import { Card, CardContent } from "@mui/material";
 
-import { LinkInfo } from '../../drivers/ingress-info'
+import { LinkInfo } from "../../drivers/ingress-info";
 
 interface LinksProps {
-  linksList: LinkInfo[]
-  children?: ReactNode
+  linksList: LinkInfo[];
+  children?: ReactNode;
 }
 
 export const Links: React.FC<LinksProps> = ({ linksList }) => {
@@ -23,7 +23,9 @@ export const Links: React.FC<LinksProps> = ({ linksList }) => {
                   <div className="flex-none w-16 h-16">
                     <img
                       alt="item-icon"
-                      src={icon_url !== '' ? icon_url : '/external-link-alt.svg'}
+                      src={
+                        icon_url !== "" ? icon_url : "/external-link-alt.svg"
+                      }
                       width={64}
                       height={64}
                     />
@@ -42,5 +44,5 @@ export const Links: React.FC<LinksProps> = ({ linksList }) => {
         )}
       </div>
     </section>
-  )
-}
+  );
+};

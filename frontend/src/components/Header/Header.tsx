@@ -1,15 +1,15 @@
-import React, { ReactNode } from 'react'
-import { Toolbar, AppBar, Typography, IconButton } from '@mui/material'
+import React, { ReactNode } from "react";
+import { Toolbar, AppBar, Typography, IconButton } from "@mui/material";
 
-import { Login } from '../Login'
+import { Login } from "../Login";
 
-const repositoryLink = 'https://github.com/ShotaKitazawa/kube-portal'
+const repositoryLink = "https://github.com/ShotaKitazawa/kube-portal";
 
 interface HeaderProps {
-  children?: ReactNode
+  children?: ReactNode;
 }
 
-export const Header: React.FC<HeaderProps> = ({ children }) => {
+export const Header: React.FC<HeaderProps> = () => {
   return (
     <div className="fixed w-full top-0 left-0 flex">
       <AppBar position="static">
@@ -30,5 +30,5 @@ export const Header: React.FC<HeaderProps> = ({ children }) => {
         </Toolbar>
       </AppBar>
     </div>
-  )
-}
+  );
+};

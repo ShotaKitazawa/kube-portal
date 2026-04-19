@@ -1,36 +1,36 @@
-import React, { useState, useEffect, useContext, ReactNode } from 'react'
-import { CircularProgress } from '@mui/material'
+import React, { useState, useEffect, useContext, ReactNode } from "react";
+import { CircularProgress } from "@mui/material";
 
-import { Links } from '../Links'
-import { GlobalContext } from '../../contexts/global'
-import { LinkInfo } from '../../drivers/ingress-info'
+import { Links } from "../Links";
+import { GlobalContext } from "../../contexts/global";
+import { LinkInfo } from "../../drivers/ingress-info";
 
 interface LinkGroupsProps {
-  children?: ReactNode
+  children?: ReactNode;
 }
 
-export const LinkGroups: React.FC<LinkGroupsProps> = (props) => {
-  const { linkInfo } = useContext(GlobalContext)
+export const LinkGroups: React.FC<LinkGroupsProps> = () => {
+  const { linkInfo } = useContext(GlobalContext);
   const [linkInfoByTags, setLinkInfoByTags] =
-    useState<Map<string, LinkInfo[]>>()
+    useState<Map<string, LinkInfo[]>>();
 
   const convertLinkInfo = (linkInfo: LinkInfo[]) => {
-    let res: Map<string, LinkInfo[]> = new Map()
+    let res: Map<string, LinkInfo[]> = new Map();
     for (let i = 0; i < linkInfo.length; i++) {
       for (let j = 0; j < linkInfo[i].tags.length; j++) {
-        let tmp = res.get(linkInfo[i].tags[j]) ?? []
-        tmp.push(linkInfo[i])
-        res.set(linkInfo[i].tags[j], tmp.sort())
+        let tmp = res.get(linkInfo[i].tags[j]) ?? [];
+        tmp.push(linkInfo[i]);
+        res.set(linkInfo[i].tags[j], tmp.sort());
       }
     }
-    setLinkInfoByTags(res)
-  }
+    setLinkInfoByTags(res);
+  };
 
   useEffect(() => {
     if (linkInfo != null) {
-      convertLinkInfo(linkInfo)
+      convertLinkInfo(linkInfo);
     }
-  }, [linkInfo])
+  }, [linkInfo]);
 
   return (
     <>
@@ -39,7 +39,7 @@ export const LinkGroups: React.FC<LinkGroupsProps> = (props) => {
           .sort()
           .map((tagName, index) => (
             <React.Fragment key={`tag-group-${index}`}>
-              {tagName != '' ? (
+              {tagName != "" ? (
                 <React.Fragment key={`tag-header-${index}`}>
                   <div className="grid grid-cols-7">
                     <h2 className="col-start-2 text-4xl mt-20 font-bold">
@@ -60,5 +60,5 @@ export const LinkGroups: React.FC<LinkGroupsProps> = (props) => {
         <CircularProgress />
       )}
     </>
-  )
-}
+  );
+};

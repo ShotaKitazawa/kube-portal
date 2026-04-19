@@ -1,39 +1,39 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext } from "react";
 
-import Client, { LinkInfo } from '../drivers/ingress-info'
-import { AuthContext } from './auth'
+import Client, { LinkInfo } from "../drivers/ingress-info";
+import { AuthContext } from "./auth";
 
 type contexts = {
-  linkInfo?: LinkInfo[]
-}
+  linkInfo?: LinkInfo[];
+};
 
-export const GlobalContext = React.createContext({} as contexts)
+export const GlobalContext = React.createContext({} as contexts);
 
 interface GlobalProviderProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 export const GlobalProvider: React.FC<GlobalProviderProps> = (props) => {
-  const [linkInfo, setLinkInfo] = useState<LinkInfo[]>()
-  const { user } = useContext(AuthContext)
+  const [linkInfo, setLinkInfo] = useState<LinkInfo[]>();
+  const { user } = useContext(AuthContext);
 
-  const client = new Client()
+  const client = new Client();
   const listLinkInfo = async () => {
     try {
-      const resp = await client.List(user?.access_token)
-      setLinkInfo(resp)
-    } catch (error) {}
-  }
+      const resp = await client.List(user?.access_token);
+      setLinkInfo(resp);
+    } catch {}
+  };
 
   useEffect(() => {
-    listLinkInfo()
+    listLinkInfo();
     const intervalId = setInterval(() => {
-      listLinkInfo()
-    }, 10000)
+      listLinkInfo();
+    }, 10000);
     return () => {
-      clearInterval(intervalId)
-    }
-  }, [user])
+      clearInterval(intervalId);
+    };
+  }, [user]);
 
   return (
     <GlobalContext.Provider
@@ -43,5 +43,5 @@ export const GlobalProvider: React.FC<GlobalProviderProps> = (props) => {
     >
       {props.children}
     </GlobalContext.Provider>
-  )
-}
+  );
+};
