@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import { IconButton, Button, Menu, MenuItem } from "@mui/material";
+import type { AuthUser } from "../../drivers/auth";
 
-import { useAuth } from "../../contexts/auth";
+interface LoginProps {
+  user: AuthUser | null;
+  onLogin: () => void;
+  onLogout: () => void;
+}
 
-export const Login: React.FC = () => {
-  const { user, login, logout } = useAuth();
+export const Login: React.FC<LoginProps> = ({ user, onLogin, onLogout }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -17,7 +21,7 @@ export const Login: React.FC = () => {
 
   if (!user) {
     return (
-      <Button color="inherit" onClick={login}>
+      <Button color="inherit" onClick={onLogin}>
         Login
       </Button>
     );
@@ -32,17 +36,11 @@ export const Login: React.FC = () => {
         onClick={handleMenu}
         color="inherit"
       >
-        {user.profile.picture ? (
-          <img
-            src={user.profile.picture}
-            alt="avatar"
-            className="rounded-full"
-            width={40}
-            height={40}
-          />
+        {user.picture ? (
+          <img src={user.picture} alt="avatar" className="rounded-full" width={40} height={40} />
         ) : (
           <span className="rounded-full w-10 h-10 bg-gray-400 flex items-center justify-center text-white text-sm">
-            {(user.profile.name ?? user.profile.email ?? "U")[0].toUpperCase()}
+            {(user.name ?? user.email ?? "U")[0].toUpperCase()}
           </span>
         )}
       </IconButton>
@@ -65,7 +63,7 @@ export const Login: React.FC = () => {
         <MenuItem
           onClick={() => {
             handleClose();
-            logout();
+            onLogout();
           }}
         >
           Logout

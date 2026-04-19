@@ -1,47 +1,37 @@
-import React, { useState, useEffect, useContext } from "react";
-
+import React, { useState, useEffect } from "react";
 import Client, { LinkInfo } from "../drivers/ingress-info";
-import { AuthContext } from "./auth";
 
-type contexts = {
+type Contexts = {
   linkInfo?: LinkInfo[];
 };
 
-export const GlobalContext = React.createContext({} as contexts);
+export const GlobalContext = React.createContext({} as Contexts);
 
 interface GlobalProviderProps {
+  getToken: () => Promise<string | null>;
   children: React.ReactNode;
 }
 
-export const GlobalProvider: React.FC<GlobalProviderProps> = (props) => {
+export const GlobalProvider: React.FC<GlobalProviderProps> = ({ getToken, children }) => {
   const [linkInfo, setLinkInfo] = useState<LinkInfo[]>();
-  const { user } = useContext(AuthContext);
 
   const client = new Client();
   const listLinkInfo = async () => {
     try {
-      const resp = await client.List(user?.access_token);
+      const token = await getToken();
+      const resp = await client.List(token ?? undefined);
       setLinkInfo(resp);
     } catch {}
   };
 
   useEffect(() => {
     listLinkInfo();
-    const intervalId = setInterval(() => {
-      listLinkInfo();
-    }, 10000);
+    const intervalId = setInterval(listLinkInfo, 10000);
     return () => {
       clearInterval(intervalId);
     };
-  }, [user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  return (
-    <GlobalContext.Provider
-      value={{
-        linkInfo,
-      }}
-    >
-      {props.children}
-    </GlobalContext.Provider>
-  );
+  return <GlobalContext.Provider value={{ linkInfo }}>{children}</GlobalContext.Provider>;
 };

@@ -4,6 +4,13 @@ export type OIDCSetup =
   | { configured: false; userManager: null }
   | { configured: true; userManager: UserManager };
 
+export type AuthUser = {
+  sub: string;
+  name?: string;
+  email?: string;
+  picture?: string;
+};
+
 export async function loadOIDCSetup(): Promise<OIDCSetup> {
   const baseUrl = "/api";
 
@@ -29,4 +36,20 @@ export async function loadOIDCSetup(): Promise<OIDCSetup> {
   });
 
   return { configured: true, userManager };
+}
+
+export async function fetchUserinfo(): Promise<AuthUser | null> {
+  try {
+    const res = await fetch("/api/userinfo");
+    if (!res.ok) return null;
+    const data = await res.json();
+    return {
+      sub: data.sub,
+      name: data.name,
+      email: data.email,
+      picture: data.picture,
+    };
+  } catch {
+    return null;
+  }
 }
