@@ -57,9 +57,7 @@ function toAuthUser(u: import("oidc-client-ts").User): AuthUser {
   };
 }
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [userManager, setUserManager] = useState<UserManager | null>(null);
 
@@ -77,8 +75,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         if (u) setUser(toAuthUser(u));
       });
 
-      const handleUserLoaded = (u: import("oidc-client-ts").User) =>
-        setUser(toAuthUser(u));
+      const handleUserLoaded = (u: import("oidc-client-ts").User) => setUser(toAuthUser(u));
       const handleUserUnloaded = () => setUser(null);
 
       mgr.events.addUserLoaded(handleUserLoaded);
@@ -102,11 +99,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setUser(null);
   };
 
-  return (
-    <AuthContext.Provider value={{ user, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={{ user, login, logout }}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => useContext(AuthContext);

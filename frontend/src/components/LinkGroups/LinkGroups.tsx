@@ -11,8 +11,7 @@ interface LinkGroupsProps {
 
 export const LinkGroups: React.FC<LinkGroupsProps> = () => {
   const { linkInfo } = useContext(GlobalContext);
-  const [linkInfoByTags, setLinkInfoByTags] =
-    useState<Map<string, LinkInfo[]>>();
+  const [linkInfoByTags, setLinkInfoByTags] = useState<Map<string, LinkInfo[]>>();
 
   const convertLinkInfo = (linkInfo: LinkInfo[]) => {
     let res: Map<string, LinkInfo[]> = new Map();
@@ -42,9 +41,7 @@ export const LinkGroups: React.FC<LinkGroupsProps> = () => {
               {tagName != "" ? (
                 <React.Fragment key={`tag-header-${index}`}>
                   <div className="grid grid-cols-7">
-                    <h2 className="col-start-2 text-4xl mt-20 font-bold">
-                      {tagName}
-                    </h2>
+                    <h2 className="col-start-2 text-4xl mt-20 font-bold">{tagName}</h2>
                   </div>
                   <div className="grid grid-cols-8">
                     <hr className="col-start-2 col-end-8 h-px my-4 bg-gray-200 border-0" />

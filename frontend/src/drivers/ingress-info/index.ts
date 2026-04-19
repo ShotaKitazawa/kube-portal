@@ -16,9 +16,7 @@ class Client {
     if (accessToken) {
       headers["Authorization"] = `Bearer ${accessToken}`;
     }
-    const { data } = await this.client
-      .GET("/list", { headers })
-      .catch(() => ({ data: null }));
+    const { data } = await this.client.GET("/list", { headers }).catch(() => ({ data: null }));
     return data ?? [];
   }
 }

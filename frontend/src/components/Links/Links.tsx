@@ -23,9 +23,7 @@ export const Links: React.FC<LinksProps> = ({ linksList }) => {
                   <div className="flex-none w-16 h-16">
                     <img
                       alt="item-icon"
-                      src={
-                        icon_url !== "" ? icon_url : "/external-link-alt.svg"
-                      }
+                      src={icon_url !== "" ? icon_url : "/external-link-alt.svg"}
                       width={64}
                       height={64}
                     />
