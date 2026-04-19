@@ -62,6 +62,7 @@ depends = [
   "ci-lint-backend",
   "ci-lint-frontend",
   "ci-test-backend",
+  "ci-test-frontend",
 ]
 
 [tasks.ci-build-backend]
@@ -83,6 +84,10 @@ run = "pnpm run lint"
 [tasks.ci-test-backend]
 dir = "{{config_root}}/backend"
 run = "go test -coverprofile=coverage.txt -covermode=atomic ./..."
+
+[tasks.ci-test-frontend]
+dir = "{{config_root}}/frontend"
+run = "pnpm run test"
 
 [tasks.pre-merge]
 run = [
