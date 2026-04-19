@@ -9,3 +9,6 @@ frontend/dist/
 frontend/out/
 frontend/next-env.d.ts
 frontend/tsconfig.tsbuildinfo
+
+# Dependency age check cache
+backend/.deps_age_cache

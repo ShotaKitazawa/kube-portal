@@ -45,8 +45,18 @@ run = "pnpm run format"
 dir = "{{config_root}}/backend"
 run = "go test -coverprofile=coverage.txt -covermode=atomic ./..."
 
+[tasks.frontend-sync]
+dir = "{{config_root}}"
+run = "node scripts/sync-frontend.ts"
+
+[tasks.ci-deps-backend]
+dir = "{{config_root}}"
+run = "node scripts/check_deps_age_backend.ts"
+
 [tasks.ci]
 depends = [
+  "frontend-sync",
+  "ci-deps-backend",
   "ci-build-backend",
   "ci-build-frontend",
   "ci-lint-backend",

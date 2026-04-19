@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "lint": "tsc --noEmit && oxlint .",
     "format": "prettier --write .",
-    "openapi-ts": "pnpm exec openapi-typescript ../openapi.yaml -o src/gen/api.d.ts"
+    "openapi-ts": "pnpm exec openapi-typescript ../openapi.yaml -o src/gen/api.d.ts",
+    "sync:pin": "node ../scripts/sync-frontend.ts --pin"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",
