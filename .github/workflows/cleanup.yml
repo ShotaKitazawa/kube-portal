@@ -22,7 +22,7 @@ jobs:
             --paginate \
             --jq '.[] | {id: .id, tags: .metadata.container.tags}' \
           | jq -r 'select(.tags[] | test("^pr-[0-9]+$")) | "\(.id) \(.tags[] | select(test("^pr-[0-9]+$")))"' \
-          | while read VERSION_ID TAG; do
+          | while read -r VERSION_ID TAG; do
               PR_NUMBER="${TAG#pr-}"
               STATE=$(gh api "/repos/${OWNER}/${REPO}/pulls/${PR_NUMBER}" \
                 --jq '.state' 2>/dev/null || echo "not_found")

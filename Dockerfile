@@ -9,7 +9,7 @@ COPY backend/go.mod backend/go.sum ./
 RUN go mod download
 ## build
 COPY backend/ .
-RUN GOOS=linux go build -ldflags "-X main.appVersion=${APP_VERSION} -X main.appCommit=${APP_COMMIT}" -o app main.go
+RUN GOOS=linux go build -ldflags "-X main.appVersion=${APP_VERSION} -X main.appCommit=${APP_COMMIT}" -o app .
 
 
 ### Build Vite ###
