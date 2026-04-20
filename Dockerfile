@@ -13,7 +13,7 @@ RUN GOOS=linux go build -ldflags "-X main.appVersion=${APP_VERSION} -X main.appC
 
 
 ### Build Vite ###
-FROM node:24.14.1 AS build-frontend
+FROM node:24.15.0 AS build-frontend
 RUN corepack enable
 WORKDIR /workdir
 COPY frontend/package.json frontend/pnpm-lock.yaml ./
