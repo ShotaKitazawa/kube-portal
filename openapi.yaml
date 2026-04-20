@@ -1,0 +1,109 @@
+openapi: "3.1.0"
+info:
+  title: kube-portal API
+  version: "0.1.0"
+
+servers:
+  - url: /api
+
+security:
+  - bearerAuth: []
+  - {}
+
+paths:
+  /oidc-config:
+    get:
+      operationId: getOidcConfig
+      summary: Get OIDC configuration
+      security: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OIDCConfig"
+
+  /userinfo:
+    get:
+      operationId: getUserinfo
+      summary: Get userinfo from OIDC provider
+      security: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserInfo"
+        "401":
+          description: Unauthorized
+
+  /list:
+    get:
+      operationId: listIngressInfo
+      summary: List ingress info
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/IngressInfo"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    OIDCConfig:
+      type: object
+      required:
+        - enabled
+      properties:
+        enabled:
+          type: boolean
+        issuer:
+          type: string
+        client_id:
+          type: string
+        audience:
+          type: string
+
+    UserInfo:
+      type: object
+      required:
+        - sub
+      properties:
+        sub:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        picture:
+          type: string
+
+    IngressInfo:
+      type: object
+      required:
+        - name
+        - url
+        - icon_url
+        - tags
+      properties:
+        name:
+          type: string
+        url:
+          type: string
+        icon_url:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string

@@ -8,7 +8,7 @@
   html {
     @apply antialiased;
   }
-  
+
   body {
     @apply bg-[#ffffff] text-[#1a202c] dark:bg-[#1a202c] dark:text-[#ffffff];
   }

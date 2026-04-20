@@ -27,6 +27,7 @@
         'minor',
       ],
       groupName: 'all minor, or patch dependencies on npm',
+      minimumReleaseAge: '7 days',
     },
     {
       matchManagers: [

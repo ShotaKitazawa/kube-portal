@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: kube-portal
+
+resources:
+- ./base
+- ./role
+- ./crd
+
+images:
+- name: __IMAGE__
+  newName: ghcr.io/shotakitazawa/kube-portal
+  newTag: latest

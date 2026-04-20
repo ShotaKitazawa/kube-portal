@@ -1,1 +1,1 @@
-export { LinkGroups } from './LinkGroups'
+export { LinkGroups } from "./LinkGroups";

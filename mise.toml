@@ -1,0 +1,97 @@
+[tools]
+go = "1.26.1"
+node = "24.14.1"
+pnpm = "10.33.0"
+air = "latest"
+
+[tasks.dev]
+run = "mise run dev-backend & mise run dev-frontend & wait"
+
+[tasks.dev-backend]
+dir = "{{config_root}}/backend"
+run = "air -- --disable-oidc"
+
+[tasks.dev-frontend]
+dir = "{{config_root}}/frontend"
+run = "pnpm dev"
+
+[tasks.generate]
+depends = ["generate-backend", "generate-frontend"]
+
+[tasks.generate-backend]
+dir = "{{config_root}}/backend"
+run = "go generate ./..."
+
+[tasks.generate-frontend]
+dir = "{{config_root}}/frontend"
+run = "pnpm openapi-ts"
+
+[tasks.backend-mod-tidy]
+dir = "{{config_root}}/backend"
+run = "go mod tidy"
+
+[tasks.format]
+depends = ["format-backend", "format-frontend"]
+
+[tasks.format-backend]
+dir = "{{config_root}}/backend"
+run = "gofmt -w ."
+
+[tasks.format-frontend]
+dir = "{{config_root}}/frontend"
+run = "pnpm run format"
+
+[tasks.test-backend]
+dir = "{{config_root}}/backend"
+run = "go test -coverprofile=coverage.txt -covermode=atomic ./..."
+
+[tasks.frontend-sync]
+dir = "{{config_root}}"
+run = "node scripts/sync-frontend.ts"
+
+[tasks.ci-deps-backend]
+dir = "{{config_root}}"
+run = "node scripts/check_deps_age_backend.ts"
+
+[tasks.ci]
+depends = [
+  "frontend-sync",
+  "ci-deps-backend",
+  "ci-build-backend",
+  "ci-build-frontend",
+  "ci-lint-backend",
+  "ci-lint-frontend",
+  "ci-test-backend",
+  "ci-test-frontend",
+]
+
+[tasks.ci-build-backend]
+dir = "{{config_root}}/backend"
+run = "go build ./..."
+
+[tasks.ci-build-frontend]
+dir = "{{config_root}}/frontend"
+run = "pnpm run build"
+
+[tasks.ci-lint-backend]
+dir = "{{config_root}}/backend"
+run = "go vet ./..."
+
+[tasks.ci-lint-frontend]
+dir = "{{config_root}}/frontend"
+run = "pnpm run lint"
+
+[tasks.ci-test-backend]
+dir = "{{config_root}}/backend"
+run = "go test -coverprofile=coverage.txt -covermode=atomic ./..."
+
+[tasks.ci-test-frontend]
+dir = "{{config_root}}/frontend"
+run = "pnpm run test"
+
+[tasks.pre-merge]
+run = [
+  "mise run generate",
+  "mise run format",
+  "mise run ci",
+]

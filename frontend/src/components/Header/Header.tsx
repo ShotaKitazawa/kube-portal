@@ -1,16 +1,18 @@
-import React, { ReactNode } from 'react'
-import Image from 'next/image'
-import { Toolbar, AppBar, Typography, IconButton } from '@mui/material'
+import React, { ReactNode } from "react";
+import { Toolbar, AppBar, Typography, IconButton } from "@mui/material";
+import { Login } from "../Login";
+import type { AuthUser } from "../../drivers/auth";
 
-import { Login } from '../Login'
-
-const repositoryLink = 'https://github.com/ShotaKitazawa/kube-portal'
+const repositoryLink = "https://github.com/ShotaKitazawa/kube-portal";
 
 interface HeaderProps {
-  children?: ReactNode
+  user: AuthUser | null;
+  onLogin: () => void;
+  onLogout: () => void;
+  children?: ReactNode;
 }
 
-export const Header: React.FC<HeaderProps> = ({ children }) => {
+export const Header: React.FC<HeaderProps> = ({ user, onLogin, onLogout }) => {
   return (
     <div className="fixed w-full top-0 left-0 flex">
       <AppBar position="static">
@@ -18,12 +20,7 @@ export const Header: React.FC<HeaderProps> = ({ children }) => {
           <div className="mr-2">
             <a href={repositoryLink}>
               <IconButton edge="start" color="inherit">
-                <Image
-                  alt="icon"
-                  src="/kube-portal.png"
-                  width={32}
-                  height={32}
-                />
+                <img alt="icon" src="/kube-portal.png" width={32} height={32} />
               </IconButton>
             </a>
           </div>
@@ -31,10 +28,10 @@ export const Header: React.FC<HeaderProps> = ({ children }) => {
             <Typography variant="h6">kube-portal</Typography>
           </div>
           <div className="ml-auto">
-            <Login />
+            <Login user={user} onLogin={onLogin} onLogout={onLogout} />
           </div>
         </Toolbar>
       </AppBar>
     </div>
-  )
-}
+  );
+};

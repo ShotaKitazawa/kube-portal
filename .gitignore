@@ -1,1 +1,14 @@
 node_modules
+coverage.txt
+
+# Air build output
+backend/tmp/
+
+# Frontend build output and generated files
+frontend/dist/
+frontend/out/
+frontend/next-env.d.ts
+frontend/tsconfig.tsbuildinfo
+
+# Dependency age check cache
+backend/.deps_age_cache

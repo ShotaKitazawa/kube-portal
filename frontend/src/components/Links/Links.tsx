@@ -1,14 +1,11 @@
-/* eslint @next/next/no-img-element: 0 */
+import React, { ReactNode } from "react";
+import { Card, CardContent } from "@mui/material";
 
-import React, { ReactNode } from 'react'
-import { Card, CardContent } from '@mui/material'
-import Image from 'next/image'
-
-import IngressInfo, { LinkInfo } from '../../drivers/ingress-info'
+import { LinkInfo } from "../../drivers/ingress-info";
 
 interface LinksProps {
-  linksList: LinkInfo[]
-  children?: ReactNode
+  linksList: LinkInfo[];
+  children?: ReactNode;
 }
 
 export const Links: React.FC<LinksProps> = ({ linksList }) => {
@@ -24,21 +21,12 @@ export const Links: React.FC<LinksProps> = ({ linksList }) => {
               <a href={url} className="hover:no-underline">
                 <Card className="flex hover:bg-indigo-200">
                   <div className="flex-none w-16 h-16">
-                    {icon_url != '' ? (
-                      <Image
-                        alt="item-icon"
-                        src={icon_url}
-                        width={64}
-                        height={64}
-                      />
-                    ) : (
-                      <Image
-                        alt="item-icon"
-                        src="/external-link-alt.svg"
-                        width={64}
-                        height={64}
-                      />
-                    )}
+                    <img
+                      alt="item-icon"
+                      src={icon_url !== "" ? icon_url : "/external-link-alt.svg"}
+                      width={64}
+                      height={64}
+                    />
                   </div>
                   <div className="flex-grow w-16">
                     <CardContent>
@@ -54,5 +42,5 @@ export const Links: React.FC<LinksProps> = ({ linksList }) => {
         )}
       </div>
     </section>
-  )
-}
+  );
+};

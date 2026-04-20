@@ -5,28 +5,29 @@ ENV GO111MODULE="on"
 ARG APP_VERSION
 ARG APP_COMMIT
 ## download packages
-COPY go.mod go.sum ./
+COPY backend/go.mod backend/go.sum ./
 RUN go mod download
 ## build
-COPY main.go .
-COPY flag flag
-COPY backend backend
-RUN GOOS=linux go build -ldflags "-X main.appVersion=${APP_VERSION} -X main.appCommit=${APP_COMMIT}" -o app main.go
+COPY backend/ .
+RUN GOOS=linux go build -ldflags "-X main.appVersion=${APP_VERSION} -X main.appCommit=${APP_COMMIT}" -o app .
 
 
-### Build Next.js ###
+### Build Vite ###
 FROM node:24.14.1 AS build-frontend
+RUN corepack enable
 WORKDIR /workdir
-COPY frontend/ ./
-RUN yarn install
-RUN yarn build
+COPY frontend/package.json frontend/pnpm-lock.yaml ./
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile
+COPY frontend/ .
+RUN pnpm run build
 
 
 ### Run ###
 FROM gcr.io/distroless/base-debian12:latest
 ## copy binary
 COPY --from=build-backend /workdir/app .
-COPY --from=build-frontend /workdir/out frontend/out
+COPY --from=build-frontend /workdir/dist frontend/dist
 ## Run
 ENTRYPOINT ["./app"]
 
