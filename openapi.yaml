@@ -28,7 +28,6 @@ paths:
     get:
       operationId: getUserinfo
       summary: Get userinfo from OIDC provider
-      security: []
       responses:
         "200":
           description: OK

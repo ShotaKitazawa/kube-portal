@@ -27,14 +27,18 @@ function App() {
     loadOIDCSetup().then(async (setup) => {
       setOidcSetup(setup);
       if (setup.configured) {
-        setup.userManager.events.addUserLoaded(() => {
-          fetchUserinfo().then(setUser);
+        setup.userManager.events.addUserLoaded(async () => {
+          const u = await setup.userManager.getUser();
+          fetchUserinfo(u?.access_token).then(setUser);
         });
         setup.userManager.events.addUserUnloaded(() => setUser(null));
       }
       // GET /api/userinfo is the single source of truth for auth state:
       // 200 = authenticated, non-200 = unauthenticated.
-      const u = await fetchUserinfo();
+      const token = setup.configured
+        ? (await setup.userManager.getUser())?.access_token
+        : undefined;
+      const u = await fetchUserinfo(token);
       setUser(u);
     });
   }, []);

@@ -39,9 +39,10 @@ export async function loadOIDCSetup(): Promise<OIDCSetup> {
   return { configured: true, userManager };
 }
 
-export async function fetchUserinfo(): Promise<AuthUser | null> {
+export async function fetchUserinfo(token?: string): Promise<AuthUser | null> {
   try {
-    const res = await fetch("/api/userinfo");
+    const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+    const res = await fetch("/api/userinfo", { headers });
     if (!res.ok) return null;
     const data = await res.json();
     return {
