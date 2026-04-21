@@ -14,7 +14,7 @@ export type AuthUser = {
 export async function loadOIDCSetup(): Promise<OIDCSetup> {
   const baseUrl = "/api";
 
-  let config: { enabled: boolean; issuer?: string; client_id?: string };
+  let config: { enabled: boolean; issuer?: string; client_id?: string; audience?: string };
   try {
     const res = await fetch(`${baseUrl}/oidc-config`);
     config = await res.json();
@@ -31,6 +31,7 @@ export async function loadOIDCSetup(): Promise<OIDCSetup> {
     client_id: config.client_id,
     redirect_uri: `${window.location.origin}/callback`,
     scope: "openid profile email offline_access",
+    extraQueryParams: config.audience ? { audience: config.audience } : {},
     userStore: new WebStorageStateStore({ store: window.localStorage }),
     automaticSilentRenew: false,
   });
