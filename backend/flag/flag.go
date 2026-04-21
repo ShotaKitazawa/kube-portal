@@ -14,12 +14,6 @@ var (
 		Sources: cli.EnvVars("BIND_ADDR"),
 		Value:   "0.0.0.0:8080",
 	}
-	Development = cli.BoolFlag{
-		Name:    "development",
-		Usage:   "development mode",
-		Sources: cli.EnvVars("DEVELOPMENT"),
-		Value:   false,
-	}
 	KubeConfigPath = cli.StringFlag{
 		Name:     "kubeconfig",
 		Usage:    "filepath of KubeConfig",
@@ -73,7 +67,6 @@ var (
 func Flags(version, commit string) []cli.Flag {
 	return []cli.Flag{
 		&BindAddr,
-		&Development,
 		&KubeConfigPath,
 		&OIDCProviderURL,
 		&OIDCClientID,

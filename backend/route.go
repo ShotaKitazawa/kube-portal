@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/labstack/echo/v4"
@@ -71,17 +72,15 @@ func Run(ctx context.Context, cmd *cli.Command) error {
 			WithRequestID:     true,
 			WithRequestHeader: true,
 		}))
-	if cmd.Bool(flag.Development.Name) {
-		e.Use(echomiddleware.CORSWithConfig(echomiddleware.CORSConfig{
-			AllowOrigins: []string{os.Getenv("ALLOWED_ORIGIN_URL")},
-			AllowMethods: []string{"*"},
-			AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
-		}))
-	}
-
 	// Routes
-	e.Static("/", "./frontend/dist")
 	e.Any("/api/*", echo.WrapHandler(http.StripPrefix("/api", srv)))
+	e.GET("/*", func(c echo.Context) error {
+		p := filepath.Join("./frontend/dist", filepath.Clean("/"+c.Param("*")))
+		if _, err := os.Stat(p); os.IsNotExist(err) {
+			return c.File("./frontend/dist/index.html")
+		}
+		return c.File(p)
+	})
 
 	// Listen
 	return http.ListenAndServe(cmd.String(flag.BindAddr.Name), e)
