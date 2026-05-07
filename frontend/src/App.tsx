@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { CircularProgress } from "@mui/material";
 import { fetchUserinfo, loadOIDCSetup, type AuthUser, type OIDCSetup } from "./drivers/auth";
 import { Layout } from "./components/Layout";
 import { GlobalProvider } from "./contexts/global";
@@ -43,8 +44,16 @@ function App() {
     });
   }, []);
 
-  if (window.location.search.includes("code=") || user === undefined) {
+  if (window.location.search.includes("code=")) {
     return null;
+  }
+
+  if (user === undefined) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <CircularProgress />
+      </div>
+    );
   }
 
   const getToken = async (): Promise<string | null> => {
