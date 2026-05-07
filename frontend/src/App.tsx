@@ -57,7 +57,7 @@ function App() {
   }
 
   const getToken = async (): Promise<string | null> => {
-    if (!oidcSetup?.configured) return null;
+    if (!oidcSetup?.configured || user === null) return null;
     const u = await oidcSetup.userManager.getUser();
     return u?.access_token ?? null;
   };
