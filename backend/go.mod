@@ -5,7 +5,7 @@ go 1.25.0
 toolchain go1.26.1
 
 require (
-	github.com/coreos/go-oidc/v3 v3.17.0
+	github.com/coreos/go-oidc/v3 v3.18.0
 	github.com/elliotchance/orderedmap/v3 v3.1.0
 	github.com/go-faster/errors v0.7.1
 	github.com/go-faster/jx v1.2.0
@@ -35,7 +35,7 @@ require (
 	github.com/fxamacker/cbor/v2 v2.9.0 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/go-faster/yaml v0.4.6 // indirect
-	github.com/go-jose/go-jose/v4 v4.1.3 // indirect
+	github.com/go-jose/go-jose/v4 v4.1.4 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-openapi/jsonpointer v0.21.0 // indirect
