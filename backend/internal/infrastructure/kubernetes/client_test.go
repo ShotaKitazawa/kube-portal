@@ -8,55 +8,61 @@ import (
 
 	networkingv1 "k8s.io/api/networking/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/kubernetes/fake"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/client-go/tools/cache"
 
-	"github.com/ShotaKitazawa/kube-portal/internal/model"
 	"github.com/google/go-cmp/cmp"
+	"github.com/ShotaKitazawa/kube-portal/internal/model"
 )
 
-func TestClient_ListIngressInfo(t *testing.T) {
-	type fields struct {
-		clientset kubernetes.Interface
+func newClient(ingressObjs []any, externalLinkObjs []any) *Client {
+	ingressStore := cache.NewStore(cache.MetaNamespaceKeyFunc)
+	for _, o := range ingressObjs {
+		ingressStore.Add(o)
 	}
-	type args struct {
-		ctx context.Context
+	externalLinkStore := cache.NewStore(cache.MetaNamespaceKeyFunc)
+	for _, o := range externalLinkObjs {
+		externalLinkStore.Add(o)
 	}
+	return &Client{
+		log:               slog.New(slog.NewJSONHandler(io.Discard, nil)),
+		ingressStore:      ingressStore,
+		externalLinkStore: externalLinkStore,
+	}
+}
+
+func TestClient_ListIngress(t *testing.T) {
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    model.LinkList
-		wantErr bool
+		name     string
+		ingresses []*networkingv1.Ingress
+		want     model.LinkList
+		wantErr  bool
 	}{
 		{
 			name: "testcase 01",
-			fields: fields{
-				fake.NewSimpleClientset(
-					&networkingv1.Ingress{
-						ObjectMeta: metav1.ObjectMeta{
-							Name:      "test01",
-							Namespace: "default",
-							Annotations: map[string]string{
-								"kube-portal.kanatakita.com/rules.0.paths.0.enable": "true",
-							},
-						},
-						Spec: networkingv1.IngressSpec{
-							Rules: []networkingv1.IngressRule{{
-								Host: "01.example.com",
-								IngressRuleValue: networkingv1.IngressRuleValue{
-									HTTP: &networkingv1.HTTPIngressRuleValue{
-										Paths: []networkingv1.HTTPIngressPath{{
-											Path: "/",
-										}},
-									},
-								},
-							}},
+			ingresses: []*networkingv1.Ingress{
+				{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:      "test01",
+						Namespace: "default",
+						Annotations: map[string]string{
+							"kube-portal.kanatakita.com/rules.0.paths.0.enable": "true",
 						},
 					},
-				),
+					Spec: networkingv1.IngressSpec{
+						Rules: []networkingv1.IngressRule{{
+							Host: "01.example.com",
+							IngressRuleValue: networkingv1.IngressRuleValue{
+								HTTP: &networkingv1.HTTPIngressRuleValue{
+									Paths: []networkingv1.HTTPIngressPath{{
+										Path: "/",
+									}},
+								},
+							},
+						}},
+					},
+				},
 			},
-			args: args{context.Background()},
 			want: model.LinkList{
 				{
 					Name:      "test01",
@@ -75,17 +81,80 @@ func TestClient_ListIngressInfo(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := &Client{
-				log:       slog.New(slog.NewJSONHandler(io.Discard, nil)),
-				clientset: tt.fields.clientset,
+			objs := make([]any, len(tt.ingresses))
+			for i, ing := range tt.ingresses {
+				objs[i] = ing
 			}
-			got, err := c.ListIngress(tt.args.ctx)
+			c := newClient(objs, nil)
+			got, err := c.ListIngress(context.Background())
 			if (err != nil) != tt.wantErr {
-				t.Errorf("Client.ListIngressInfo() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("Client.ListIngress() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if diff := cmp.Diff(got, tt.want); diff != "" {
-				t.Errorf("the result of Client.ListIngressInfo() is unexpected: %s", diff)
+				t.Errorf("the result of Client.ListIngress() is unexpected: %s", diff)
+			}
+		})
+	}
+}
+
+func TestClient_ListExternalLink(t *testing.T) {
+	tests := []struct {
+		name          string
+		externalLinks []*unstructured.Unstructured
+		want          model.LinkList
+		wantErr       bool
+	}{
+		{
+			name: "basic external link",
+			externalLinks: []*unstructured.Unstructured{
+				{
+					Object: map[string]any{
+						"apiVersion": "kubeportal.kanatakita.com/v1alpha1",
+						"kind":       "ExternalLink",
+						"metadata": map[string]any{
+							"name":      "test-link",
+							"namespace": "default",
+						},
+						"spec": map[string]any{
+							"title":     "Test Link",
+							"href":      "https://example.com/app",
+							"iconURL":   "https://example.com/icon.png",
+							"tags":      []any{"prod"},
+							"isPrivate": false,
+						},
+					},
+				},
+			},
+			want: model.LinkList{
+				{
+					Name:      "Test Link",
+					Hostname:  "example.com",
+					Path:      "/app",
+					Proto:     "https",
+					IconUrl:   "https://example.com/icon.png",
+					Tags:      []string{"prod"},
+					IsPrivate: false,
+				},
+			},
+			wantErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			objs := make([]any, len(tt.externalLinks))
+			for i, el := range tt.externalLinks {
+				objs[i] = el
+			}
+			c := newClient(nil, objs)
+			got, err := c.ListExternalLink(context.Background())
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Client.ListExternalLink() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if diff := cmp.Diff(got, tt.want); diff != "" {
+				t.Errorf("the result of Client.ListExternalLink() is unexpected: %s", diff)
 			}
 		})
 	}

@@ -28,7 +28,7 @@ func Run(ctx context.Context, cmd *cli.Command) error {
 	}))
 
 	// New Clients
-	k8sClient, err := kubernetes.NewClient(logger, cmd.String(flag.KubeConfigPath.Name))
+	k8sClient, err := kubernetes.NewClient(ctx, logger, cmd.String(flag.KubeConfigPath.Name))
 	if err != nil {
 		return fmt.Errorf("failed to initialize k8s client: %w", err)
 	}
