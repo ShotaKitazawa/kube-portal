@@ -16,6 +16,7 @@ import (
 
 	"github.com/ShotaKitazawa/kube-portal/flag"
 	"github.com/ShotaKitazawa/kube-portal/internal/api"
+	"github.com/ShotaKitazawa/kube-portal/internal/favicon"
 	"github.com/ShotaKitazawa/kube-portal/internal/handler"
 	"github.com/ShotaKitazawa/kube-portal/internal/infrastructure/kubernetes"
 )
@@ -49,7 +50,7 @@ func Run(ctx context.Context, cmd *cli.Command) error {
 
 	// Build ogen server
 	srv, err := api.NewServer(
-		handler.NewHandler(k8sClient, cmd.Bool(flag.ShowUntaggedLinks.Name), disableOIDC, handler.OIDCConfig{
+		handler.NewHandler(k8sClient, favicon.New(), cmd.Bool(flag.ShowUntaggedLinks.Name), disableOIDC, handler.OIDCConfig{
 			Issuer:   cmd.String(flag.OIDCProviderURL.Name),
 			ClientID: cmd.String(flag.OIDCClientID.Name),
 			Audience: cmd.String(flag.OIDCAudience.Name),
