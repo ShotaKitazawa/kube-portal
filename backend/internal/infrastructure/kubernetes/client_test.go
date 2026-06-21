@@ -170,11 +170,11 @@ func TestClient_ListExternalLink(t *testing.T) {
 
 func TestClient_ListHTTPRoute(t *testing.T) {
 	tests := []struct {
-		name        string
-		httproutes  []*unstructured.Unstructured
-		wantNil     bool // nil httprouteStore (Gateway API absent)
-		want        model.LinkList
-		wantErr     bool
+		name       string
+		httproutes []*unstructured.Unstructured
+		wantNil    bool // nil httprouteStore (Gateway API absent)
+		want       model.LinkList
+		wantErr    bool
 	}{
 		{
 			name:    "returns nil when Gateway API is not available",
