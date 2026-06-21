@@ -9,15 +9,20 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/elliotchance/orderedmap/v3"
 	"github.com/mattn/go-jsonpointer"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	networkingv1 "k8s.io/api/networking/v1"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/dynamic"
+	"k8s.io/client-go/dynamic/dynamicinformer"
+	"k8s.io/client-go/informers"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
+	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/tools/clientcmd"
 
 	kubeportalv1alpha1 "github.com/ShotaKitazawa/kube-portal/internal/infrastructure/kubernetes/api/v1alpha1"
@@ -29,33 +34,61 @@ const ingressAnnotationPrefix = "kube-portal.kanatakita.com/"
 
 var ingressAnnotationMatcher *regexp.Regexp
 
+var externalLinkGVR = schema.GroupVersionResource{
+	Group:    kubeportalv1alpha1.GroupVersion.Group,
+	Version:  kubeportalv1alpha1.GroupVersion.Version,
+	Resource: "externallinks",
+}
+
 func init() {
 	ingressAnnotationMatcher = regexp.MustCompile(
 		`^rules\.(\d+)\.paths\.(\d+)\.(.+)$`)
 }
 
 type Client struct {
-	log       *slog.Logger
-	clientset kubernetes.Interface
-	dynamic   dynamic.Interface
+	log               *slog.Logger
+	ingressStore      cache.Store
+	externalLinkStore cache.Store
 }
 
 var _ port.Kubernetes = (*Client)(nil)
 
-func NewClient(logger *slog.Logger, kubeconfigPath string) (*Client, error) {
+func NewClient(ctx context.Context, logger *slog.Logger, kubeconfigPath string) (*Client, error) {
 	kubeConfig, err := buildConfig(kubeconfigPath)
 	if err != nil {
 		return nil, err
 	}
-	client, err := kubernetes.NewForConfig(kubeConfig)
+	clientset, err := kubernetes.NewForConfig(kubeConfig)
 	if err != nil {
 		return nil, err
 	}
-	dynamic, err := dynamic.NewForConfig(kubeConfig)
+	dynClient, err := dynamic.NewForConfig(kubeConfig)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{logger, client, dynamic}, nil
+
+	stopCh := ctx.Done()
+
+	factory := informers.NewSharedInformerFactory(clientset, 0)
+	ingressInformer := factory.Networking().V1().Ingresses().Informer()
+
+	dynFactory := dynamicinformer.NewDynamicSharedInformerFactory(dynClient, 0)
+	externalLinkInformer := dynFactory.ForResource(externalLinkGVR).Informer()
+
+	factory.Start(stopCh)
+	dynFactory.Start(stopCh)
+
+	syncCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
+	defer cancel()
+	if !cache.WaitForCacheSync(syncCtx.Done(), ingressInformer.HasSynced, externalLinkInformer.HasSynced) {
+		return nil, fmt.Errorf("timed out waiting for caches to sync")
+	}
+
+	return &Client{
+		log:               logger,
+		ingressStore:      ingressInformer.GetStore(),
+		externalLinkStore: externalLinkInformer.GetStore(),
+	}, nil
 }
 
 func buildConfig(kubeconfig string) (*rest.Config, error) {
@@ -73,14 +106,15 @@ func buildConfig(kubeconfig string) (*rest.Config, error) {
 	return cfg, nil
 }
 
-func (c *Client) ListIngress(ctx context.Context) (model.LinkList, error) {
-	ings, err := c.clientset.NetworkingV1().Ingresses("").List(ctx, metav1.ListOptions{})
-	if err != nil {
-		return nil, err
-	}
-
+func (c *Client) ListIngress(_ context.Context) (model.LinkList, error) {
 	var result model.LinkList
-	for _, ing := range ings.Items {
+	for _, item := range c.ingressStore.List() {
+		ing, ok := item.(*networkingv1.Ingress)
+		if !ok {
+			c.log.Warn("unexpected object type in ingress store")
+			continue
+		}
+
 		m := orderedmap.NewOrderedMap[string, model.Link]()
 		logger := c.log.With(
 			slog.String("name", ing.Name),
@@ -196,33 +230,32 @@ func (c *Client) ListIngress(ctx context.Context) (model.LinkList, error) {
 	return result, nil
 }
 
-func (c *Client) ListExternalLink(ctx context.Context) (model.LinkList, error) {
-	gvr := schema.GroupVersionResource{
-		Group:    kubeportalv1alpha1.GroupVersion.Group,
-		Version:  kubeportalv1alpha1.GroupVersion.Version,
-		Resource: "externallinks",
-	}
-	uList, err := c.dynamic.Resource(gvr).List(ctx, metav1.ListOptions{})
-	if err != nil {
-		return nil, err
+func (c *Client) ListExternalLink(_ context.Context) (model.LinkList, error) {
+	if c.externalLinkStore == nil {
+		return nil, nil
 	}
 	var result []model.Link
-	for _, u := range uList.Items {
+	for _, item := range c.externalLinkStore.List() {
+		u, ok := item.(*unstructured.Unstructured)
+		if !ok {
+			c.log.Warn("unexpected object type in external link store")
+			continue
+		}
 		exLink := kubeportalv1alpha1.ExternalLink{}
 		if err := runtime.DefaultUnstructuredConverter.FromUnstructured(u.Object, &exLink); err != nil {
 			return nil, err
 		}
 		/* get & validate values */
-		u, err := url.Parse(exLink.Spec.Href)
+		href, err := url.Parse(exLink.Spec.Href)
 		if err != nil {
 			return nil, err
 		}
 		/* set values to result */
 		result = append(result, model.Link{
 			Name:      exLink.Spec.Title,
-			Hostname:  u.Host,
-			Path:      u.Path,
-			Proto:     u.Scheme,
+			Hostname:  href.Host,
+			Path:      href.Path,
+			Proto:     href.Scheme,
 			IconUrl:   exLink.Spec.IconURL,
 			Tags:      exLink.Spec.Tags,
 			IsPrivate: exLink.Spec.IsPrivate,
