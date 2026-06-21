@@ -11,8 +11,8 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/client-go/tools/cache"
 
-	"github.com/google/go-cmp/cmp"
 	"github.com/ShotaKitazawa/kube-portal/internal/model"
+	"github.com/google/go-cmp/cmp"
 )
 
 func newClient(ingressObjs []any, externalLinkObjs []any) *Client {
@@ -33,10 +33,10 @@ func newClient(ingressObjs []any, externalLinkObjs []any) *Client {
 
 func TestClient_ListIngress(t *testing.T) {
 	tests := []struct {
-		name     string
+		name      string
 		ingresses []*networkingv1.Ingress
-		want     model.LinkList
-		wantErr  bool
+		want      model.LinkList
+		wantErr   bool
 	}{
 		{
 			name: "testcase 01",
