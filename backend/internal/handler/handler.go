@@ -4,8 +4,10 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"sync"
 
 	"github.com/ShotaKitazawa/kube-portal/internal/api"
+	"github.com/ShotaKitazawa/kube-portal/internal/favicon"
 	"github.com/ShotaKitazawa/kube-portal/internal/model"
 	"github.com/ShotaKitazawa/kube-portal/internal/model/port"
 	"github.com/coreos/go-oidc/v3/oidc"
@@ -20,6 +22,7 @@ type OIDCConfig struct {
 
 type Handler struct {
 	k8sClient         port.Kubernetes
+	faviconFetcher    *favicon.Fetcher
 	showUntaggedLinks bool
 	disableOIDC       bool
 	oidcConfig        OIDCConfig
@@ -28,9 +31,10 @@ type Handler struct {
 
 var _ api.Handler = (*Handler)(nil)
 
-func NewHandler(k8sClient port.Kubernetes, showUntaggedLinks bool, disableOIDC bool, oidcConfig OIDCConfig, provider *oidc.Provider) *Handler {
+func NewHandler(k8sClient port.Kubernetes, faviconFetcher *favicon.Fetcher, showUntaggedLinks bool, disableOIDC bool, oidcConfig OIDCConfig, provider *oidc.Provider) *Handler {
 	return &Handler{
 		k8sClient:         k8sClient,
+		faviconFetcher:    faviconFetcher,
 		showUntaggedLinks: showUntaggedLinks,
 		disableOIDC:       disableOIDC,
 		oidcConfig:        oidcConfig,
@@ -107,8 +111,26 @@ func (h *Handler) ListIngressInfo(ctx context.Context) ([]api.IngressInfo, error
 		return nil, err
 	}
 	links := append(append(res1, res2...), res3...).ExcludePrivateLinkIfNotLogIn(isLogin)
+	links = h.resolveFavicons(ctx, links)
 
 	return toIngressInfoList(links, h.showUntaggedLinks), nil
+}
+
+func (h *Handler) resolveFavicons(ctx context.Context, links model.LinkList) model.LinkList {
+	var wg sync.WaitGroup
+	for i := range links {
+		if links[i].IconUrl != "" {
+			continue
+		}
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			origin := links[i].Proto + "://" + links[i].Hostname
+			links[i].IconUrl = h.faviconFetcher.Resolve(ctx, origin)
+		}(i)
+	}
+	wg.Wait()
+	return links
 }
 
 func toIngressInfoList(links model.LinkList, showUntaggedLinks bool) []api.IngressInfo {
