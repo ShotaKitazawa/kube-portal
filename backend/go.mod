@@ -15,9 +15,9 @@ require (
 	github.com/ogen-go/ogen v1.20.3
 	github.com/samber/slog-echo v1.21.0
 	github.com/urfave/cli/v3 v3.8.0
-	go.opentelemetry.io/otel v1.42.0
-	go.opentelemetry.io/otel/metric v1.42.0
-	go.opentelemetry.io/otel/trace v1.42.0
+	go.opentelemetry.io/otel v1.44.0
+	go.opentelemetry.io/otel/metric v1.44.0
+	go.opentelemetry.io/otel/trace v1.44.0
 	golang.org/x/net v0.52.0
 	golang.org/x/oauth2 v0.36.0
 	k8s.io/api v0.35.3
