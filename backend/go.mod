@@ -13,7 +13,7 @@ require (
 	github.com/labstack/echo/v4 v4.15.1
 	github.com/mattn/go-jsonpointer v0.0.1
 	github.com/ogen-go/ogen v1.20.3
-	github.com/samber/slog-echo v1.21.0
+	github.com/samber/slog-echo v1.23.0
 	github.com/urfave/cli/v3 v3.8.0
 	go.opentelemetry.io/otel v1.42.0
 	go.opentelemetry.io/otel/metric v1.42.0
