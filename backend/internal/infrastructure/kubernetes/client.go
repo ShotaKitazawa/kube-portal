@@ -40,6 +40,12 @@ var externalLinkGVR = schema.GroupVersionResource{
 	Resource: "externallinks",
 }
 
+var httpRouteGVR = schema.GroupVersionResource{
+	Group:    "gateway.networking.k8s.io",
+	Version:  "v1",
+	Resource: "httproutes",
+}
+
 func init() {
 	ingressAnnotationMatcher = regexp.MustCompile(
 		`^rules\.(\d+)\.paths\.(\d+)\.(.+)$`)
@@ -49,6 +55,7 @@ type Client struct {
 	log               *slog.Logger
 	ingressStore      cache.Store
 	externalLinkStore cache.Store
+	httprouteStore    cache.Store // nil when Gateway API CRD is not installed
 }
 
 var _ port.Kubernetes = (*Client)(nil)
@@ -75,20 +82,37 @@ func NewClient(ctx context.Context, logger *slog.Logger, kubeconfigPath string) 
 	dynFactory := dynamicinformer.NewDynamicSharedInformerFactory(dynClient, 0)
 	externalLinkInformer := dynFactory.ForResource(externalLinkGVR).Informer()
 
+	// Detect Gateway API availability; skip HTTPRoute informer if CRD is absent
+	var httpRouteInformer cache.SharedIndexInformer
+	if _, err := clientset.Discovery().ServerResourcesForGroupVersion("gateway.networking.k8s.io/v1"); err != nil {
+		logger.Warn("gateway.networking.k8s.io/v1 not available, HTTPRoute support disabled", "error", err)
+	} else {
+		httpRouteInformer = dynFactory.ForResource(httpRouteGVR).Informer()
+	}
+
 	factory.Start(stopCh)
 	dynFactory.Start(stopCh)
 
+	toSync := []cache.InformerSynced{ingressInformer.HasSynced, externalLinkInformer.HasSynced}
+	if httpRouteInformer != nil {
+		toSync = append(toSync, httpRouteInformer.HasSynced)
+	}
+
 	syncCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
 	defer cancel()
-	if !cache.WaitForCacheSync(syncCtx.Done(), ingressInformer.HasSynced, externalLinkInformer.HasSynced) {
+	if !cache.WaitForCacheSync(syncCtx.Done(), toSync...) {
 		return nil, fmt.Errorf("timed out waiting for caches to sync")
 	}
 
-	return &Client{
+	c := &Client{
 		log:               logger,
 		ingressStore:      ingressInformer.GetStore(),
 		externalLinkStore: externalLinkInformer.GetStore(),
-	}, nil
+	}
+	if httpRouteInformer != nil {
+		c.httprouteStore = httpRouteInformer.GetStore()
+	}
+	return c, nil
 }
 
 func buildConfig(kubeconfig string) (*rest.Config, error) {
@@ -227,6 +251,119 @@ func (c *Client) ListIngress(_ context.Context) (model.LinkList, error) {
 		}
 	}
 
+	return result, nil
+}
+
+func (c *Client) ListHTTPRoute(_ context.Context) (model.LinkList, error) {
+	if c.httprouteStore == nil {
+		return nil, nil
+	}
+	var result model.LinkList
+	for _, item := range c.httprouteStore.List() {
+		u, ok := item.(*unstructured.Unstructured)
+		if !ok {
+			c.log.Warn("unexpected object type in httproute store")
+			continue
+		}
+
+		m := orderedmap.NewOrderedMap[string, model.Link]()
+		logger := c.log.With(
+			slog.String("name", u.GetName()),
+			slog.String("namespace", u.GetNamespace()),
+		)
+
+		specBytes, err := json.Marshal(u.Object["spec"])
+		if err != nil {
+			return nil, err
+		}
+		var specObj interface{}
+		if err := json.Unmarshal(specBytes, &specObj); err != nil {
+			return nil, err
+		}
+
+		for key, val := range u.GetAnnotations() {
+			logger = logger.With(slog.String("annotation", key))
+			if !strings.HasPrefix(key, ingressAnnotationPrefix) {
+				continue
+			}
+			key = strings.TrimPrefix(key, ingressAnnotationPrefix)
+
+			l := ingressAnnotationMatcher.FindStringSubmatch(key)
+			if len(l) != 4 {
+				logger.Warn("skip: annotation didn't match the matcher")
+				continue
+			}
+			ruleIdx, _ := strconv.Atoi(l[1])
+			pathIdx, _ := strconv.Atoi(l[2])
+			action := l[3]
+
+			tmpLink, _ := m.Get(fmt.Sprintf("%d-%d", ruleIdx, pathIdx))
+			switch action {
+			case "enable":
+				// pass
+			case "name":
+				tmpLink.Name = val
+			case "proto":
+				tmpLink.Proto = val
+			case "icon-url":
+				tmpLink.IconUrl = val
+			case "tags":
+				tmpLink.Tags = strings.Split(val, ",")
+			case "is-private":
+				if strings.ToLower(val) == "true" {
+					tmpLink.IsPrivate = true
+				}
+			default:
+				logger.Warn("skip: annotation is not supported")
+				continue
+			}
+
+			// HTTPRoute: hostname is global (spec.hostnames[0]), not per-rule
+			if tmpLink.Hostname == "" {
+				rv, err := jsonpointer.Get(specObj, "/hostnames/0")
+				if err != nil {
+					logger.Warn("skip: HTTPRoute spec.hostnames[0] is empty")
+					continue
+				}
+				hostname, ok := rv.(string)
+				if !ok {
+					logger.Warn("skip: HTTPRoute spec.hostnames[0] is empty")
+					continue
+				}
+				tmpLink.Hostname = hostname
+			}
+			// Path: spec.rules[ruleIdx].matches[pathIdx].path.value
+			if tmpLink.Path == "" {
+				rv, err := jsonpointer.Get(specObj,
+					fmt.Sprintf("/rules/%d/matches/%d/path/value", ruleIdx, pathIdx))
+				if err != nil {
+					logger.Debug(fmt.Sprintf(
+						"HTTPRoute spec.rules[%d].matches[%d].path.value is empty: use / as path",
+						ruleIdx, pathIdx))
+					tmpLink.Path = "/"
+				} else if path, ok := rv.(string); ok {
+					tmpLink.Path = path
+				} else {
+					tmpLink.Path = "/"
+				}
+			}
+			m.Set(fmt.Sprintf("%d-%d", ruleIdx, pathIdx), tmpLink)
+		}
+
+		for key := range m.Keys() {
+			val, _ := m.Get(key)
+			if val.Name == "" {
+				val.Name = u.GetName()
+			}
+			if val.Proto == "" {
+				val.Proto = "https"
+			}
+			if val.Tags == nil {
+				val.Tags = []string{}
+			}
+			result = append(result, val)
+		}
+	}
 	return result, nil
 }
 
