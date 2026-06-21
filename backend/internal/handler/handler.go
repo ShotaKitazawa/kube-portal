@@ -102,7 +102,11 @@ func (h *Handler) ListIngressInfo(ctx context.Context) ([]api.IngressInfo, error
 	if err != nil {
 		return nil, err
 	}
-	links := append(res1, res2...).ExcludePrivateLinkIfNotLogIn(isLogin)
+	res3, err := h.k8sClient.ListHTTPRoute(ctx)
+	if err != nil {
+		return nil, err
+	}
+	links := append(append(res1, res2...), res3...).ExcludePrivateLinkIfNotLogIn(isLogin)
 
 	return toIngressInfoList(links, h.showUntaggedLinks), nil
 }

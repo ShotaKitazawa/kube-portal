@@ -9,4 +9,5 @@ import (
 type Kubernetes interface {
 	ListIngress(ctx context.Context) (model.LinkList, error)
 	ListExternalLink(ctx context.Context) (model.LinkList, error)
+	ListHTTPRoute(ctx context.Context) (model.LinkList, error)
 }
