@@ -7,7 +7,7 @@ toolchain go1.26.1
 require (
 	github.com/coreos/go-oidc/v3 v3.17.0
 	github.com/elliotchance/orderedmap/v3 v3.1.0
-	github.com/go-faster/errors v0.7.1
+	github.com/go-faster/errors v0.8.0
 	github.com/go-faster/jx v1.2.0
 	github.com/google/go-cmp v0.7.0
 	github.com/labstack/echo/v4 v4.15.1
